@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Services Showcase</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .carousel-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .slide {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            perspective: 1000px;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+        }
+
+        .slide-content {
+            text-align: center;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            transform: translateZ(50px);
+            opacity: 0;
+            transition: all 0.7s ease-out;
+        }
+
+        .slide.active .slide-content {
+            opacity: 1;
+            transform: translateZ(0);
+        }
+
+        .slide-content h2 {
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .read-more {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .read-more:hover {
+            background-color: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 20px -3px rgba(0, 0, 0, 0.1), 0 6px 8px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 20;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            padding: 10px 15px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .slide-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            width: 16px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="slide active" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Gate Automation</h2>
+                    <p>Revolutionize your access control with cutting-edge gate automation systems, delivering
+                        unparalleled security and convenience.</p>
+                    <a href="#" class="read-more">Explore Solutions</a>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Advanced Security Systems</h2>
+                    <p>Comprehensive security solutions integrating state-of-the-art CCTV, intelligent alarm systems,
+                        and real-time monitoring.</p>
+                    <a href="#" class="read-more">Discover Protection</a>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Smart Access Control</h2>
+                    <p>Intelligent access management technologies that provide seamless, secure, and granular control
+                        over your premises.</p>
+                    <a href="#" class="read-more">Learn More</a>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Network Infrastructure</h2>
+                    <p>Design and implementation of robust network solutions ensuring lightning-fast, secure, and
+                        reliable connectivity.</p>
+                    <a href="#" class="read-more">View Solutions</a>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Strategic IT Consulting</h2>
+                    <p>Expert technological guidance to transform your infrastructure, optimize performance, and
+                        accelerate business growth.</p>
+                    <a href="#" class="read-more">Get Insights</a>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1100/400');">
+                <div class="slide-content">
+                    <h2>Comprehensive Maintenance</h2>
+                    <p>Proactive maintenance and support services ensuring your technological ecosystem remains
+                        efficient, updated, and resilient.</p>
+                    <a href="#" class="read-more">Ensure Reliability</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-nav">
+            <button class="nav-btn prev-btn">&lt;</button>
+            <button class="nav-btn next-btn">&gt;</button>
+        </div>
+        <div class="slide-indicator">
+            <div class="indicator active"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const carousel = document.querySelector('.carousel');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const slides = document.querySelectorAll('.slide');
+            const indicators = document.querySelectorAll('.indicator');
+            let currentSlide = 0;
+
+            function updateSlideState() {
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentSlide);
+                });
+
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === currentSlide);
+                });
+            }
+
+            function moveSlide(direction) {
+                slides[currentSlide].classList.remove('active');
+
+                currentSlide += direction;
+
+                if (currentSlide >= slides.length) currentSlide = 0;
+                if (currentSlide < 0) currentSlide = slides.length - 1;
+
+                carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+                updateSlideState();
+            }
+
+            nextBtn.addEventListener('click', () => moveSlide(1));
+            prevBtn.addEventListener('click', () => moveSlide(-1));
+
+            // Add click event to indicators
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    currentSlide = index;
+                    carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    updateSlideState();
+                });
+            });
+
+            // Auto-slide every 5 seconds
+            setInterval(() => moveSlide(1), 5000);
+        });
+    </script>
+</body>
+
+</html>
