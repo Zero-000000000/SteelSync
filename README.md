@@ -7,9 +7,19 @@ SteelSync is a web-based business management system integrating appointments, in
 -
 -
 
-### Admin
+### Administrator
 
 #### Super Admin
+-
+-
+-
+
+#### HR Admin
+-
+-
+-
+
+#### Suport Admin
 -
 -
 -
