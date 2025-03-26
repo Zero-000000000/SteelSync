@@ -1,5 +1,5 @@
-<?php include 'includes/style.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/style.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <head>
     <meta charset="UTF-8">
@@ -197,7 +197,6 @@
             color: var(--light-text);
             padding: 120px 0;
             position: relative;
-            margin-bottom: 50px;
             text-align: center;
         }
 
@@ -242,7 +241,88 @@
             color: #ffc107;
         }
 
+        /* Types Section */
+        .types {
+            padding: 80px 0;
+            background-color: #fff;
+        }
 
+        .types h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .types h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 70px;
+            height: 4px;
+            background-color: var(--accent-color);
+            transform: translateX(-50%);
+        }
+
+        /* Metal Works Section */
+        .work-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 70px;
+        }
+
+        .work-image {
+            flex: 1;
+            max-width: 45%;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .work-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .work-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .work-text {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .work-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .work-text h3 i {
+            margin-right: 15px;
+            color: var(--accent-color);
+        }
+
+        .work-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Stainless Works Section */
+        .stainless-works {
+            flex-direction: row-reverse;
+        }
 
 
         /* Responsive Design */
@@ -289,14 +369,14 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Smart Electric Fence</h1>
+            <h1>Roll Up Door</h1>
             <div class="hero-content">
                 <div class="hero-image">
                     <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>We offers advanced A smart fence refers to an advanced, technology-driven barrier system designed to detect, deter, and delay unauthorized intrusions or potential threats.
+                    <p>We provides reliable Rollup doors are steel doors that roll up into a coil directly above the opening. As they protect against unwanted entry and natural elements, they are indispensable for many businesses..
                     </p>
                     <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
                         that meet your specific needs and exceed your expectations.</p>
@@ -349,8 +429,10 @@
     <!-- Fabrication Section -->
     <section class="fabrication">
         <div class="fabrication-content">
-            <h2>SMART ELECTRIC FENCE</h2>
-            <p>Intellitech Systems advanced equipped with various sensors, such as motion detectors, vibration sensors, infrared detectors, and video surveillance cameras. These sensors can detect any breach attempts, like climbing, cutting, or lifting the fence, and can also help track intruders' movement in real-time.</p>
+            <h2>ROLL UP DOOR</h2>
+            <p>Intellitech Systems As a Roller Garage Door opens, it slides up tracks and rolls around a barrel or drum to sit above the garage opening in a cylinder shape, much like a rolled up carpet. Pros of Roller Doors. They are practical and durable.</p>
+            <p>From concept to completion, our team works closely with you to create customized solutions that perfectly
+                match your specifications and exceed your expectations.</p>
             <p>For more info kindly visit our page: <a
                     href="https://www.facebook.com/IntellitechSystemOPC">https://www.facebook.com/IntellitechSystemOPC</a>
             </p>
@@ -358,10 +440,58 @@
         </div>
     </section>
 
+    <!-- Types Section -->
+    <section class="types">
+        <div class="container">
+            <h2>TYPES</h2>
 
-    <?php include 'includes/footer.php'; ?>
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i>Fire-Rated Rollup Door</h3>
+                    <p>Fire-rated rollup doors prevent the spread of fire in a building due to their fire-resistant materials and ability to detect fire. This type of door will close automatically if there's a fire in the building so that smoke and flames don't spread to different parts of the building.</p>
+                    <p>Our metal fabrication services include cutting, bending, welding, and assembling various metal
+                        components to create structures and products that are both functional and aesthetically
+                        pleasing.</p>
 
-    <?php include "includes/main.php"; ?>
+                </div>
+            </div>
+
+            <div class="work-section stainless-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-wrench"></i> Weather-Resistant Rollup Door </h3>
+                    <p>Stainless steel is used in M&A Technology for making durable and corrosion-resistant equipment.
+                        It helps ensure the machinery lasts longer and can handle harsh environments.</p>
+                    <p>Our stainless steel fabrication services are ideal for applications requiring resistance to
+                        corrosion, heat, and chemicals, making them perfect for food processing equipment, medical
+                        devices, and architectural features.</p>
+
+                </div>
+            </div>
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i>Rollup Security Door</h3>
+                    <p>Fire-rated rollup doors prevent the spread of fire in a building due to their fire-resistant materials and ability to detect fire. This type of door will close automatically if there's a fire in the building so that smoke and flames don't spread to different parts of the building.</p>
+                    <p>Our metal fabrication services include cutting, bending, welding, and assembling various metal
+                        components to create structures and products that are both functional and aesthetically
+                        pleasing.</p>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <?php include '../includes/footer.php'; ?>
+
+    <?php include "../includes/main.php"; ?>
 
 </body>
 

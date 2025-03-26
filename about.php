@@ -722,10 +722,10 @@
             const docDate = document.getElementById('doc-date');
             const docValidity = document.getElementById('doc-validity');
 
-            // Current zoom level
+
             let currentZoom = 1;
 
-            // Document data (in a real application, this would come from a database)
+            // demo need dataa base
             const documents = {
                 'environmental-permit': {
                     title: 'Environmental Management Permit',

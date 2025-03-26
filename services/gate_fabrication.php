@@ -1,5 +1,5 @@
-<?php include 'includes/style.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/style.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <head>
     <meta charset="UTF-8">
@@ -369,16 +369,18 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Gate Automation</h1>
+            <h1>Gate Fabrication</h1>
             <div class="hero-content">
                 <div class="hero-image">
                     <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>Is your old gate looking tired and outdated? Why not restore, repair, or automate it to enhance your home’s security and curb appeal?
+                    <p>We believe in providing the best security solutions for your home and business. That's why we
+                        always use top-quality equipment in all our projects, ensuring reliability and peace of mind.
                     </p>
-                    <p>Let Intellitech Systems handle it! With our expertise in restoration, repair, and automation, we’ll make your gate look and function like new.</p>
+                    <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
+                        that meet your specific needs and exceed your expectations.</p>
 
                 </div>
             </div>
@@ -446,7 +448,6 @@
         <div class="container">
             <h2>TYPES</h2>
 
-            <!-- Metal Works Section -->
             <div class="work-section metal-works">
                 <div class="work-image">
                     <img src="/images/11.jpg" alt="Metal welding with sparks">
@@ -463,7 +464,6 @@
                 </div>
             </div>
 
-            <!-- Stainless Works Section -->
             <div class="work-section stainless-works">
                 <div class="work-image">
                     <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
@@ -480,9 +480,9 @@
             </div>
         </div>
     </section>
-    <?php include 'includes/footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 
-    <?php include "includes/main.php"; ?>
+    <?php include "../includes/main.php"; ?>
 
 </body>
 

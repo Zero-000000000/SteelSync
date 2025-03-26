@@ -410,7 +410,7 @@
 
     .read-more {
         display: inline-block;
-        background-color: #3b82f6;
+        background: linear-gradient(135deg, #ff8c00, #ff6b00);
         color: white;
         text-decoration: none;
         padding: 10px 20px;
@@ -423,7 +423,7 @@
     .read-more:hover {
         background-color: #2563eb;
         transform: translateY(-3px);
-        box-shadow: 0 15px 20px -3px rgba(0, 0, 0, 0.1), 0 6px 8px -2px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 8px 25px rgba(255, 140, 0, 0.6);
     }
 
     .carousel-nav {
@@ -600,49 +600,46 @@
             <div class="slide active" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
                     <h2>Gate Automation</h2>
-                    <p>Revolutionize your access control with cutting-edge gate automation systems, delivering
-                        unparalleled security and convenience.</p>
-                    <a href="#" class="read-more">Explore Solutions</a>
+                    <p>A&M Technology offers gate automation systems, delivering secure, convenient,
+                        and efficient solutions for automated access control.</p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
             <div class="slide" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
-                    <h2>Advanced Security Systems</h2>
-                    <p>Comprehensive security solutions integrating state-of-the-art CCTV, intelligent alarm systems,
-                        and real-time monitoring.</p>
-                    <a href="#" class="read-more">Discover Protection</a>
+                    <h2>Gate Fabrication</h2>
+                    <p>A&M Technology specializes in metal and steel fabrication,
+                        providing customized solutions for durable and high-quality structural and industrial needs.</p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
             <div class="slide" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
-                    <h2>Smart Access Control</h2>
-                    <p>Intelligent access management technologies that provide seamless, secure, and granular control
-                        over your premises.</p>
-                    <a href="#" class="read-more">Learn More</a>
+                    <h2>Sectional Garage Door</h2>
+                    <p>A&M Technology offers pconstructed with multiple horizontal panels hinged together, allowing them to open vertically
+                        and slide into horizontal tracks parallel to the garage ceiling, maximizing space inside and outside the garage. </p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
             <div class="slide" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
-                    <h2>Network Infrastructure</h2>
-                    <p>Design and implementation of robust network solutions ensuring lightning-fast, secure, and
-                        reliable connectivity.</p>
-                    <a href="#" class="read-more">View Solutions</a>
+                    <h2>Roll Up Door</h2>
+                    <p>A&M Technology provides doors that roll up into a tight coil above the opening, using horizontal slats that move vertically within tracks</p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
             <div class="slide" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
-                    <h2>Strategic IT Consulting</h2>
-                    <p>Expert technological guidance to transform your infrastructure, optimize performance, and
-                        accelerate business growth.</p>
-                    <a href="#" class="read-more">Get Insights</a>
+                    <h2>Smart Electric Fence Out</h2>
+                    <p>A&M Technology offers technology-driven perimeter security system that uses sensors, communication devices, and AI to detect, deter, and delay unauthorized intrusions, often with real-time alerts and remote monitoring capabilities</p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
             <div class="slide" style="background-image: url('/api/placeholder/900/400');">
                 <div class="slide-content">
-                    <h2>Comprehensive Maintenance</h2>
-                    <p>Proactive maintenance and support services ensuring your technological ecosystem remains
-                        efficient, updated, and resilient.</p>
-                    <a href="#" class="read-more">Ensure Reliability</a>
+                    <h2>Smart Curtain</h2>
+                    <p>A&M Technology installs motorized curtains that can be opened and closed automatically, often via app control or integration with home automation systems, offering convenience, energy efficiency, and enhanced privacy</p>
+                    <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
-<?php include 'includes/style.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/style.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <head>
     <meta charset="UTF-8">
@@ -369,18 +369,16 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Gate Fabrication</h1>
+            <h1>Gate Automation</h1>
             <div class="hero-content">
                 <div class="hero-image">
                     <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>We believe in providing the best security solutions for your home and business. That's why we
-                        always use top-quality equipment in all our projects, ensuring reliability and peace of mind.
+                    <p>Is your old gate looking tired and outdated? Why not restore, repair, or automate it to enhance your home’s security and curb appeal?
                     </p>
-                    <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
-                        that meet your specific needs and exceed your expectations.</p>
+                    <p>Let Intellitech Systems handle it! With our expertise in restoration, repair, and automation, we’ll make your gate look and function like new.</p>
 
                 </div>
             </div>
@@ -430,7 +428,7 @@
     <!-- Fabrication Section -->
     <section class="fabrication">
         <div class="fabrication-content">
-            <h2>FABRICATION</h2>
+            <h2>GATE AUTOMATION</h2>
             <p>At I&S Technology, we specialize in high-quality fabrication using metal and stainless steel to deliver
                 durable, precision-engineered solutions. Our expert craftsmanship ensures every project meets rigorous
                 standards, providing the strength and reliability needed for all industrial applications.</p>
@@ -454,7 +452,7 @@
                     <img src="/images/11.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> METAL WORKS</h3>
+                    <h3><i class="fas fa-fire"></i> SLIDING GATE</h3>
                     <p>I&S Technology specializes in precision metal works, offering high-quality fabrication services
                         tailored to various industries. Their expertise ensures durable, custom-made metal components
                         that meet exacting standards and client specifications.</p>
@@ -471,7 +469,7 @@
                     <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-wrench"></i> STAINLESS WORKS</h3>
+                    <h3><i class="fas fa-wrench"></i> SWING GATE</h3>
                     <p>Stainless steel is used in M&A Technology for making durable and corrosion-resistant equipment.
                         It helps ensure the machinery lasts longer and can handle harsh environments.</p>
                     <p>Our stainless steel fabrication services are ideal for applications requiring resistance to
@@ -480,11 +478,27 @@
 
                 </div>
             </div>
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> BARRIER GATE</h3>
+                    <p>I&S Technology specializes in precision metal works, offering high-quality fabrication services
+                        tailored to various industries. Their expertise ensures durable, custom-made metal components
+                        that meet exacting standards and client specifications.</p>
+                    <p>Our metal fabrication services include cutting, bending, welding, and assembling various metal
+                        components to create structures and products that are both functional and aesthetically
+                        pleasing.</p>
+
+                </div>
+            </div>
+
         </div>
     </section>
-    <?php include 'includes/footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
 
-    <?php include "includes/main.php"; ?>
+    <?php include "../includes/main.php"; ?>
 
 </body>
 

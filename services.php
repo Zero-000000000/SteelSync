@@ -228,73 +228,74 @@
                 image: '/images/11.jpg',
                 icon: 'fa-solid fa-lock',
                 title: 'Gate Automation',
-                description: 'Advanced automated gate systems with smart access control and seamless integration.'
+                description: 'Advanced automated gate systems with smart access control and seamless integration.',
+                link: '/services/gate automation.php'
             },
             {
-                image: 'https://via.placeholder.com/600x400?text=Gate+Fabrication',
+                image: '/images/11.jpg',
                 icon: 'fa-solid fa-home',
                 title: 'Gate Fabrication',
-                description: 'Custom-designed gates crafted with precision and aesthetic appeal.'
+                description: 'Custom-designed gates crafted with precision and aesthetic appeal.',
+                link: '/services/gate_fabrication.php'
             },
             {
-                image: 'https://via.placeholder.com/600x400?text=Sectional+Garage+Door',
+                image: '/images/11.jpg',
                 icon: 'fa-solid fa-camera',
                 title: 'Sectional Garage Door',
-                description: 'Modern garage doors offering superior insulation and security.'
+                description: 'Modern garage doors offering superior insulation and security.',
+                link: '/services/garage_door.php'
             },
             {
-                image: 'https://via.placeholder.com/600x400?text=Roll+Up+Door',
+                image: '/images/11.jpg',
                 icon: 'fa-solid fa-bolt',
                 title: 'Roll Up Door',
-                description: 'High-performance doors for commercial and industrial applications.'
+                description: 'High-performance doors for commercial and industrial applications.',
+                link: '/services/roll_up_door.php'
             },
             {
-                image: 'https://via.placeholder.com/600x400?text=Smart+Electric+Fence',
+                image: '/images/11.jpg',
                 icon: 'fa-solid fa-shield-halved',
                 title: 'Smart Electric Fence',
-                description: 'Cutting-edge perimeter protection with advanced monitoring systems.'
+                description: 'Cutting-edge perimeter protection with advanced monitoring systems.',
+                link: '/services/electric_fence.php'
             },
             {
-                image: 'https://via.placeholder.com/600x400?text=Smart+Curtain',
+                image: '/images/11.jpg',
                 icon: 'fas fa-home',
                 title: 'Smart Curtain',
-                description: 'Automated curtain systems with intelligent home integration.'
+                description: 'Automated curtain systems with intelligent home integration.',
+                link: '/services/smart_curtain.php'
             }
         ];
 
         function renderServices() {
             const servicesGrid = document.getElementById('servicesGrid');
-            servicesGrid.innerHTML = ''; // Clear any existing content
+            servicesGrid.innerHTML = '';
 
             services.forEach(service => {
                 const serviceCard = document.createElement('div');
                 serviceCard.classList.add('service-card');
-
-                // Use template literals correctly
                 serviceCard.innerHTML = `
-                    <div class="service-image" style="background-image: url('${service.image}')">
-                        <div class="service-icon">
-                            <i class="${service.icon}"></i>
-                        </div>
-                    </div>
-                    <div class="service-content">
-                        <div class="service-header">
-                            <h3 class="service-title">${service.title}</h3>
-                            <span class="service-explore">Explore</span>
-                        </div>
-                        <p class="service-description">${service.description}</p>
-                    </div>
-                `;
-
+            <div class="service-image" style="background-image: url('${service.image}')">
+                <div class="service-icon">
+                    <i class="${service.icon}"></i>
+                </div>
+            </div>
+            <div class="service-content">
+                <div class="service-header">
+                    <h3 class="service-title">${service.title}</h3>
+                    <span class="service-explore">Explore</span>
+                </div>
+                <p class="service-description">${service.description}</p>
+            </div>
+        `;
                 serviceCard.addEventListener('click', () => {
-                    alert(`You clicked on ${service.title} service`);
+                    window.location.href = service.link;
                 });
-
+                serviceCard.style.cursor = 'pointer';
                 servicesGrid.appendChild(serviceCard);
             });
         }
-
-        // Render services when the page loads
         document.addEventListener('DOMContentLoaded', renderServices);
     </script>
     <?php include 'includes/footer.php'; ?>

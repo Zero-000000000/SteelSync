@@ -1,5 +1,5 @@
-<?php include 'includes/style.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/style.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <head>
     <meta charset="UTF-8">
@@ -197,8 +197,8 @@
             color: var(--light-text);
             padding: 120px 0;
             position: relative;
-            text-align: center;
             margin-bottom: 50px;
+            text-align: center;
         }
 
         .fabrication::before {
@@ -289,14 +289,14 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Smart Curtain</h1>
+            <h1>Smart Electric Fence</h1>
             <div class="hero-content">
                 <div class="hero-image">
                     <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>We delivers  effortlessly control your curtains, allowing you to adjust natural light or privacy with just a simple command. Affordable and easy to install, SwitchBot is all about enhancing your home life without complication.
+                    <p>We offers advanced A smart fence refers to an advanced, technology-driven barrier system designed to detect, deter, and delay unauthorized intrusions or potential threats.
                     </p>
                     <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
                         that meet your specific needs and exceed your expectations.</p>
@@ -349,10 +349,8 @@
     <!-- Fabrication Section -->
     <section class="fabrication">
         <div class="fabrication-content">
-            <h2>SMART CURTAIN</h2>
-            <p>Intellitech Systems delivers  effortlessly control your curtains, allowing you to adjust natural light or privacy with just a simple command. Affordable and easy to install, SwitchBot is all about enhancing your home life without complication.</p>
-            <p>From concept to completion, our team works closely with you to create customized solutions that perfectly
-                match your specifications and exceed your expectations.</p>
+            <h2>SMART ELECTRIC FENCE</h2>
+            <p>Intellitech Systems advanced equipped with various sensors, such as motion detectors, vibration sensors, infrared detectors, and video surveillance cameras. These sensors can detect any breach attempts, like climbing, cutting, or lifting the fence, and can also help track intruders' movement in real-time.</p>
             <p>For more info kindly visit our page: <a
                     href="https://www.facebook.com/IntellitechSystemOPC">https://www.facebook.com/IntellitechSystemOPC</a>
             </p>
@@ -361,10 +359,9 @@
     </section>
 
 
+    <?php include '../includes/footer.php'; ?>
 
-    <?php include 'includes/footer.php'; ?>
-
-    <?php include "includes/main.php"; ?>
+    <?php include "../includes/main.php"; ?>
 
 </body>
 

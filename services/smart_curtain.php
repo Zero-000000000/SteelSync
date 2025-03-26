@@ -1,5 +1,5 @@
-<?php include 'includes/style.php'; ?>
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/style.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <head>
     <meta charset="UTF-8">
@@ -198,6 +198,7 @@
             padding: 120px 0;
             position: relative;
             text-align: center;
+            margin-bottom: 50px;
         }
 
         .fabrication::before {
@@ -241,88 +242,7 @@
             color: #ffc107;
         }
 
-        /* Types Section */
-        .types {
-            padding: 80px 0;
-            background-color: #fff;
-        }
 
-        .types h2 {
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 60px;
-            color: var(--primary-color);
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .types h2::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            width: 70px;
-            height: 4px;
-            background-color: var(--accent-color);
-            transform: translateX(-50%);
-        }
-
-        /* Metal Works Section */
-        .work-section {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 70px;
-        }
-
-        .work-image {
-            flex: 1;
-            max-width: 45%;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            position: relative;
-        }
-
-        .work-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .work-image:hover img {
-            transform: scale(1.05);
-        }
-
-        .work-text {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .work-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .work-text h3 i {
-            margin-right: 15px;
-            color: var(--accent-color);
-        }
-
-        .work-text p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-
-        /* Stainless Works Section */
-        .stainless-works {
-            flex-direction: row-reverse;
-        }
 
 
         /* Responsive Design */
@@ -369,16 +289,17 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Sectional Garage Door</h1>
+            <h1>Smart Curtain</h1>
             <div class="hero-content">
                 <div class="hero-image">
                     <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
-                    <p>Secure Your Home with Intellitech Systems!
+                    <p>We delivers  effortlessly control your curtains, allowing you to adjust natural light or privacy with just a simple command. Affordable and easy to install, SwitchBot is all about enhancing your home life without complication.
                     </p>
-                    <p>Sectional garage doors are designed with horizontally split door panels that move vertically to open and then slide into horizontal tracks curved into the garage. As a result, the entire door sits parallel with the ceiling at a higher level than the door ordering height.</p>
+                    <p>Our team of experts has years of experience in metal fabrication, delivering custom solutions
+                        that meet your specific needs and exceed your expectations.</p>
 
                 </div>
             </div>
@@ -428,10 +349,8 @@
     <!-- Fabrication Section -->
     <section class="fabrication">
         <div class="fabrication-content">
-            <h2>FABRICATION</h2>
-            <p>At I&S Technology, we specialize in high-quality fabrication using metal and stainless steel to deliver
-                durable, precision-engineered solutions. Our expert craftsmanship ensures every project meets rigorous
-                standards, providing the strength and reliability needed for all industrial applications.</p>
+            <h2>SMART CURTAIN</h2>
+            <p>Intellitech Systems delivers  effortlessly control your curtains, allowing you to adjust natural light or privacy with just a simple command. Affordable and easy to install, SwitchBot is all about enhancing your home life without complication.</p>
             <p>From concept to completion, our team works closely with you to create customized solutions that perfectly
                 match your specifications and exceed your expectations.</p>
             <p>For more info kindly visit our page: <a
@@ -441,48 +360,11 @@
         </div>
     </section>
 
-    <!-- Types Section -->
-    <section class="types">
-        <div class="container">
-            <h2>TYPES</h2>
 
-            <!-- Metal Works Section -->
-            <div class="work-section metal-works">
-                <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
-                </div>
-                <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> METAL WORKS</h3>
-                    <p>I&S Technology specializes in precision metal works, offering high-quality fabrication services
-                        tailored to various industries. Their expertise ensures durable, custom-made metal components
-                        that meet exacting standards and client specifications.</p>
-                    <p>Our metal fabrication services include cutting, bending, welding, and assembling various metal
-                        components to create structures and products that are both functional and aesthetically
-                        pleasing.</p>
 
-                </div>
-            </div>
+    <?php include '../includes/footer.php'; ?>
 
-            <!-- Stainless Works Section -->
-            <div class="work-section stainless-works">
-                <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
-                </div>
-                <div class="work-text">
-                    <h3><i class="fas fa-wrench"></i> STAINLESS WORKS</h3>
-                    <p>Stainless steel is used in M&A Technology for making durable and corrosion-resistant equipment.
-                        It helps ensure the machinery lasts longer and can handle harsh environments.</p>
-                    <p>Our stainless steel fabrication services are ideal for applications requiring resistance to
-                        corrosion, heat, and chemicals, making them perfect for food processing equipment, medical
-                        devices, and architectural features.</p>
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php include 'includes/footer.php'; ?>
-
-    <?php include "includes/main.php"; ?>
+    <?php include "../includes/main.php"; ?>
 
 </body>
 
