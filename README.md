@@ -12,4 +12,6 @@ SteelSync is a web-based business management system integrating appointments, in
 
 - **Backend**
   - PHP 8.4+
+  - MySQL
+  - Object-Oriented Programming
 
