@@ -1,5 +1,14 @@
 <?php
-// Get the current page filename
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION["user"])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Ensure $current_page is defined
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
@@ -57,11 +66,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li>
-                <a href="/Admin/logout.php" <?php echo ($current_page == 'logout.php') ? 'id="active--link"' : ''; ?>>
-                    <span class="icon icon-8"><i class="fas fa-sign-out-alt"></i></span>
-                    <span class="sidebar--item">Logout</span>
-                </a>
-            </li>
+    <a href="/Admin/logout.php" <?php echo ($current_page == 'logout.php') ? 'id="active--link"' : ''; ?>>
+        <span class="icon icon-8"><i class="fas fa-sign-out-alt"></i></span>
+        <span class="sidebar--item">Logout</span>
+    </a>
+</li>
         </ul>
     </aside>
 </section>
