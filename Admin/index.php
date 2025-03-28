@@ -31,6 +31,7 @@ if (!isset($_SESSION["user"])) {
 
 
     <div class="main--content">
+        
     </div>
 
     <?php include "includes/script.php"; ?>
