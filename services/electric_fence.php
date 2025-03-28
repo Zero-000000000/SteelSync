@@ -330,8 +330,8 @@
                         <i class="fas fa-tools"></i>
                     </div>
                     <h3 class="feature-title">Expert Craftsmanship</h3>
-                    <p>Our skilled technicians bring years of experience to every project, delivering precision
-                        engineering and flawless execution.</p>
+                    <p>Our team consists of highly skilled professionals with extensive knowledge in home
+                        automation, home security, and fabrication, ensuring top-quality results.</p>
                 </div>
 
                 <div class="feature-card">
@@ -339,8 +339,8 @@
                         <i class="fas fa-cogs"></i>
                     </div>
                     <h3 class="feature-title">Custom Solutions</h3>
-                    <p>We tailor our services to meet your specific requirements, creating custom metal and stainless
-                        steel solutions for any industrial application.</p>
+                    <p>We prioritize personalized solutions, tailoring our services to meet your specific requirements, style, and
+                        budget.</p>
                 </div>
             </div>
         </div>

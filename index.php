@@ -16,6 +16,11 @@
         --primary-color: #ff6600;
 
         --border-color: #e0e0e0;
+        --secondary-color: #e55c00;
+        --accent-color: #ff9800;
+
+        --border-radius: 8px;
+        --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 
     }
 
@@ -477,6 +482,82 @@
         border-radius: 10px;
     }
 
+    .client-portfolio-banner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 1200px;
+        max-width: 2000px;
+        margin: 2rem auto;
+        padding: 0 15px;
+    }
+
+    .client-portfolio-banner img {
+
+        width: 1200px;
+        height: auto;
+        object-fit: contain;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+
+    .work-section {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        margin-bottom: 70px;
+    }
+
+    .work-image {
+        flex: 1;
+        max-width: 45%;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        position: relative;
+    }
+
+    .work-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .work-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .work-text {
+        flex: 1;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .work-text h3 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .work-text h3 i {
+        margin-right: 15px;
+        color: var(--accent-color);
+    }
+
+    .work-text p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+
+    .stainless-works {
+        flex-direction: row-reverse;
+    }
+
     /* Enhanced responsive tweaks */
     @media (max-width: 1200px) {
         .company-name {
@@ -656,6 +737,97 @@
             <div class="indicator"></div>
         </div>
     </div>
+
+    <div class="section-divider">
+        <span>CLIENT PORTFOLIO</span>
+    </div>
+
+    <div class="client-portfolio-banner">
+        <img src="/images/client.png" alt="Intellitech Systems Client Portfolio">
+    </div>
+
+    <section class="client">
+        <div class="container">
+
+
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+
+                </div>
+            </div>
+
+
+            <div class="work-section stainless-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+
+                </div>
+            </div>
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                </div>
+            </div>
+
+            <div class="work-section stainless-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+
+                </div>
+            </div>
+
+            <div class="work-section metal-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                </div>
+            </div>
+
+            <div class="work-section stainless-works">
+                <div class="work-image">
+                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                </div>
+                <div class="work-text">
+                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <p>ARCOM STEELE</p>
+                    <p>South Forbes Laguna</p>
+                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
