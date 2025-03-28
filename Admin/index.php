@@ -31,10 +31,6 @@ if (!isset($_SESSION["user"])) {
 
 
     <div class="main--content">
-        <div class="inner-body">
-            <h2>Welcome, <?php echo htmlspecialchars($_SESSION["user"]); ?>!</h2>
-        </div>
-
     </div>
 
     <?php include "includes/script.php"; ?>
