@@ -57,6 +57,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <span class="sidebar--item">Attendance</span>
                 </a>
             </li>
+            <li>
+                <a href="/Admin/pointofsale.php" <?php echo ($current_page == 'pointofsale.php') ? 'id="active--link"' : ''; ?>>
+                    <span class="icon icon-4"></span>
+                    <span class="sidebar--item">Point Of Sale</span>
+                </a>
+            </li>
+
         </ul>
         <ul class="sidebar--bottom-items">
             <li>

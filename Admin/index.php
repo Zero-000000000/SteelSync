@@ -10,6 +10,7 @@ if (!isset($_SESSION["user"])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,16 +21,23 @@ if (!isset($_SESSION["user"])) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="css.css/style.css" rel="stylesheet">
-  
+
 </head>
+
 <body>
     <?php include "includes/header.php"; ?>
     <?php include "includes/sidebar.php"; ?>
-    <div class="main--content"> 
+    <?php include "dashboard.php"; ?>
+
+
+    <div class="main--content">
+        <div class="inner-body">
+            <h2>Welcome, <?php echo htmlspecialchars($_SESSION["user"]); ?>!</h2>
+        </div>
 
     </div>
-    
+
     <?php include "includes/script.php"; ?>
 </body>
-</html>
 
+</html>
