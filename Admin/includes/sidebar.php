@@ -60,9 +60,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </ul>
         <ul class="sidebar--bottom-items">
             <li>
-                <a href="/Admin/settings.php" <?php echo ($current_page == 'settings.php') ? 'id="active--link"' : ''; ?>>
+                <a href="/Admin/account-manager.php" <?php echo ($current_page == 'account-manager.php') ? 'id="active--link"' : ''; ?>>
                     <span class="icon icon-7"><i class="fas fa-cog"></i></span>
-                    <span class="sidebar--item">Settings</span>
+                    <span class="sidebar--item">Account Manager</span>
                 </a>
             </li>
             <li>

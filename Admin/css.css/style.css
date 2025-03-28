@@ -4,6 +4,21 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
+.main--content {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    height: 100%;
+    width: calc(100% - 300px);
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f7f7f7;
+    transition: .3s;
+}
+
+.main--content.active {
+    width: calc(100% - 103px);
+}
 
 .header {
     height: 60px;
@@ -113,7 +128,8 @@ img {
     left: 0;
     height: calc(100vh - 60px);
     /* Height exactly matches available space */
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     background-color: #fff;
     padding: 30px 30px 20px 30px;
     /* Reduced bottom padding slightly */
