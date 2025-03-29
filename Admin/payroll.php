@@ -24,8 +24,6 @@ if (!isset($_SESSION["user"])) {
     <link href="css.css/style.css" rel="stylesheet">
 
     <style>
-      
-
         /* Payroll Header - Remains in place */
         .payroll-header {
             display: flex;

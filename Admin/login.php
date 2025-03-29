@@ -7,10 +7,10 @@ if (isset($_SESSION["user"])) {
     exit();
 }
 
-$host = "localhost"; 
-$dbname = "steelsync"; 
-$dbuser = "root";  
-$dbpass = "";      
+$host = "localhost";
+$dbname = "steelsync";
+$dbuser = "root";
+$dbpass = "";
 
 $conn = new mysqli($host, $dbuser, $dbpass, $dbname);
 
@@ -27,11 +27,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
-    
+
     if ($stmt->num_rows > 0) {
         $stmt->bind_result($hashed_password);
         $stmt->fetch();
-        
+
         if (md5($password) === $hashed_password) {
             $_SESSION["user"] = $username;
             header("Location: index.php");
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Invalid username or password";
     }
-    
+
     $stmt->close();
 }
 
@@ -51,6 +51,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,6 +59,7 @@ $conn->close();
     <link rel="stylesheet" href="css.css/login.css">
 
 </head>
+
 <body>
     <div class="login-container">
         <div class="logo">
@@ -75,10 +77,11 @@ $conn->close();
                 <img src="../images/key.png" alt="Key Icon" class="icon">
             </div>
             <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
-            
+
             <button type="submit">Login</button>
         </form>
         <a href="#" class="forgot-password">Forgot Password?</a>
     </div>
 </body>
+
 </html>

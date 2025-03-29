@@ -8,10 +8,10 @@ if (!isset($_SESSION["user"])) {
 }
 
 // Database connection
-$host = "localhost"; 
-$dbname = "steelsync"; 
-$dbuser = "root";  
-$dbpass = "";      
+$host = "localhost";
+$dbname = "steelsync";
+$dbuser = "root";
+$dbpass = "";
 
 $conn = new mysqli($host, $dbuser, $dbpass, $dbname);
 
@@ -32,263 +32,265 @@ if (!$users_result) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Manager</title>
-    
-   
+
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="css.css/style.css" rel="stylesheet">
     <style>
-:root {
-    --primary-color: #e81e6d;
-    --text-color: #333;
-    --background-color: #f4f4f4;
-    --white: #ffffff;
-}
+        :root {
+            --primary-color: #e81e6d;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+            --white: #ffffff;
+        }
 
 
-body {
-    background-color: var(--background-color);
-}
+        body {
+            background-color: var(--background-color);
+        }
 
 
-.account-manager-container {
-    background-color: var(--white);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 60px;
-    right: 0;
-    margin: 10px;
-    width: calc(100% - 320px);
-    padding: 20px;
-    overflow-y: auto;
-    
-    transition: .3s;
-}
+        .account-manager-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 60px;
+            right: 0;
+            margin: 10px;
+            width: calc(100% - 320px);
+            padding: 20px;
+            overflow-y: auto;
 
-.account-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+            transition: .3s;
+        }
 
-.account-header h1 {
-    font-size: 1.5rem;
-    color: var(--text-color);
-}
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+        .account-header h1 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
 
-.search-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.search-filter {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.search-input-wrapper {
-    position: relative;
-}
+        .search-filter {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
 
-.search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-}
+        .search-input-wrapper {
+            position: relative;
+        }
 
-.search-input {
-    padding: 8px 12px 8px 35px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 250px;
-    font-size: 0.9rem;
-}
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
 
-.add-account-btn {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+        .search-input {
+            padding: 8px 12px 8px 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 250px;
+            font-size: 0.9rem;
+        }
 
-.add-account-btn:hover {
-    background-color: #c11559;
-}
+        .add-account-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-.account-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        .add-account-btn:hover {
+            background-color: #c11559;
+        }
 
-.account-table thead {
-    background-color: #f8f9fa;
-}
+        .account-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-.account-table th,
-.account-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
+        .account-table thead {
+            background-color: #f8f9fa;
+        }
 
-.employee-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .account-table th,
+        .account-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
 
-.employee-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.action-icons {
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
 
-    gap: 10px;
-}
+        .action-icons {
 
-.action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #666;
-    transition: color 0.3s;
-}
+            gap: 10px;
+        }
 
-.action-btn:hover {
-    color: var(--primary-color);
-}
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
 
-.edit-btn i {
-    font-size: 1rem;
-}
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
 
-.delete-btn i {
-    font-size: 1rem;
-}
+        .edit-btn i {
+            font-size: 1rem;
+        }
 
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    align-items: center;
-    justify-content: center;
-}
+        .delete-btn i {
+            font-size: 1rem;
+        }
 
-.modal.show {
-    display: flex;
-}
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+        }
 
-.modal-content {
-    background-color: var(--white);
-    border-radius: 8px;
-    width: 100%;
-    max-width: 500px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
+        .modal.show {
+            display: flex;
+        }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-.modal-header h2 {
-    font-size: 1.2rem;
-    color: var(--text-color);
-}
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.close-btn {
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
+        .modal-header h2 {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
 
-.form-group {
-    margin-bottom: 15px;
-}
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
 
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
 
-.btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
-}
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
 
-.btn-cancel {
-    background-color: #f1f3f5;
-    color: var(--text-color);
-}
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
 
-.btn-save {
-    background-color: var(--primary-color);
-    color: var(--white);
-}
+        .btn-cancel {
+            background-color: #f1f3f5;
+            color: var(--text-color);
+        }
 
-.btn-save:hover {
-    background-color: #c11559;
-}
+        .btn-save {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-save:hover {
+            background-color: #c11559;
+        }
     </style>
 </head>
+
 <body>
     <?php include "includes/header.php"; ?>
     <?php include "includes/sidebar.php"; ?>
@@ -328,7 +330,7 @@ body {
                         <tr>
                             <td>
                                 <div class="employee-info">
-                                    
+
                                     <?php echo htmlspecialchars($user['employee_name'] ?? 'N/A'); ?>
                                 </div>
                             </td>
@@ -344,7 +346,9 @@ body {
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr><td colspan="3">No users found</td></tr>
+                    <tr>
+                        <td colspan="3">No users found</td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -387,4 +391,5 @@ body {
     </script>
     <?php include "includes/script.php"; ?>
 </body>
+
 </html>

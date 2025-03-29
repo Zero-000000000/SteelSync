@@ -16,40 +16,40 @@ if (!isset($_SESSION["user"])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intellitect System</title>
- 
+
     <link rel="stylesheet" href="assets/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="css.css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
- 
- * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
-.main--content {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    height: 100%;
-    width: calc(100% - 300px);
-    padding: 20px;
-    overflow-y: auto;
-    background-color: #f7f7f7;
-    transition: .3s;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
 
-.main--content.active {
-    width: calc(100% - 103px);
-}
-/**dito mo lagay yung css ng point of sale content yung css sa taas default yan format ng main--content wag mo aalisin*/
+        .main--content {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            height: 100%;
+            width: calc(100% - 300px);
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f7f7f7;
+            transition: .3s;
+        }
 
+        .main--content.active {
+            width: calc(100% - 103px);
+        }
+
+        /**dito mo lagay yung css ng point of sale content yung css sa taas default yan format ng main--content wag mo aalisin*/
     </style>
-</style>
+    </style>
 </head>
 
 <body>
@@ -58,12 +58,12 @@ if (!isset($_SESSION["user"])) {
 
 
     <div class="main--content">
-    <!-- dito mo ilagay yung point of sale ng appointment-->
+        <!-- dito mo ilagay yung point of sale ng appointment-->
     </div>
-    
-<script>
-    /**dito mo lagay yung js ng point of sale content */
-</script>
+
+    <script>
+        /**dito mo lagay yung js ng point of sale content */
+    </script>
     <?php include "includes/script.php"; ?>
 </body>
 

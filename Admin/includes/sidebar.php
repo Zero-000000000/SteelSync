@@ -69,8 +69,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <span class="sidebar--item">Attendance</span>
                 </a>
             </li>
-      
-          
+
+
 
         </ul>
         <ul class="sidebar--bottom-items">
@@ -81,11 +81,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li>
-    <a href="/Admin/logout.php" <?php echo ($current_page == 'logout.php') ? 'id="active--link"' : ''; ?>>
-        <span class="icon icon-8"><i class="fas fa-sign-out-alt"></i></span>
-        <span class="sidebar--item">Logout</span>
-    </a>
-</li>
+                <a href="/Admin/logout.php" <?php echo ($current_page == 'logout.php') ? 'id="active--link"' : ''; ?>>
+                    <span class="icon icon-8"><i class="fas fa-sign-out-alt"></i></span>
+                    <span class="sidebar--item">Logout</span>
+                </a>
+            </li>
         </ul>
     </aside>
 </section>

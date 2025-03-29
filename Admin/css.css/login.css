@@ -7,6 +7,7 @@ body {
     height: 100vh;
     margin: 0;
 }
+
 .login-container {
     background: white;
     padding: 20px;
@@ -15,22 +16,27 @@ body {
     text-align: center;
     width: 350px;
 }
+
 .logo img {
     width: 150px;
 }
+
 h2 {
     margin: 10px 0;
 }
+
 p {
     font-size: 14px;
     color: gray;
 }
+
 .input-container {
     position: relative;
     margin: 10px 0;
     display: flex;
     align-items: center;
 }
+
 .input-container input {
     width: 100%;
     padding: 12px;
@@ -40,6 +46,7 @@ p {
     text-align: left;
     box-sizing: border-box;
 }
+
 .input-container .icon {
     position: absolute;
     right: 15px;
@@ -47,6 +54,7 @@ p {
     height: 20px;
     opacity: 0.5;
 }
+
 button {
     width: 100%;
     padding: 12px;
@@ -58,6 +66,7 @@ button {
     font-size: 16px;
     border: 1px solid #FF8400;
 }
+
 .forgot-password {
     display: block;
     margin-top: 10px;
@@ -65,6 +74,7 @@ button {
     color: #FF8400;
     text-decoration: none;
 }
+
 .error {
     color: red;
     font-size: 14px;
