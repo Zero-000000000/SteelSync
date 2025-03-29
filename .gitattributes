@@ -1,0 +1,4 @@
+.github/fsharp-custom-action/** -linguist-vendored
+vendor/** linguist-vendored
+node_modules/** linguist-vendored
+public/build/** linguist-vendored

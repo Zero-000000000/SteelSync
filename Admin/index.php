@@ -222,7 +222,107 @@ if (!isset($_SESSION["user"])) {
     </div>
     </div>
 
+    <script>
+        var ctx1 = document.getElementById('revenueChart').getContext('2d');
+        var gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
+        var revenueChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [1000, 1200, 900, 1400, 1300, 1500],
+                    borderColor: 'rgba(0, 0, 0, 0.7)',
+                    borderWidth: 2,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleFont: {
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 8
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#888'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#888'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            borderDash: [4, 4]
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+        var ctx2 = document.getElementById('salesChart').getContext('2d');
+
+        var salesChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Kupal', 'Kulane', 'Kulugo'],
+                datasets: [{
+                    data: [30, 50, 20],
+                    backgroundColor: ['#3498db', '#2ecc71', '#f39c12'],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '50%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            color: '#333'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.7)',
+                        bodyFont: {
+                            size: 14
+                        },
+                        padding: 10
+                    }
+                }
+            }
+        });
+    </script>
     <?php include "includes/script.php"; ?>
     <script>
         document.addEventListener("DOMContentLoaded", function() {

@@ -288,6 +288,10 @@ a {
     display: block;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 /* responsive starts here */
 @media screen and (max-width:1350px) {
 
