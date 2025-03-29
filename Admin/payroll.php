@@ -24,22 +24,7 @@ if (!isset($_SESSION["user"])) {
     <link href="css.css/style.css" rel="stylesheet">
 
     <style>
-        /* Main Content Styles */
-        .main--content {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            height: 100%;
-            width: calc(100% - 300px);
-            padding: 20px;
-            overflow-y: auto;
-            background-color: #f7f7f7;
-            transition: .3s;
-        }
-
-        .main--content.active {
-            width: calc(100% - 103px);
-        }
+      
 
         /* Payroll Header - Remains in place */
         .payroll-header {

@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Insert a default user (Replace 'yourpassword' with your actual password)
-INSERT INTO users (username, password) VALUES ('user mo d2', MD5('password mo d2'));
+INSERT INTO users (username, password) VALUES ('jen', MD5('jen'));

@@ -46,7 +46,7 @@ if (!isset($_SESSION["user"])) {
 .main--content.active {
     width: calc(100% - 103px);
 }
-/**dito mo lagay yung css ng point of sale content yung css sa taas default yan format ng main--content wag mo aalisin*/
+/**dito mo lagay yung css ng fix assets content yung css sa taas default yan format ng main--content wag mo aalisin*/
 
     </style>
 </style>
@@ -58,11 +58,11 @@ if (!isset($_SESSION["user"])) {
 
 
     <div class="main--content">
-    <!-- dito mo ilagay yung point of sale ng appointment-->
+    <!-- dito mo ilagay yung fix asseta ng appointment-->
     </div>
     
 <script>
-    /**dito mo lagay yung js ng point of sale content */
+    /**dito mo lagay yung js ng fix assets content */
 </script>
     <?php include "includes/script.php"; ?>
 </body>
