@@ -303,6 +303,10 @@
         padding: 50px 0;
     }
 
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
     /* Responsive styles */
     @media (max-width: 991px) {
 
