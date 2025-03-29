@@ -1,7 +1,7 @@
 <section class="header">
     <div class="logo">
         <i class="ri-menu-line icon icon-0 menu"></i>
-        <img src="../../images/logo.png" alt="Intellitech Systems" class="logo-image">
+        <img src="../images/logo.png" alt="Intellitech Systems" class="logo-image">
         <h3>Intellitech Systems</h3>
     </div>
     <div class="header-right">
@@ -10,7 +10,7 @@
                 <i class="ri-notification-2-line"></i>
             </div>
             <div class="profile">
-                <img src="../../images/profile.png" alt="profile pic">
+                <img src="../images/profile.png" alt="profile pic">
             </div>
         </div>
     </div>
