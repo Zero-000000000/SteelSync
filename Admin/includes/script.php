@@ -1,12 +1,19 @@
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    let dropdownButtons = document.querySelectorAll(".dropdown-btn");
+    let menu = document.querySelector('.menu')
+    let sidebar = document.querySelector('.sidebar')
+    let mainContent = document.querySelector('.main--content')
+    menu.onclick = function() {
+        sidebar.classList.toggle('active')
+        mainContent.classList.toggle('active')
+    }
 
-    dropdownButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
+    // Add this to your main.js file or include it in a <script> tag in your HTML
+    document.addEventListener("DOMContentLoaded", function() {
+        const dropdownBtn = document.querySelector(".dropdown-btn");
+
+        dropdownBtn.addEventListener("click", function() {
             this.classList.toggle("active");
-            let subMenu = this.nextElementSibling;
-
+            const subMenu = this.nextElementSibling;
             if (subMenu.style.display === "block") {
                 subMenu.style.display = "none";
             } else {
@@ -14,5 +21,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-});
 </script>
