@@ -324,6 +324,120 @@ if (!isset($_SESSION["user"])) {
         });
     </script>
     <?php include "includes/script.php"; ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx1 = document.getElementById('revenueChart').getContext('2d');
+
+            // Create gradient for smooth shading
+            var gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.2)'); // Darker at the top
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade at the bottom
+
+            var revenueChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [1000, 1200, 900, 1400, 1300, 1500],
+                        borderColor: 'rgba(0, 0, 0, 0.7)', // Dark line color
+                        borderWidth: 2,
+                        backgroundColor: gradient, // Apply gradient fill
+                        fill: true, // Enable area fill
+                        tension: 0.4, // Smooth curve
+                        pointRadius: 0, // Hide points
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }, // Hide legend
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: {
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            padding: 8
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#888'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#888'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)', // Light dashed grid lines
+                                borderDash: [4, 4]
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+
+
+            var ctx2 = document.getElementById('salesChart').getContext('2d');
+
+            var salesChart1 = new Chart(ctx2, {
+                type: 'doughnut', // Keeps the modern doughnut style
+                data: {
+                    labels: ['Product A', 'Product B', 'Product C'],
+                    datasets: [{
+                        data: [40, 30, 30], // Example data
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'], // Custom colors
+                        borderWidth: 3,
+                        borderColor: '#fff', // White border for a clean look
+                        hoverBorderColor: '#ccc'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%', // Bigger center hole for a modern look
+                    plugins: {
+                        legend: {
+                            position: 'bottom', // Move legend below
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#444'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            bodyFont: {
+                                size: 14
+                            },
+                            padding: 10,
+                            cornerRadius: 5
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 
 </html>
