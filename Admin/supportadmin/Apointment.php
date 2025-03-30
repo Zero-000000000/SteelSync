@@ -3,13 +3,12 @@ session_start();
 
 // Redirect to login if no user is logged in
 if (!isset($_SESSION["user"])) {
-    header("Location: /steelsync/admin/login.php");
+    header("Location: ../login.php");
     exit();
 }
 // Verify the user has the correct role
-if ($_SESSION["role"] !== 'super_admin') {
+if ($_SESSION["role"] !== 'support_admin') {
     // Redirect to appropriate page or show error
-
     header("Location: /steelsync/admin/login.php");
     exit();
 }
@@ -54,7 +53,7 @@ if ($_SESSION["role"] !== 'super_admin') {
             width: calc(100% - 103px);
         }
 
-        /**dito mo lagay yung css ng fix assets content yung css sa taas default yan format ng main--content wag mo aalisin*/
+        /**dito mo lagay yung css ng appointment content yung css sa taas default yan format ng main--content wag mo aalisin*/
     </style>
     </style>
 </head>
@@ -65,11 +64,11 @@ if ($_SESSION["role"] !== 'super_admin') {
 
 
     <div class="main--content">
-        <!-- dito mo ilagay yung fix asseta ng appointment-->
+        <!-- dito mo ilagay yung content ng appointment-->
     </div>
 
     <script>
-        /**dito mo lagay yung js ng fix assets content */
+        /**dito mo lagay yung js ng appointment content */
     </script>
     <?php include "includes/script.php"; ?>
 </body>

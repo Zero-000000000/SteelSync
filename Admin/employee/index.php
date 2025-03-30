@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+// Redirect to login if no user is logged in
+if (!isset($_SESSION["user"])) {
+    header("Location: /steelsync/admin/login.php");
+    exit();
+}
+
+// Verify the user has the correct role
+if ($_SESSION["role"] !== 'employee') {
+    // Redirect to appropriate page or show error
+    header("Location: /steelsync/admin/login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -110,6 +126,45 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
+            position: relative;
+        }
+
+        /* Dropdown menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            color: var(--secondary-grey);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-grey);
+            color: var(--primary-orange);
+        }
+
+        .dropdown-item i {
+            margin-right: 0.5rem;
+            width: 1.25rem;
+            text-align: center;
         }
 
         /* Main content styles */
@@ -194,13 +249,15 @@
         .current-date {
             color: var(--secondary-grey);
             font-size: 1rem;
-            margin-bottom: 0.25rem;
+            margin-bottom: 1.5rem;
         }
 
-        .shift-info {
-            font-size: 0.875rem;
-            color: var(--secondary-grey);
-            margin-bottom: 2rem;
+        .session-timer {
+            font-size: 1.25rem;
+            color: var(--success-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: none;
         }
 
         .action-buttons {
@@ -315,6 +372,18 @@
             margin-left: 0.5rem;
         }
 
+        .high-accuracy {
+            color: var(--success-green);
+        }
+
+        .medium-accuracy {
+            color: var(--primary-orange);
+        }
+
+        .low-accuracy {
+            color: var(--error-red);
+        }
+
         .map-container {
             width: 100%;
             height: 150px;
@@ -339,6 +408,12 @@
         .map-placeholder i {
             font-size: 2rem;
             color: var(--border-grey);
+        }
+
+        .accuracy-info {
+            font-size: 0.75rem;
+            color: var(--secondary-grey);
+            margin-top: 0.25rem;
         }
 
         /* History card styles */
@@ -639,123 +714,6 @@
             background-color: var(--error-red);
         }
 
-        /* Settings modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background-color: white;
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 400px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            transform: translateY(20px);
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-grey);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary-grey);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--secondary-grey);
-            font-size: 1.25rem;
-            cursor: pointer;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .settings-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .settings-label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--primary-grey);
-        }
-
-        .settings-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-grey);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .settings-input:focus {
-            outline: none;
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(237, 137, 54, 0.1);
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border-grey);
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-
-        .modal-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
-
-        .modal-btn-secondary {
-            background-color: var(--bg-grey);
-            color: var(--secondary-grey);
-        }
-
-        .modal-btn-primary {
-            background-color: var(--primary-orange);
-            color: white;
-        }
-
         /* Responsive */
         @media (max-width: 480px) {
 
@@ -785,14 +743,20 @@
         <header class="header">
             <div class="logo">
                 <i class="fas fa-clock logo-icon"></i>
-                WorkClock Pro
+                Intellitect System
             </div>
             <div class="user-menu">
                 <div class="notification-icon" id="notification-icon">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge">2</span>
                 </div>
-                <div class="avatar" id="settings-btn">EM</div>
+                <div class="avatar" id="avatar-btn">EM</div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <a href="../logout.php" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
             </div>
         </header>
 
@@ -805,7 +769,7 @@
 
                 <div class="current-time" id="current-time">--:--</div>
                 <div class="current-date" id="current-date">--</div>
-                <div class="shift-info" id="shift-info">Shift: 08:00 - 17:00</div>
+                <div class="session-timer" id="session-timer"></div>
 
                 <div class="action-buttons">
                     <button class="btn btn-time-in" id="time-in-btn">
@@ -878,7 +842,7 @@
         </main>
 
         <footer class="footer">
-            © 2025 <span>WorkClock Pro</span> | Employee Time Tracking
+            © 2025 <span>Intellitect System</span> | Employee Attendance Tracking
             <div class="api-status" id="api-status">
                 <div class="api-status-indicator disconnected" id="api-indicator"></div>
                 <span id="api-status-text">API not connected</span>
@@ -887,60 +851,25 @@
 
         <!-- Toast container -->
         <div class="toast-container" id="toast-container"></div>
-
-        <!-- Settings Modal -->
-        <div class="modal-overlay" id="settings-modal">
-            <div class="modal">
-                <div class="modal-header">
-                    <div class="modal-title">API Settings</div>
-                    <button class="modal-close" id="modal-close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="settings-section">
-                        <div class="settings-label">API URL</div>
-                        <input type="text" class="settings-input" id="api-url"
-                            placeholder="https://your-api-endpoint.com/api">
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-label">API Key</div>
-                        <input type="password" class="settings-input" id="api-key" placeholder="Your API key">
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-label">Company ID</div>
-                        <input type="text" class="settings-input" id="company-id" placeholder="Your company ID">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="modal-btn modal-btn-secondary" id="modal-cancel">Cancel</button>
-                    <button class="modal-btn modal-btn-primary" id="modal-save">Save Changes</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
-        // App Configuration
         const config = {
-            apiUrl: localStorage.getItem('apiUrl') || '',
-            apiKey: localStorage.getItem('apiKey') || '',
-            companyId: localStorage.getItem('companyId') || '',
+            apiUrl: 'http://localhost/workclock/api',
+            apiKey: 'local_test_key',
+            companyId: '1',
             employee: {
                 id: 'EM1001',
                 name: 'John Doe',
                 initials: 'JD',
-                department: 'Development',
-                shift: {
-                    start: '08:00',
-                    end: '17:00'
-                }
+                department: 'Development'
             },
-            refreshRate: 60000, // 1 minute
-            locationRefreshRate: 300000, // 5 minutes
+            refreshRate: 60000,
+            locationRefreshRate: 300000,
             maxRetries: 3,
             toastDuration: 3000,
-            debug: true
+            debug: true,
+            minLocationAccuracy: 50 // meters - minimum required accuracy for check-in/out
         };
 
         // State Management
@@ -958,19 +887,16 @@
             sessionHours: 0,
             weeklyHours: 0,
             isProcessing: false,
-            shift: {
-                start: config.employee.shift.start,
-                end: config.employee.shift.end
-            }
+            timerInterval: null
         };
 
-        // Continue the DOM Elements section that was cut off
+        // DOM Elements
         const elements = {
             timeStatusCard: document.getElementById('time-status-card'),
             statusBadge: document.getElementById('status-badge'),
             currentTimeEl: document.getElementById('current-time'),
             currentDateEl: document.getElementById('current-date'),
-            shiftInfoEl: document.getElementById('shift-info'),
+            sessionTimerEl: document.getElementById('session-timer'),
             timeInBtn: document.getElementById('time-in-btn'),
             timeOutBtn: document.getElementById('time-out-btn'),
             locationText: document.getElementById('location-text'),
@@ -987,21 +913,14 @@
             apiIndicator: document.getElementById('api-indicator'),
             apiStatusText: document.getElementById('api-status-text'),
             toastContainer: document.getElementById('toast-container'),
-            settingsBtn: document.getElementById('settings-btn'),
-            settingsModal: document.getElementById('settings-modal'),
-            modalClose: document.getElementById('modal-close'),
-            modalCancel: document.getElementById('modal-cancel'),
-            modalSave: document.getElementById('modal-save'),
-            apiUrlInput: document.getElementById('api-url'),
-            apiKeyInput: document.getElementById('api-key'),
-            companyIdInput: document.getElementById('company-id'),
+            avatarBtn: document.getElementById('avatar-btn'),
+            dropdownMenu: document.getElementById('dropdown-menu'),
             notificationIcon: document.getElementById('notification-icon'),
             viewReports: document.getElementById('view-reports')
         };
 
         // Utility Functions
         const utils = {
-            // Format time in 12-hour format with AM/PM
             formatTime: (date) => {
                 return date.toLocaleTimeString('en-US', {
                     hour: '2-digit',
@@ -1010,7 +929,6 @@
                 });
             },
 
-            // Format date to display day of week, month day, year
             formatDate: (date) => {
                 return date.toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -1020,13 +938,11 @@
                 });
             },
 
-            // Calculate hours between two timestamps
             calculateHours: (startTime, endTime) => {
-                const diff = Math.abs(endTime - startTime) / 36e5; // Convert ms to hours
+                const diff = Math.abs(endTime - startTime) / 36e5;
                 return parseFloat(diff.toFixed(1));
             },
 
-            // Store data in local storage with expiration
             storeWithExpiry: (key, value, ttl) => {
                 const now = new Date();
                 const item = {
@@ -1036,7 +952,6 @@
                 localStorage.setItem(key, JSON.stringify(item));
             },
 
-            // Get data from local storage and check expiration
             getWithExpiry: (key) => {
                 const itemStr = localStorage.getItem(key);
                 if (!itemStr) return null;
@@ -1050,17 +965,14 @@
                 return item.value;
             },
 
-            // Format address from geolocation
             formatAddress: (address) => {
                 if (!address) return 'Unknown location';
-                // Return just street and city for display purposes
                 return `${address.street || ''}, ${address.city || ''}`;
             },
 
-            // Throttle function to limit execution frequency
             throttle: (func, limit) => {
                 let inThrottle;
-                return function () {
+                return function() {
                     const args = arguments;
                     const context = this;
                     if (!inThrottle) {
@@ -1071,15 +983,35 @@
                 };
             },
 
-            // Debounce function to prevent excessive calls
             debounce: (func, delay) => {
                 let debounceTimer;
-                return function () {
+                return function() {
                     const context = this;
                     const args = arguments;
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(() => func.apply(context, args), delay);
                 };
+            },
+
+            calculateDistance: (lat1, lon1, lat2, lon2) => {
+                const R = 6371; // Earth's radius in km
+                const dLat = (lat2 - lat1) * (Math.PI / 180);
+                const dLon = (lon2 - lon1) * (Math.PI / 180);
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c; // Distance in km
+            },
+
+            formatDuration: (milliseconds) => {
+                const totalSeconds = Math.floor(milliseconds / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
         };
 
@@ -1089,35 +1021,11 @@
             apiKey: config.apiKey,
             companyId: config.companyId,
 
-            // Initialize the API service
-            init: function () {
-                this.baseUrl = config.apiUrl;
-                this.apiKey = config.apiKey;
-                this.companyId = config.companyId;
+            init: function() {
                 return this.testConnection();
             },
 
-            // Set API configuration
-            setConfig: function (url, key, companyId) {
-                this.baseUrl = url;
-                this.apiKey = key;
-                this.companyId = companyId;
-
-                // Update localStorage
-                localStorage.setItem('apiUrl', url);
-                localStorage.setItem('apiKey', key);
-                localStorage.setItem('companyId', companyId);
-
-                // Update config
-                config.apiUrl = url;
-                config.apiKey = key;
-                config.companyId = companyId;
-
-                return this.testConnection();
-            },
-
-            // Make API requests with error handling and retry logic
-            request: async function (endpoint, method = 'GET', data = null) {
+            request: async function(endpoint, method = 'GET', data = null) {
                 if (!this.baseUrl || !this.apiKey) {
                     throw new Error('API not configured. Please check settings.');
                 }
@@ -1140,11 +1048,10 @@
                 try {
                     const response = await fetch(url, options);
 
-                    // Handle rate limiting
                     if (response.status === 429) {
                         const retryAfter = response.headers.get('Retry-After') || 5;
                         await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-                        return this.request(endpoint, method, data); // Retry the request
+                        return this.request(endpoint, method, data);
                     }
 
                     if (!response.ok) {
@@ -1160,16 +1067,14 @@
                     appState.connectionRetries++;
 
                     if (appState.connectionRetries <= config.maxRetries) {
-                        // Exponential backoff for retries
                         const backoffTime = Math.pow(2, appState.connectionRetries) * 1000;
                         await new Promise(resolve => setTimeout(resolve, backoffTime));
-                        return this.request(endpoint, method, data); // Retry
+                        return this.request(endpoint, method, data);
                     }
 
                     appState.apiConnected = false;
                     uiController.updateApiStatus(false);
 
-                    // If offline, queue the request for later
                     if (method !== 'GET' && data) {
                         this.queueOfflineRequest(endpoint, method, data);
                     }
@@ -1178,8 +1083,7 @@
                 }
             },
 
-            // Test API connection
-            testConnection: async function () {
+            testConnection: async function() {
                 try {
                     await this.request('status');
                     appState.apiConnected = true;
@@ -1193,8 +1097,7 @@
                 }
             },
 
-            // Queue requests when offline
-            queueOfflineRequest: function (endpoint, method, data) {
+            queueOfflineRequest: function(endpoint, method, data) {
                 appState.offlineQueue.push({
                     endpoint,
                     method,
@@ -1205,8 +1108,7 @@
                 uiController.showToast('Request Queued', 'This action will be processed when connection is restored.', 'info');
             },
 
-            // Process offline queue when connection is restored
-            processOfflineQueue: async function () {
+            processOfflineQueue: async function() {
                 if (appState.offlineQueue.length === 0) return;
 
                 const queue = [...appState.offlineQueue];
@@ -1220,7 +1122,6 @@
                         await this.request(item.endpoint, item.method, item.data);
                         successCount++;
                     } catch (error) {
-                        // Re-queue failed request
                         this.queueOfflineRequest(item.endpoint, item.method, item.data);
                     }
                 }
@@ -1232,13 +1133,11 @@
                         'success'
                     );
 
-                    // Refresh data after sync
                     timeController.fetchHistory();
                 }
             },
 
-            // Employee time check-in
-            checkIn: async function (location) {
+            checkIn: async function(location) {
                 return this.request('time/check-in', 'POST', {
                     employeeId: config.employee.id,
                     timestamp: new Date().toISOString(),
@@ -1246,8 +1145,7 @@
                 });
             },
 
-            // Employee time check-out
-            checkOut: async function (location) {
+            checkOut: async function(location) {
                 return this.request('time/check-out', 'POST', {
                     employeeId: config.employee.id,
                     timestamp: new Date().toISOString(),
@@ -1255,19 +1153,15 @@
                 });
             },
 
-            // Get employee time history
-            getTimeHistory: async function (period = 'today') {
+            getTimeHistory: async function(period = 'today') {
                 return this.request(`time/history/${config.employee.id}?period=${period}`);
             },
 
-            // Get employee time statistics
-            getTimeStats: async function () {
+            getTimeStats: async function() {
                 return this.request(`time/stats/${config.employee.id}`);
             },
 
-            // Reverse geocode coordinates to address
-            getAddressFromCoords: async function (lat, lng) {
-                // Use a cached result if available (1 day TTL)
+            getAddressFromCoords: async function(lat, lng) {
                 const cacheKey = `geocode_${lat.toFixed(4)}_${lng.toFixed(4)}`;
                 const cachedAddress = utils.getWithExpiry(cacheKey);
 
@@ -1277,10 +1171,7 @@
 
                 try {
                     const result = await this.request(`geocode?lat=${lat}&lng=${lng}`);
-
-                    // Cache the result for 1 day
                     utils.storeWithExpiry(cacheKey, result, 24 * 60 * 60 * 1000);
-
                     return result;
                 } catch (error) {
                     console.error('Geocoding error:', error);
@@ -1293,19 +1184,16 @@
         const timeController = {
             clockInterval: null,
 
-            // Initialize time controller
-            init: function () {
+            init: function() {
                 this.updateClock();
                 this.clockInterval = setInterval(this.updateClock.bind(this), 1000);
                 this.fetchStatus();
                 this.fetchHistory();
                 this.fetchStats();
 
-                // Set event listeners
                 elements.timeInBtn.addEventListener('click', this.handleTimeIn.bind(this));
                 elements.timeOutBtn.addEventListener('click', this.handleTimeOut.bind(this));
 
-                // Set history tab listeners
                 elements.historyTabs.forEach(tab => {
                     tab.addEventListener('click', () => {
                         this.changeHistoryTab(tab.getAttribute('data-tab'));
@@ -1313,15 +1201,30 @@
                 });
             },
 
-            // Update clock display
-            updateClock: function () {
+            updateClock: function() {
                 const now = new Date();
                 elements.currentTimeEl.textContent = utils.formatTime(now);
                 elements.currentDateEl.textContent = utils.formatDate(now);
+
+                // Update session timer if checked in
+                if (appState.isCheckedIn && appState.lastCheckin) {
+                    this.updateSessionTimer();
+                }
             },
 
-            // Fetch user's current check-in status
-            fetchStatus: async function () {
+            updateSessionTimer: function() {
+                if (!appState.isCheckedIn || !appState.lastCheckin) {
+                    elements.sessionTimerEl.style.display = 'none';
+                    return;
+                }
+
+                const now = new Date();
+                const duration = now - appState.lastCheckin;
+                elements.sessionTimerEl.textContent = utils.formatDuration(duration);
+                elements.sessionTimerEl.style.display = 'block';
+            },
+
+            fetchStatus: async function() {
                 try {
                     if (!appState.apiConnected) return;
 
@@ -1331,18 +1234,21 @@
                         appState.isCheckedIn = true;
                         appState.lastCheckin = new Date(statusData.lastCheckinTime);
                         this.updateUIForCheckedIn();
+                        locationController.startWatchingPosition();
+                        locationController.startAccuracyMonitor();
                     } else {
                         appState.isCheckedIn = false;
                         appState.lastCheckin = null;
                         this.updateUIForCheckedOut();
+                        locationController.stopWatchingPosition();
+                        locationController.stopAccuracyMonitor();
                     }
                 } catch (error) {
                     console.error('Error fetching status:', error);
                 }
             },
 
-            // Fetch time history
-            fetchHistory: async function () {
+            fetchHistory: async function() {
                 try {
                     if (!appState.apiConnected) return;
 
@@ -1356,8 +1262,7 @@
                 }
             },
 
-            // Fetch time statistics
-            fetchStats: async function () {
+            fetchStats: async function() {
                 try {
                     if (!appState.apiConnected) return;
 
@@ -1373,22 +1278,25 @@
                 }
             },
 
-            // Handle time in button click
-            handleTimeIn: async function () {
+            handleTimeIn: async function() {
                 if (appState.isProcessing) return;
 
                 try {
                     appState.isProcessing = true;
                     uiController.setButtonLoading(elements.timeInBtn, true);
 
-                    // Get current location
                     const location = await locationController.getCurrentPosition();
 
                     if (!location) {
                         throw new Error('Unable to determine your location. Please try again.');
                     }
 
-                    // Make API call to check in
+                    // Check location accuracy
+                    if (location.coords.accuracy > config.minLocationAccuracy) {
+                        throw new Error(`Location accuracy is too low (${Math.round(location.coords.accuracy)}m). 
+                            Please move to an area with better GPS signal.`);
+                    }
+
                     await apiService.checkIn({
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
@@ -1401,6 +1309,8 @@
 
                     this.updateUIForCheckedIn();
                     this.fetchHistory();
+                    locationController.startWatchingPosition();
+                    locationController.startAccuracyMonitor();
 
                     uiController.showToast('Checked In', 'You have successfully checked in.', 'success');
                 } catch (error) {
@@ -1412,28 +1322,30 @@
                 }
             },
 
-            // Handle time out button click
-            handleTimeOut: async function () {
+            handleTimeOut: async function() {
                 if (appState.isProcessing) return;
 
                 try {
                     appState.isProcessing = true;
                     uiController.setButtonLoading(elements.timeOutBtn, true);
 
-                    // Get current location
                     const location = await locationController.getCurrentPosition();
 
                     if (!location) {
                         throw new Error('Unable to determine your location. Please try again.');
                     }
 
-                    // Calculate session hours
+                    // Check location accuracy
+                    if (location.coords.accuracy > config.minLocationAccuracy) {
+                        throw new Error(`Location accuracy is too low (${Math.round(location.coords.accuracy)}m). 
+                            Please move to an area with better GPS signal.`);
+                    }
+
                     let sessionHours = 0;
                     if (appState.lastCheckin) {
                         sessionHours = utils.calculateHours(appState.lastCheckin, new Date());
                     }
 
-                    // Make API call to check out
                     await apiService.checkOut({
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
@@ -1448,6 +1360,8 @@
                     this.updateUIForCheckedOut();
                     this.fetchHistory();
                     this.fetchStats();
+                    locationController.stopWatchingPosition();
+                    locationController.stopAccuracyMonitor();
 
                     uiController.showToast('Checked Out', `You worked ${sessionHours.toFixed(1)} hours this session.`, 'success');
                 } catch (error) {
@@ -1459,8 +1373,7 @@
                 }
             },
 
-            // Update UI for checked in state
-            updateUIForCheckedIn: function () {
+            updateUIForCheckedIn: function() {
                 elements.timeStatusCard.classList.remove('checked-out');
                 elements.timeStatusCard.classList.add('checked-in');
 
@@ -1471,14 +1384,12 @@
                 elements.timeInBtn.disabled = true;
                 elements.timeOutBtn.disabled = false;
 
-                // Calculate and show running time if checked in
-                if (appState.lastCheckin) {
-                    this.startRunningTime();
-                }
+                // Show and start updating the session timer
+                elements.sessionTimerEl.style.display = 'block';
+                this.updateSessionTimer();
             },
 
-            // Update UI for checked out state
-            updateUIForCheckedOut: function () {
+            updateUIForCheckedOut: function() {
                 elements.timeStatusCard.classList.remove('checked-in');
                 elements.timeStatusCard.classList.add('checked-out');
 
@@ -1489,47 +1400,13 @@
                 elements.timeInBtn.disabled = false;
                 elements.timeOutBtn.disabled = true;
 
-                this.stopRunningTime();
+                // Hide the session timer
+                elements.sessionTimerEl.style.display = 'none';
             },
 
-            // Start running time counter
-            startRunningTime: function () {
-                this.stopRunningTime();
-
-                this.runningTimeInterval = setInterval(() => {
-                    const now = new Date();
-                    const diff = now - appState.lastCheckin;
-                    const hours = Math.floor(diff / 3600000);
-                    const minutes = Math.floor((diff % 3600000) / 60000);
-
-                    // Update shift info with running time
-                    elements.shiftInfoEl.textContent = `Current session: ${hours}h ${minutes}m`;
-                }, 30000); // Update every 30 seconds
-
-                // Initial update
-                const now = new Date();
-                const diff = now - appState.lastCheckin;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                elements.shiftInfoEl.textContent = `Current session: ${hours}h ${minutes}m`;
-            },
-
-            // Stop running time counter
-            stopRunningTime: function () {
-                if (this.runningTimeInterval) {
-                    clearInterval(this.runningTimeInterval);
-                    this.runningTimeInterval = null;
-                }
-
-                // Reset shift info
-                elements.shiftInfoEl.textContent = `Shift: ${config.employee.shift.start} - ${config.employee.shift.end}`;
-            },
-
-            // Change history tab
-            changeHistoryTab: function (tabName) {
+            changeHistoryTab: function(tabName) {
                 appState.activeTab = tabName;
 
-                // Update tab UI
                 elements.historyTabs.forEach(tab => {
                     if (tab.getAttribute('data-tab') === tabName) {
                         tab.classList.add('active');
@@ -1538,15 +1415,12 @@
                     }
                 });
 
-                // Fetch and render new data
                 this.fetchHistory();
             },
 
-            // Render history
-            renderHistory: function () {
+            renderHistory: function() {
                 const historyList = elements.historyList;
 
-                // Clear current list
                 while (historyList.firstChild) {
                     historyList.removeChild(historyList.firstChild);
                 }
@@ -1556,15 +1430,12 @@
                     return;
                 }
 
-                // Hide empty message
                 elements.emptyHistory.remove();
 
-                // Sort history by time (newest first)
                 const sortedHistory = [...appState.history].sort((a, b) => {
                     return new Date(b.timestamp) - new Date(a.timestamp);
                 });
 
-                // Create and append history items
                 sortedHistory.forEach(entry => {
                     const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
@@ -1577,18 +1448,18 @@
                     });
 
                     historyItem.innerHTML = `
-                <div class="history-info">
-                    <div class="history-time">
-                        ${formattedTime}
-                        <span class="history-date">${formattedDate}</span>
-                    </div>
-                    <div class="history-location">${entry.location.address || 'Unknown location'}</div>
-                </div>
-                <div class="history-type ${entry.type.toLowerCase()}">
-                    <i class="fas fa-${entry.type === 'IN' ? 'sign-in-alt' : 'sign-out-alt'}"></i>
-                    ${entry.type}
-                </div>
-            `;
+                        <div class="history-info">
+                            <div class="history-time">
+                                ${formattedTime}
+                                <span class="history-date">${formattedDate}</span>
+                            </div>
+                            <div class="history-location">${entry.location.address || 'Unknown location'}</div>
+                        </div>
+                        <div class="history-type ${entry.type.toLowerCase()}">
+                            <i class="fas fa-${entry.type === 'IN' ? 'sign-in-alt' : 'sign-out-alt'}"></i>
+                            ${entry.type}
+                        </div>
+                    `;
 
                     historyList.appendChild(historyItem);
                 });
@@ -1598,17 +1469,18 @@
         // Location Controller
         const locationController = {
             watchId: null,
+            accuracyInterval: null,
 
-            // Initialize location controller
-            init: function () {
+            init: function() {
                 this.checkLocationPermission();
                 elements.refreshLocation.addEventListener('click', this.updateLocation.bind(this));
             },
 
-            // Check if location permission is granted
-            checkLocationPermission: async function () {
+            checkLocationPermission: async function() {
                 try {
-                    const result = await navigator.permissions.query({ name: 'geolocation' });
+                    const result = await navigator.permissions.query({
+                        name: 'geolocation'
+                    });
 
                     if (result.state === 'granted') {
                         this.updateLocation();
@@ -1619,7 +1491,6 @@
                         elements.locationInfo.classList.add('error-state');
                     }
 
-                    // Listen for permission changes
                     result.addEventListener('change', () => {
                         this.checkLocationPermission();
                     });
@@ -1630,10 +1501,10 @@
                 }
             },
 
-            // Update current location
-            updateLocation: async function () {
+            updateLocation: async function() {
                 elements.locationText.textContent = 'Updating location...';
                 elements.refreshLocation.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                elements.locationInfo.classList.remove('error-state');
 
                 try {
                     const position = await this.getCurrentPosition();
@@ -1643,12 +1514,14 @@
                     }
 
                     appState.currentPosition = position;
-
-                    // Update accuracy badge
                     const accuracy = Math.round(position.coords.accuracy);
                     appState.locationAccuracy = accuracy;
 
-                    // Get address from coordinates
+                    // Visual feedback based on accuracy
+                    let accuracyClass = 'low-accuracy';
+                    if (accuracy < 20) accuracyClass = 'high-accuracy';
+                    else if (accuracy < 100) accuracyClass = 'medium-accuracy';
+
                     if (appState.apiConnected) {
                         const address = await apiService.getAddressFromCoords(
                             position.coords.latitude,
@@ -1657,61 +1530,82 @@
 
                         appState.locationAddress = address;
                         elements.locationText.innerHTML = `
-                    ${utils.formatAddress(address)}
-                    <span class="accuracy-badge">±${accuracy}m</span>
-                `;
+                            ${utils.formatAddress(address)}
+                            <span class="accuracy-badge ${accuracyClass}">±${accuracy}m</span>
+                        `;
                     } else {
                         elements.locationText.innerHTML = `
-                    ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}
-                    <span class="accuracy-badge">±${accuracy}m</span>
-                `;
+                            ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}
+                            <span class="accuracy-badge ${accuracyClass}">±${accuracy}m</span>
+                        `;
                     }
 
-                    // Update map placeholder with coordinates
+                    // Update map placeholder with accuracy information
                     elements.mapPlaceholder.innerHTML = `
-                <i class="fas fa-map-pin"></i>
-                <div>${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}</div>
-            `;
-
-                    // If we wanted to integrate a real map, we would add the code here
+                        <i class="fas fa-map-pin ${accuracyClass}"></i>
+                        <div>${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}</div>
+                        <small class="accuracy-info">Accuracy: ±${accuracy}m</small>
+                    `;
 
                 } catch (error) {
                     console.error('Location error:', error);
-                    elements.locationText.textContent = 'Error: ' + error.message;
+                    elements.locationText.textContent = error.message;
                     elements.locationInfo.classList.add('error-state');
                 } finally {
                     elements.refreshLocation.innerHTML = 'Refresh <i class="fas fa-sync-alt"></i>';
                 }
             },
 
-            // Get current position with a Promise interface
-            getCurrentPosition: function () {
+            getCurrentPosition: function() {
                 return new Promise((resolve, reject) => {
                     if (!navigator.geolocation) {
                         reject(new Error('Geolocation is not supported by your browser'));
                         return;
                     }
 
+                    // First try with high accuracy and longer timeout
                     navigator.geolocation.getCurrentPosition(
-                        position => resolve(position),
-                        error => {
-                            let errorMessage = 'Unknown location error';
-
-                            switch (error.code) {
-                                case error.PERMISSION_DENIED:
-                                    errorMessage = 'Location permission denied';
-                                    break;
-                                case error.POSITION_UNAVAILABLE:
-                                    errorMessage = 'Location information unavailable';
-                                    break;
-                                case error.TIMEOUT:
-                                    errorMessage = 'Location request timed out';
-                                    break;
+                        position => {
+                            // If accuracy is poor (over 100m), try again with different settings
+                            if (position.coords.accuracy > 100) {
+                                navigator.geolocation.getCurrentPosition(
+                                    betterPosition => resolve(betterPosition),
+                                    error => resolve(position), // Fall back to original position if second attempt fails
+                                    {
+                                        enableHighAccuracy: true,
+                                        timeout: 15000,
+                                        maximumAge: 0 // Force fresh reading
+                                    }
+                                );
+                            } else {
+                                resolve(position);
                             }
-
-                            reject(new Error(errorMessage));
                         },
-                        {
+                        error => {
+                            // If high accuracy fails, try with less strict requirements
+                            navigator.geolocation.getCurrentPosition(
+                                position => resolve(position),
+                                error => {
+                                    let errorMessage = 'Could not determine your location';
+                                    switch (error.code) {
+                                        case error.PERMISSION_DENIED:
+                                            errorMessage = 'Location access was denied. Please enable it in your browser settings.';
+                                            break;
+                                        case error.POSITION_UNAVAILABLE:
+                                            errorMessage = 'Location information is unavailable. Try moving to an area with better signal.';
+                                            break;
+                                        case error.TIMEOUT:
+                                            errorMessage = 'Location request timed out. Please check your internet connection.';
+                                            break;
+                                    }
+                                    reject(new Error(errorMessage));
+                                }, {
+                                    enableHighAccuracy: false,
+                                    timeout: 20000,
+                                    maximumAge: 300000 // Accept positions up to 5 minutes old
+                                }
+                            );
+                        }, {
                             enableHighAccuracy: true,
                             timeout: 10000,
                             maximumAge: 60000
@@ -1720,153 +1614,110 @@
                 });
             },
 
-            // Start watching position
-            startWatchingPosition: function () {
+            startWatchingPosition: function() {
                 if (this.watchId) return;
 
                 this.watchId = navigator.geolocation.watchPosition(
                     this.handlePositionUpdate.bind(this),
-                    this.handlePositionError.bind(this),
-                    {
+                    this.handlePositionError.bind(this), {
                         enableHighAccuracy: true,
                         timeout: 10000,
                         maximumAge: 60000
-                    }
-                );
+                    });
             },
 
-            // Stop watching position
-            stopWatchingPosition: function () {
+            stopWatchingPosition: function() {
                 if (this.watchId) {
                     navigator.geolocation.clearWatch(this.watchId);
                     this.watchId = null;
                 }
             },
 
-            // Handle position update
-            handlePositionUpdate: function (position) {
-                // Only update if significant change in position (> 100m)
-                if (!appState.currentPosition || this.calculateDistance(
-                    appState.currentPosition.coords.latitude,
-                    appState.currentPosition.coords.longitude,
-                    position.coords.latitude,
-                    position.coords.longitude
-                ) > 0.1) {
+            startAccuracyMonitor: function() {
+                if (this.accuracyInterval) return;
+
+                this.accuracyInterval = setInterval(() => {
+                    if (appState.currentPosition) {
+                        const accuracy = Math.round(appState.currentPosition.coords.accuracy);
+                        const accuracyBadge = document.querySelector('.accuracy-badge');
+                        const mapPin = document.querySelector('.map-placeholder i');
+
+                        if (accuracyBadge) {
+                            accuracyBadge.textContent = `±${accuracy}m`;
+                            // Update class based on accuracy
+                            accuracyBadge.className = `accuracy-badge ${accuracy < 20 ? 'high-accuracy' :
+                                accuracy < 100 ? 'medium-accuracy' : 'low-accuracy'
+                                }`;
+                        }
+
+                        if (mapPin) {
+                            mapPin.className = `fas fa-map-pin ${accuracy < 20 ? 'high-accuracy' :
+                                accuracy < 100 ? 'medium-accuracy' : 'low-accuracy'
+                                }`;
+                        }
+                    }
+                }, 5000); // Update every 5 seconds
+            },
+
+            stopAccuracyMonitor: function() {
+                if (this.accuracyInterval) {
+                    clearInterval(this.accuracyInterval);
+                    this.accuracyInterval = null;
+                }
+            },
+
+            handlePositionUpdate: function(position) {
+                if (!appState.currentPosition || utils.calculateDistance(
+                        appState.currentPosition.coords.latitude,
+                        appState.currentPosition.coords.longitude,
+                        position.coords.latitude,
+                        position.coords.longitude
+                    ) > 0.1) { // Only update if moved more than 100m
                     appState.currentPosition = position;
                     this.updateLocation();
                 }
             },
 
-            // Handle position error
-            handlePositionError: function (error) {
+            handlePositionError: function(error) {
                 console.error('Watch position error:', error);
-            },
-
-            // Calculate distance between coordinates (in km)
-            calculateDistance: function (lat1, lon1, lat2, lon2) {
-                const R = 6371; // Earth's radius in km
-                const dLat = this.deg2rad(lat2 - lat1);
-                const dLon = this.deg2rad(lon2 - lon1);
-                const a =
-                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                return R * c;
-            },
-
-            // Convert degrees to radians
-            deg2rad: function (deg) {
-                return deg * (Math.PI / 180);
             }
         };
 
         // UI Controller
         const uiController = {
-            // Initialize UI
-            init: function () {
-                this.setupModals();
+            init: function() {
                 this.setupAvatarInitials();
+                this.setupDropdownMenu();
 
-                // Set up API settings
-                elements.apiUrlInput.value = config.apiUrl;
-                elements.apiKeyInput.value = config.apiKey;
-                elements.companyIdInput.value = config.companyId;
-
-                // Update API status indicator
                 this.updateApiStatus(appState.apiConnected);
 
-                // Set up event listeners for various UI interactions
                 elements.viewReports.addEventListener('click', this.handleViewReports.bind(this));
                 elements.notificationIcon.addEventListener('click', this.handleNotifications.bind(this));
 
-                // Add service worker for PWA support if needed
                 this.registerServiceWorker();
 
-                // Add offline detection
                 window.addEventListener('online', this.handleOnline.bind(this));
                 window.addEventListener('offline', this.handleOffline.bind(this));
 
-                // Check if currently offline
                 if (!navigator.onLine) {
                     this.handleOffline();
                 }
             },
 
-            // Set up modals
-            setupModals: function () {
-                // Settings modal
-                elements.settingsBtn.addEventListener('click', () => {
-                    elements.settingsModal.classList.add('active');
+            setupDropdownMenu: function() {
+                // Toggle dropdown when clicking avatar
+                elements.avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    elements.dropdownMenu.classList.toggle('show');
                 });
 
-                elements.modalClose.addEventListener('click', () => {
-                    elements.settingsModal.classList.remove('active');
-                });
-
-                elements.modalCancel.addEventListener('click', () => {
-                    elements.settingsModal.classList.remove('active');
-                });
-
-                elements.modalSave.addEventListener('click', async () => {
-                    const apiUrl = elements.apiUrlInput.value.trim();
-                    const apiKey = elements.apiKeyInput.value.trim();
-                    const companyId = elements.companyIdInput.value.trim();
-
-                    if (!apiUrl || !apiKey || !companyId) {
-                        this.showToast('Validation Error', 'All fields are required', 'error');
-                        return;
-                    }
-
-                    try {
-                        this.setButtonLoading(elements.modalSave, true);
-                        const success = await apiService.setConfig(apiUrl, apiKey, companyId);
-
-                        if (success) {
-                            this.showToast('Settings Saved', 'API connection successful', 'success');
-                            elements.settingsModal.classList.remove('active');
-
-                            // Process any offline queue
-                            if (appState.apiConnected && appState.offlineQueue.length > 0) {
-                                apiService.processOfflineQueue();
-                            }
-
-                            // Refresh data                            // Refresh data
-                            timeController.fetchStatus();
-                            timeController.fetchHistory();
-                            timeController.fetchStats();
-                            locationController.updateLocation();
-                        }
-                    } catch (error) {
-                        this.showToast('Connection Failed', 'Could not connect to API with these settings', 'error');
-                    } finally {
-                        this.setButtonLoading(elements.modalSave, false);
-                    }
+                // Close dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    elements.dropdownMenu.classList.remove('show');
                 });
             },
 
-            // Set up avatar initials
-            setupAvatarInitials: function () {
+            setupAvatarInitials: function() {
                 const nameParts = config.employee.name.split(' ');
                 let initials = '';
 
@@ -1878,11 +1729,10 @@
                     initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
                 }
 
-                elements.settingsBtn.textContent = initials || 'ME';
+                elements.avatarBtn.textContent = initials || 'ME';
             },
 
-            // Update API connection status indicator
-            updateApiStatus: function (connected) {
+            updateApiStatus: function(connected) {
                 if (connected) {
                     elements.apiIndicator.classList.remove('disconnected');
                     elements.apiIndicator.classList.add('connected');
@@ -1894,8 +1744,7 @@
                 }
             },
 
-            // Show toast notification
-            showToast: function (title, message, type = 'info') {
+            showToast: function(title, message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
 
@@ -1920,13 +1769,11 @@
                     <div class="toast-close"><i class="fas fa-times"></i></div>
                 `;
 
-                // Add close button functionality
                 const closeBtn = toast.querySelector('.toast-close');
                 closeBtn.addEventListener('click', () => {
                     toast.remove();
                 });
 
-                // Auto-remove after delay
                 setTimeout(() => {
                     toast.remove();
                 }, config.toastDuration);
@@ -1934,8 +1781,7 @@
                 elements.toastContainer.appendChild(toast);
             },
 
-            // Set button loading state
-            setButtonLoading: function (button, isLoading) {
+            setButtonLoading: function(button, isLoading) {
                 if (isLoading) {
                     button.innerHTML = `<span class="loading"></span> ${button.textContent.trim()}`;
                     button.disabled = true;
@@ -1946,28 +1792,22 @@
                 }
             },
 
-            // Handle view reports click
-            handleViewReports: function () {
+            handleViewReports: function() {
                 if (!appState.apiConnected) {
                     this.showToast('Offline', 'Reports are only available when connected to the API', 'error');
                     return;
                 }
 
-                // In a real app, this would open a reports page or modal
                 this.showToast('Reports', 'Opening reports dashboard...', 'info');
             },
 
-            // Handle notifications click
-            handleNotifications: function () {
-                // In a real app, this would show a notifications panel
+            handleNotifications: function() {
                 this.showToast('Notifications', 'Showing your notifications', 'info');
             },
 
-            // Handle online event
-            handleOnline: function () {
+            handleOnline: function() {
                 this.showToast('Back Online', 'Connection restored, syncing data...', 'success');
 
-                // Test API connection
                 apiService.testConnection().then(connected => {
                     if (connected && appState.offlineQueue.length > 0) {
                         apiService.processOfflineQueue();
@@ -1975,14 +1815,12 @@
                 });
             },
 
-            // Handle offline event
-            handleOffline: function () {
+            handleOffline: function() {
                 this.showToast('Offline Mode', 'Working offline - changes will sync when connection is restored', 'error');
                 this.updateApiStatus(false);
             },
 
-            // Register service worker for PWA
-            registerServiceWorker: function () {
+            registerServiceWorker: function() {
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.register('/sw.js').then(
                         registration => {
@@ -1998,32 +1836,27 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize API service first
             await apiService.init();
 
-            // Initialize controllers
             timeController.init();
             locationController.init();
             uiController.init();
 
-            // If we have an offline queue and connection is restored, process it
             if (appState.apiConnected && appState.offlineQueue.length > 0) {
                 apiService.processOfflineQueue();
             }
 
-            // Start watching position if checked in
             if (appState.isCheckedIn) {
                 locationController.startWatchingPosition();
+                locationController.startAccuracyMonitor();
             }
 
-            // Debug logging
             if (config.debug) {
                 console.log('App initialized with config:', config);
                 console.log('Initial state:', appState);
             }
         });
 
-        // Export for testing if needed
         if (typeof module !== 'undefined' && module.exports) {
             module.exports = {
                 config,

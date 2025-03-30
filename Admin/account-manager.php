@@ -3,9 +3,17 @@ session_start();
 
 // Redirect to login if no user is logged in
 if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
+    header("Location: /steelsync/admin/login.php");
     exit();
 }
+// Verify the user has the correct role
+if ($_SESSION["role"] !== 'super_admin') {
+    // Redirect to appropriate page or show error
+
+    header("Location: /steelsync/admin/login.php");
+    exit();
+}
+
 
 // Database connection
 $host = "localhost";
