@@ -1,17 +1,4 @@
-CREATE DATABASE IF NOT EXISTS steelsync;
-
-USE steelsync;
-
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
-);
-
--- Insert a default user (Replace 'yourpassword' with your actual password)
-INSERT INTO users (username, password) VALUES ('jen', MD5('jen'));
-
-
+Angelo Acquiatan
 
 
 -- Create the database
@@ -28,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20),
     photo VARCHAR(255) DEFAULT 'default.jpg',
+    gender ENUM('Male', 'Female', 'Other') NOT NULL,
     role ENUM('super_admin', 'hr_admin', 'support_admin', 'employee') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -77,62 +65,14 @@ CREATE TABLE IF NOT EXISTS employee (
 
 -- Insert default users for testing
 -- Passwords are md5 hashed (not secure for production)
-INSERT INTO users (username, password, firstname, lastname, email, phone, role) VALUES 
-('superadmin', MD5('superadmin123'), 'Super', 'Admin', 'superadmin@steelsync.com', '1234567890','Male', 'super_admin'),
-('hradmin', MD5('hradmin123'), 'HR', 'Admin', 'hradmin@steelsync.com', '1234567891','Male', 'hr_admin'),
-('supportadmin', MD5('supportadmin123'), 'Support', 'Admin', 'supportadmin@steelsync.com', '1234567892','Male', 'support_admin'),
-('employee1', MD5('employee123'), 'John', 'Doe', 'john.doe@steelsync.com', '1234567893', 'Male' 'employee');
+INSERT INTO users (username, password, firstname, lastname, email, phone, gender, role) VALUES 
+('superadmin', MD5('superadmin123'), 'Super', 'Admin', 'superadmin@steelsync.com', '1234567890', 'Male', 'super_admin'),
+('hradmin', MD5('hradmin123'), 'HR', 'Admin', 'hradmin@steelsync.com', '1234567891', 'Female', 'hr_admin'),
+('supportadmin', MD5('supportadmin123'), 'Support', 'Admin', 'supportadmin@steelsync.com', '1234567892', 'Male', 'support_admin'),
+('employee1', MD5('employee123'), 'John', 'Doe', 'john.doe@steelsync.com', '1234567893', 'Male', 'employee');
 
 -- Insert role-specific details
 INSERT INTO super_admin (user_id) SELECT id FROM users WHERE role = 'super_admin';
 INSERT INTO hr_admin (user_id, department, position) SELECT id, 'Human Resources', 'HR Manager' FROM users WHERE role = 'hr_admin';
 INSERT INTO support_admin (user_id, support_area, position) SELECT id, 'Technical Support', 'Support Manager' FROM users WHERE role = 'support_admin';
 INSERT INTO employee (user_id, department, position, hire_date) SELECT id, 'Production', 'Steel Worker', CURDATE() FROM users WHERE role = 'employee';
-
--- Create positions table for all possible positions
-CREATE TABLE IF NOT EXISTS positions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    role_type ENUM('employee', 'administrator') NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Insert your existing positions
-INSERT INTO positions (title, role_type) VALUES
--- Employee Positions
-('Training & ControlOperations Manager', 'employee'),
-('Sales Staff', 'employee'),
-('Office Staff/Sales Clerk', 'employee'),
-('Accounting & Inventory', 'employee'),
-('Senior Supervisor', 'employee'),
-('Fabrication Team Leader', 'employee'),
-('Site Team Leader', 'employee'),
-('Skilled Welder/Driver', 'employee'),
-('Site Supervisor', 'employee'),
-('TL/Skilled Welder', 'employee'),
-('Skilled Welder', 'employee'),
-('Fabrication Supervisor', 'employee'),
-('Fab Helper', 'employee'),
-('Welder', 'employee'),
-('Welder/Driver', 'employee'),
-('Helper - Welder', 'employee'),
-('Helper - Mason', 'employee'),
-('Electrician /Site Supervisor', 'employee'),
-('Electrician /Team Leader', 'employee'),
-('Skilled Electrician/team leader', 'employee'),
-('Paint Supervisor', 'employee'),
-('Skilled Painter', 'employee'),
-('Driver - Helper', 'employee'),
--- Administrator Positions
-('Purchaser', 'administrator'),
-('HR Manager/Admin', 'administrator');
-
--- Add position_id to employee table
-ALTER TABLE employee ADD COLUMN position_id INT NULL AFTER position;
-ALTER TABLE employee ADD FOREIGN KEY (position_id) REFERENCES positions(id) ON DELETE SET NULL;
-
--- Update existing employee positions
-UPDATE employee e
-JOIN positions p ON e.position = p.title
-SET e.position_id = p.id;
