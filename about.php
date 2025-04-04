@@ -40,20 +40,6 @@
             color: var(--text-dark);
         }
 
-        /* Accessibility focus styles
-           a:focus,
-        button:focus,
-        input:focus,
-        select:focus,
-        textarea:focus,
-        [tabindex]:focus {
-            outline: 3px solid var(--primary-light);
-            outline-offset: 2px;
-        }
-             */
-
-
-        /* Skip to content link for accessibility */
         .skip-link {
             position: absolute;
             top: -40px;
@@ -609,12 +595,15 @@
                 <div class="about-content">
                     <h2 class="about-heading">ABOUT <strong>Intellitech Systems</strong></h2>
                     <p class="company-description">
-                        Intellitech Systems is a pioneering provider of cutting-edge security and automation solutions,
-                        committed to enhancing safety and convenience for residential and commercial spaces.
+                        ChatGPT said:
+                        Intellitech Systems was founded on March 22, 2022, by engineer and businessman Richard Bartolome, who
+                        brought his extensive experience in gate fabrication and automation to the company. Officially registered on
+                        April 27, 2022, the company was established with a vision to exceed previous industry standards through innovation and quality service.
                     </p>
                     <p class="services-description">
-                        Our company specializes in a range of advanced technologies to make your home and business
-                        smarter, safer, and more efficient.
+                        Under Mr. Bartolome’s leadership, Intellitech quickly earned a reputation for excellence, combining advanced technology
+                        with strong customer service. Despite challenges, the company has grown significantly and continues to be a trusted name
+                        in the industry, committed to delivering modern, reliable solutions.
                     </p>
 
                     <div class="services-list">
@@ -631,7 +620,7 @@
                     </a>
                 </div>
                 <div class="logo-container">
-                    <img src="/images/Group 70.png" alt="Intellitech Systems Logo" class="logo">
+                    <img src="images/Group 70.png" alt="Intellitech Systems Logo" class="logo">
                 </div>
             </div>
             <div class="section">
@@ -682,7 +671,7 @@
                     <h4 class="preview-heading" id="document-title">Environmental Management Permit</h4>
                     <div class="preview-content">
                         <div class="loading-spinner" id="loading-spinner"></div>
-                        <img src="environmental-permit.jpg" alt="Environmental Management Permit" id="preview-image">
+                        <img src="images/image.png" alt="Environmental Management Permit" id="preview-image">
                     </div>
 
                     <div class="document-info">
@@ -692,7 +681,7 @@
                     </div>
 
                     <div class="preview-button-container">
-                        <a href="#" class="preview-button" id="view-document">
+                        <a href="images/image.png" target="_blank" class="preview-button" id="view-document">
                             <i class="fas fa-search-plus"></i> VIEW DOCUMENT
                         </a>
 
@@ -729,42 +718,42 @@
             const documents = {
                 'environmental-permit': {
                     title: 'Environmental Management Permit',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Environmental Permit',
                     date: 'January 15, 2025',
                     validity: 'January 15, 2026'
                 },
                 'business-name': {
                     title: 'Certificate of Business Name Registration',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Business Registration',
                     date: 'December 3, 2024',
                     validity: 'December 3, 2029'
                 },
                 'authority-print': {
                     title: 'Authority to Print',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Printing Authority',
                     date: 'November 12, 2024',
                     validity: 'November 12, 2025'
                 },
                 'registration': {
                     title: 'Certificate of Registration',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Business Registration',
                     date: 'October 24, 2024',
                     validity: 'Permanent'
                 },
                 'business-permit': {
                     title: 'Business Permit and Licensing Office',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Business Permit',
                     date: 'January 2, 2025',
                     validity: 'December 31, 2025'
                 },
                 'sanitary-permit': {
                     title: 'Sanitary Permit to Operate',
-                    image: '/images/image.png',
+                    image: 'images/image.png',
                     type: 'Health and Safety',
                     date: 'February 8, 2025',
                     validity: 'February 8, 2026'

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellitect System - Employee Grid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            font-style: italic;
+            color: #333;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pagination button.active {
+            background-color: #f57c00;
+            color: white;
+        }
+
+        .pagination button:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .employee-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #000;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+
+        .employee-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .employee-designation {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .action-button {
+            background-color: #5073fb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #3f5bd3;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .employee-details {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .salary-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .salary-details th,
+        .salary-details td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .salary-details th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .salary-details tr:last-child {
+            font-weight: 700;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .cancel-button {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .save-button {
+            background-color: #5073fb;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media screen and (max-width: 1200px) {
+            .employee-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .employee-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .employee-details {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .employee-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .pagination {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>EMPLOYEE DIRECTORY</h1>
+            <div class="date-picker">
+                <i class="fas fa-calendar"></i>
+                <span>Jan 1 2025 - Jan 15 2025</span>
+            </div>
+        </div>
+
+        <div class="employee-grid" id="employeeGrid">
+            <!-- Employee cards will be generated here -->
+        </div>
+
+        <div class="footer">
+            <div class="page-info">
+                <span id="pageInfo">Showing 1-12 of 31 entries</span>
+            </div>
+            <div class="pagination" id="pagination">
+                <button id="prevPage"><i class="fas fa-angle-left"></i></button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button id="nextPage"><i class="fas fa-angle-right"></i></button>
+            </div>
+            <button class="action-button" id="openPayrollBtn">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Payroll Modal</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Payroll Modal -->
+    <div id="payrollModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Employee Payroll Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="employee-details">
+                    <div class="employee-info">
+                        <div class="info-group">
+                            <div class="info-label">Employee Name</div>
+                            <div class="info-value" id="modalEmployeeName">Joel Ponce</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Position</div>
+                            <div class="info-value" id="modalEmployeePosition">Training & Control Operations Manager
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Role</div>
+                            <div class="info-value" id="modalEmployeeRole">Employee</div>
+                        </div>
+                    </div>
+                    <div class="employee-info">
+                        <div class="info-group">
+                            <div class="info-label">Pay Period</div>
+                            <div class="info-value">Jan 1 2025 - Jan 15 2025</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Employee ID</div>
+                            <div class="info-value" id="modalEmployeeId">1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="salary-details">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Hours/Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Pay</td>
+                            <td>80 hrs × ₱150.00</td>
+                            <td>₱12,000.00</td>
+                        </tr>
+                        <tr>
+                            <td>Regular Overtime</td>
+                            <td>5 hrs × ₱225.00</td>
+                            <td>₱1,125.00</td>
+                        </tr>
+                        <tr>
+                            <td>Undertime</td>
+                            <td>0 hrs × ₱150.00</td>
+                            <td>₱0.00</td>
+                        </tr>
+                        <tr>
+                            <td>SSS Contribution</td>
+                            <td>-</td>
+                            <td>-₱500.00</td>
+                        </tr>
+                        <tr>
+                            <td>PhilHealth</td>
+                            <td>-</td>
+                            <td>-₱300.00</td>
+                        </tr>
+                        <tr>
+                            <td>Pag-IBIG</td>
+                            <td>-</td>
+                            <td>-₱200.00</td>
+                        </tr>
+                        <tr>
+                            <td>Tax</td>
+                            <td>-</td>
+                            <td>-₱550.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>NET PAY</strong></td>
+                            <td><strong>₱11,575.00</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button cancel-button" id="closeModal">Close</button>
+                <button class="modal-button save-button">Print Payslip</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sample data of employees
+            const employeeData = [{
+                id: 1,
+                name: "Joel Ponce",
+                role: "employee",
+                position: "Training & Control Operations Manager"
+            },
+            {
+                id: 2,
+                name: "Reinalyn Domdom",
+                role: "employee",
+                position: "Sales Staff"
+            },
+            {
+                id: 3,
+                name: "Kylie Emplamado",
+                role: "employee",
+                position: "Office Staff/Sales Clerk"
+            },
+            {
+                id: 4,
+                name: "Aerah Mae Valero",
+                role: "employee",
+                position: "Accounting & Inventory"
+            },
+            {
+                id: 5,
+                name: "King Sison Jerome",
+                role: "employee",
+                position: "Senior Supervisor"
+            },
+            {
+                id: 6,
+                name: "Royo Emmanuel",
+                role: "employee",
+                position: "Fabrication Team Leader"
+            },
+            {
+                id: 7,
+                name: "Benito Frankeddrey",
+                role: "employee",
+                position: "Site Team Leader"
+            },
+            {
+                id: 8,
+                name: "FerrerJemar Magtalas",
+                role: "employee",
+                position: "Skilled Welder/Driver"
+            },
+            {
+                id: 9,
+                name: "Rodel Rempillo",
+                role: "employee",
+                position: "Site Supervisor"
+            },
+            {
+                id: 10,
+                name: "Allan SapulGong",
+                role: "employee",
+                position: "TL/Skilled Welder"
+            },
+            {
+                id: 11,
+                name: "Serrano Rasty",
+                role: "employee",
+                position: "Skilled Welder"
+            },
+            {
+                id: 12,
+                name: "ParillaPhilip",
+                role: "employee",
+                position: "Fabrication Supervisor"
+            },
+            {
+                id: 13,
+                name: "Guliman Engelbert",
+                role: "employee",
+                position: "Fab Helper"
+            },
+            {
+                id: 14,
+                name: "CunananEriczon",
+                role: "employee",
+                position: "Welder"
+            },
+            {
+                id: 15,
+                name: "NapisaEdrian Espino",
+                role: "employee",
+                position: "Welder"
+            },
+            {
+                id: 16,
+                name: "Christian Espiritu",
+                role: "employee",
+                position: "Welder/Driver"
+            },
+            {
+                id: 17,
+                name: "Johnrey Castillo",
+                role: "employee",
+                position: "Skilled Welder/Driver"
+            },
+            {
+                id: 18,
+                name: "Ronnie Enriquez",
+                role: "employee",
+                position: "Helper - Welder"
+            },
+            {
+                id: 19,
+                name: "Billy Montero",
+                role: "employee",
+                position: "Helper - Mason"
+            },
+            {
+                id: 20,
+                name: "John Michael Libanan",
+                role: "employee",
+                position: "Helper - Welder"
+            },
+            {
+                id: 21,
+                name: "Piolo Sabater",
+                role: "employee",
+                position: "Electrician /Site Supervisor"
+            },
+            {
+                id: 22,
+                name: "Fernando Dulay Jr.",
+                role: "employee",
+                position: "Electrician /Team Leader"
+            },
+            {
+                id: 23,
+                name: "Rande Sorio",
+                role: "employee",
+                position: "Skilled Electrician/team leader"
+            },
+            {
+                id: 24,
+                name: "Rizaldo San Pedro",
+                role: "employee",
+                position: "Paint Supervisor"
+            },
+            {
+                id: 25,
+                name: "George Pica",
+                role: "employee",
+                position: "Skilled Painter"
+            },
+            {
+                id: 26,
+                name: "Joraydan Briones",
+                role: "employee",
+                position: "Skilled Painter"
+            },
+            {
+                id: 27,
+                name: "Jayson Auton",
+                role: "employee",
+                position: "Skilled Painter"
+            },
+            {
+                id: 28,
+                name: "Ronel Yesan",
+                role: "employee",
+                position: "Skilled Painter"
+            },
+            {
+                id: 29,
+                name: "Richard Cabiad",
+                role: "employee",
+                position: "Skilled Painter"
+            },
+            {
+                id: 30,
+                name: "Anabelle Austria",
+                role: "administrator",
+                position: "Purchaser"
+            },
+            {
+                id: 31,
+                name: "Milen San Jose",
+                role: "administrator",
+                position: "HR Manager/Admin"
+            }
+            ];
+
+            // Positions for each role
+            const positions = {
+                employee: [
+                    "Training & CP Manager",
+                    "Sales Staff",
+                    "Office Staff/Sales Clerk",
+                    "Accounting & Inventory",
+                    "Senior Supervisor",
+                    "Fabrication Team Leader",
+                    "Site Team Leader",
+                    "Skilled Welder/Driver",
+                    "Site Supervisor",
+                    "TL/Skilled Welder",
+                    "Skilled Welder",
+                    "Fabrication Supervisor",
+                    "Fab Helper",
+                    "Welder",
+                    "Welder/Driver",
+                    "Helper - Welder",
+                    "Helper - Mason",
+                    "Electrician /Site Supervisor",
+                    "Electrician /Team Leader",
+                    "Skilled Electrician/team leader",
+                    "Paint Supervisor",
+                    "Skilled Painter",
+                    "Driver - Helper"
+                ],
+                administrator: [
+                    "HR Manager/Admin",
+                    "Purchaser"
+                ]
+            };
+
+            // Variables for pagination
+            const itemsPerPage = 12;
+            let currentPage = 1;
+
+            // Get DOM elements
+            const employeeGrid = document.getElementById('employeeGrid');
+            const payrollModal = document.getElementById('payrollModal');
+            const openPayrollBtn = document.getElementById('openPayrollBtn');
+            const closeModalBtn = document.getElementsByClassName('close')[0];
+            const closeModalButton = document.getElementById('closeModal');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+
+            // Function to render employee cards
+            function renderEmployees() {
+                // Clear existing content
+                employeeGrid.innerHTML = '';
+
+                // Calculate start and end indices for current page
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, employeeData.length);
+
+                // Update page info text
+                pageInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${employeeData.length} entries`;
+
+                // Create and append employee cards for current page
+                for (let i = startIndex; i < endIndex; i++) {
+                    const employee = employeeData[i];
+
+                    const employeeCard = document.createElement('div');
+                    employeeCard.className = 'employee-card';
+                    employeeCard.dataset.id = employee.id;
+
+                    employeeCard.innerHTML = `
+                        <div class="avatar"></div>
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-designation">${employee.position}</div>
+                    `;
+
+                    // Add click event to open modal
+                    employeeCard.addEventListener('click', function () {
+                        showEmployeeModal(employee);
+                    });
+
+                    employeeGrid.appendChild(employeeCard);
+                }
+            }
+
+            // Function to show employee modal
+            function showEmployeeModal(employee) {
+                // Update modal content with employee data
+                document.getElementById('modalEmployeeName').textContent = employee.name;
+                document.getElementById('modalEmployeePosition').textContent = employee.position;
+                document.getElementById('modalEmployeeRole').textContent = employee.role.charAt(0).toUpperCase() + employee.role.slice(1);
+                document.getElementById('modalEmployeeId').textContent = employee.id;
+
+                // Show the modal
+                payrollModal.style.display = 'block';
+            }
+
+            // Event listener for opening payroll modal button
+            openPayrollBtn.addEventListener('click', function () {
+                // Show modal with first employee's data by default
+                showEmployeeModal(employeeData[0]);
+            });
+
+            // Event listeners for closing modal
+            closeModalBtn.addEventListener('click', function () {
+                payrollModal.style.display = 'none';
+            });
+
+            closeModalButton.addEventListener('click', function () {
+                payrollModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function (event) {
+                if (event.target === payrollModal) {
+                    payrollModal.style.display = 'none';
+                }
+            });
+
+            // Pagination controls
+            prevPageBtn.addEventListener('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderEmployees();
+                }
+            });
+
+            nextPageBtn.addEventListener('click', function () {
+                if (currentPage < Math.ceil(employeeData.length / itemsPerPage)) {
+                    currentPage++;
+                    renderEmployees();
+                }
+            });
+
+            // Initial render
+            renderEmployees();
+        });
+    </script>
+</body>
+
+</html>

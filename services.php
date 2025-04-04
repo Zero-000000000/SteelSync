@@ -225,46 +225,46 @@
 
     <script>
         const services = [{
-                image: '/images/11.jpg',
+                image: 'images/gate.jpeg',
                 icon: 'fa-solid fa-lock',
                 title: 'Gate Automation',
                 description: 'Advanced automated gate systems with smart access control and seamless integration.',
-                link: '/services/gate automation.php'
+                link: 'services/gate automation.php'
             },
             {
-                image: '/images/11.jpg',
+                image: 'images/fabrication.jpeg',
                 icon: 'fa-solid fa-home',
                 title: 'Gate Fabrication',
                 description: 'Custom-designed gates crafted with precision and aesthetic appeal.',
-                link: '/services/gate_fabrication.php'
+                link: 'services/gate_fabrication.php'
             },
             {
-                image: '/images/11.jpg',
+                image: 'images/sectional.jpeg',
                 icon: 'fa-solid fa-camera',
                 title: 'Sectional Garage Door',
                 description: 'Modern garage doors offering superior insulation and security.',
-                link: '/services/garage_door.php'
+                link: 'services/garage_door.php'
             },
             {
-                image: '/images/11.jpg',
+                image: 'images/11.jpg',
                 icon: 'fa-solid fa-bolt',
                 title: 'Roll Up Door',
                 description: 'High-performance doors for commercial and industrial applications.',
-                link: '/services/roll_up_door.php'
+                link: 'services/roll_up_door.php'
             },
             {
-                image: '/images/11.jpg',
+                image: 'images/electric.jpeg',
                 icon: 'fa-solid fa-shield-halved',
                 title: 'Smart Electric Fence',
                 description: 'Cutting-edge perimeter protection with advanced monitoring systems.',
-                link: '/services/electric_fence.php'
+                link: 'services/electric_fence.php'
             },
             {
-                image: '/images/11.jpg',
+                image: 'images/11.jpg',
                 icon: 'fas fa-home',
                 title: 'Smart Curtain',
                 description: 'Automated curtain systems with intelligent home integration.',
-                link: '/services/smart_curtain.php'
+                link: 'services/smart_curtain.php'
             }
         ];
 

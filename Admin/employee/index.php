@@ -20,115 +20,11 @@ if ($_SESSION["role"] !== 'employee') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkClock Pro | Employee Time Tracking</title>
+    <title>Intellitect System | Employee Attendance Tracking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="geo.css" rel="stylesheet">
+
     <style>
-        :root {
-            --primary-grey: #2d3748;
-            --secondary-grey: #4a5568;
-            --light-grey: #f7fafc;
-            --bg-grey: #edf2f7;
-            --border-grey: #e2e8f0;
-            --primary-orange: #ed8936;
-            --secondary-orange: #f6ad55;
-            --accent-orange: #dd6b20;
-            --success-green: #48bb78;
-            --error-red: #f56565;
-            --info-blue: #4299e1;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-grey);
-            color: var(--primary-grey);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .app-container {
-            max-width: 480px;
-            margin: 0 auto;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Header styles */
-        .header {
-            background-color: white;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-grey);
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-icon {
-            color: var(--primary-orange);
-            margin-right: 0.5rem;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .notification-icon {
-            color: var(--secondary-grey);
-            font-size: 1.25rem;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--primary-orange);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .avatar {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background-color: var(--primary-orange);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            position: relative;
-        }
-
         /* Dropdown menu */
         .dropdown-menu {
             position: absolute;
@@ -167,573 +63,141 @@ if ($_SESSION["role"] !== 'employee') {
             text-align: center;
         }
 
-        /* Main content styles */
-        .main-content {
-            flex: 1;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
-        }
-
-        /* Time card styles */
-        .time-card {
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .time-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
             left: 0;
-            right: 0;
-            height: 4px;
-            transition: background-color 0.3s ease;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
-        .time-card.checked-in::after {
-            background-color: var(--success-green);
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s;
         }
 
-        .time-card.checked-out::after {
-            background-color: var(--primary-orange);
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .status-badge {
-            display: inline-flex;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-grey);
         }
 
-        .status-badge i {
-            margin-right: 0.5rem;
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary-orange);
+            font-size: 1.25rem;
         }
 
-        .status-badge.checked-in {
-            background-color: rgba(72, 187, 120, 0.1);
-            color: var(--success-green);
+        .close-modal {
+            color: var(--secondary-grey);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .status-badge.checked-out {
-            background-color: rgba(237, 137, 54, 0.1);
+        .close-modal:hover {
             color: var(--primary-orange);
         }
 
-        .current-time {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--primary-grey);
+        .modal-body {
+            padding: 1rem;
         }
 
-        .current-date {
+        /* Tab styles */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--bg-grey);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
             color: var(--secondary-grey);
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
-        .session-timer {
-            font-size: 1.25rem;
-            color: var(--success-green);
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+        .tab:hover {
+            color: var(--primary-orange);
+        }
+
+        .tab.active {
+            color: var(--primary-orange);
+            border-bottom: 2px solid var(--primary-orange);
+        }
+
+        .tab-content {
+            display: block;
+        }
+
+        .tab-content.hidden {
             display: none;
         }
 
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        /* Form styles */
+        .form-group {
+            margin-bottom: 1rem;
         }
 
-        .btn {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-grey);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
             font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
+        }
+
+        .form-group input:focus {
             outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 2px rgba(var(--primary-orange-rgb), 0.2);
         }
 
-        .btn i {
-            margin-right: 0.5rem;
-        }
-
-        .btn-time-in {
+        .btn-primary {
             background-color: var(--primary-orange);
             color: white;
-        }
-
-        .btn-time-in:hover:not(:disabled) {
-            background-color: var(--accent-orange);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-time-out {
-            background-color: white;
-            color: var(--primary-grey);
-            border: 2px solid var(--bg-grey);
-        }
-
-        .btn-time-out:hover:not(:disabled) {
-            background-color: var(--bg-grey);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Location card styles */
-        .section-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--primary-grey);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .section-title-text {
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title-text i {
-            margin-right: 0.5rem;
-            color: var(--primary-orange);
-        }
-
-        .section-actions {
-            font-size: 0.875rem;
-            font-weight: normal;
-            color: var(--primary-orange);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .section-actions i {
-            margin-left: 0.25rem;
-        }
-
-        .location-card {
-            padding: 1.5rem;
-        }
-
-        .location-info {
-            display: flex;
-            align-items: center;
-            color: var(--secondary-grey);
-            margin-top: 0.5rem;
-        }
-
-        .location-info i {
-            margin-right: 0.75rem;
-            color: var(--primary-orange);
-            font-size: 1.25rem;
-        }
-
-        .accuracy-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.5rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            background-color: rgba(66, 153, 225, 0.1);
-            color: var(--info-blue);
-            margin-left: 0.5rem;
-        }
-
-        .high-accuracy {
-            color: var(--success-green);
-        }
-
-        .medium-accuracy {
-            color: var(--primary-orange);
-        }
-
-        .low-accuracy {
-            color: var(--error-red);
-        }
-
-        .map-container {
-            width: 100%;
-            height: 150px;
-            background-color: var(--bg-grey);
-            border-radius: 0.75rem;
-            margin-top: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .map-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 0.5rem;
-            color: var(--secondary-grey);
-        }
-
-        .map-placeholder i {
-            font-size: 2rem;
-            color: var(--border-grey);
-        }
-
-        .accuracy-info {
-            font-size: 0.75rem;
-            color: var(--secondary-grey);
-            margin-top: 0.25rem;
-        }
-
-        /* History card styles */
-        .history-card {
-            padding: 1.5rem;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-box {
-            background-color: var(--bg-grey);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-grey);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--secondary-grey);
-            text-transform: uppercase;
-        }
-
-        .history-tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-grey);
-            margin-bottom: 1rem;
-        }
-
-        .history-tab {
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            color: var(--secondary-grey);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .history-tab.active {
-            color: var(--primary-orange);
-        }
-
-        .history-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--primary-orange);
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            background-color: var(--bg-grey);
-            transition: transform 0.2s ease;
-        }
-
-        .history-item:hover {
-            transform: translateY(-2px);
-        }
-
-        .history-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .history-time {
-            font-weight: 600;
-            color: var(--primary-grey);
-            display: flex;
-            align-items: center;
-        }
-
-        .history-date {
-            font-size: 0.75rem;
-            color: var(--secondary-grey);
-            margin-left: 0.5rem;
-        }
-
-        .history-location {
-            font-size: 0.875rem;
-            color: var(--secondary-grey);
-        }
-
-        .history-type {
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-
-        .history-type.in {
-            color: var(--success-green);
-        }
-
-        .history-type.out {
-            color: var(--primary-orange);
-        }
-
-        .history-type i {
-            margin-right: 0.5rem;
-        }
-
-        .empty-history {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--secondary-grey);
-        }
-
-        .empty-history i {
-            font-size: 2.5rem;
-            color: var(--border-grey);
-            margin-bottom: 1rem;
-        }
-
-        /* Toast notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            max-width: 300px;
-            z-index: 9999;
-        }
-
-        .toast {
-            background-color: white;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .toast::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            width: 100%;
-            background-color: var(--primary-orange);
-            animation: shrink 3s linear forwards;
-        }
-
-        .toast.success::after {
-            background-color: var(--success-green);
-        }
-
-        .toast.error::after {
-            background-color: var(--error-red);
-        }
-
-        .toast-icon {
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .toast-message {
-            font-size: 0.875rem;
-            color: var(--secondary-grey);
-        }
-
-        .toast-close {
-            color: var(--secondary-grey);
-            cursor: pointer;
-            padding: 0.25rem;
-            margin-left: 0.5rem;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        @keyframes shrink {
-            from {
-                width: 100%;
-            }
-
-            to {
-                width: 0%;
-            }
-        }
-
-        /* Loading indicators */
-        .loading {
-            display: inline-flex;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid rgba(237, 137, 54, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary-orange);
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 0.5rem;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Error state */
-        .error-state {
-            color: var(--error-red);
-            display: flex;
-            align-items: center;
-        }
-
-        .error-state i {
-            margin-right: 0.5rem;
-        }
-
-        /* Footer */
-        .footer {
-            background-color: white;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--secondary-grey);
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .footer span {
-            color: var(--primary-orange);
-            font-weight: 600;
-        }
-
-        /* API connection indicator */
-        .api-status {
-            display: flex;
-            align-items: center;
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
-            justify-content: center;
-        }
-
-        .api-status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-
-        .api-status-indicator.connected {
-            background-color: var(--success-green);
-        }
-
-        .api-status-indicator.disconnected {
-            background-color: var(--error-red);
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-
-            .header,
-            .main-content,
-            .footer {
-                padding: 1rem;
-            }
-
-            .time-card {
-                padding: 1.5rem;
-            }
-
-            .current-time {
-                font-size: 2.5rem;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
+        .btn-primary:hover {
+            background-color: var(--primary-orange-dark, #e65c00);
         }
     </style>
 </head>
@@ -752,14 +216,65 @@ if ($_SESSION["role"] !== 'employee') {
                 </div>
                 <div class="avatar" id="avatar-btn">EM</div>
                 <div class="dropdown-menu" id="dropdown-menu">
+                    <a href="#" class="dropdown-item" id="account-manager-btn">
+                        <i class="fas fa-user-cog"></i>
+                        Account Manager
+                    </a>
                     <a href="../logout.php" class="dropdown-item">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
                     </a>
                 </div>
             </div>
-        </header>
 
+        </header>
+        <!-- Account Manager Modal -->
+        <div class="modal" id="account-manager-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Account Manager</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="change-username">Change Username</div>
+                        <div class="tab" data-tab="change-password">Change Password</div>
+                    </div>
+
+                    <div class="tab-content" id="change-username-content">
+                        <form id="username-form">
+                            <div class="form-group">
+                                <label for="current-password-username">Current Password</label>
+                                <input type="password" id="current-password-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-username">New Username</label>
+                                <input type="text" id="new-username" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Username</button>
+                        </form>
+                    </div>
+
+                    <div class="tab-content hidden" id="change-password-content">
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <main class="main-content">
             <div class="card time-card checked-out" id="time-status-card">
                 <div class="status-badge checked-out" id="status-badge">
@@ -1868,7 +1383,307 @@ if ($_SESSION["role"] !== 'employee') {
                 uiController
             };
         }
+
+
+        // Account Manager functionality
+        const accountManager = {
+            init: function() {
+                // Elements
+                this.modal = document.getElementById('account-manager-modal');
+                this.tabs = document.querySelectorAll('.tab');
+                this.tabContents = document.querySelectorAll('.tab-content');
+                this.closeModal = document.querySelector('.close-modal');
+                this.usernameForm = document.getElementById('username-form');
+                this.passwordForm = document.getElementById('password-form');
+
+                // Open modal when clicking account manager button
+                document.getElementById('account-manager-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.openModal();
+                });
+
+                // Close modal when clicking the X
+                this.closeModal.addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                // Close modal when clicking outside the modal content
+                window.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.closeModal();
+                    }
+                });
+
+                // Tab functionality
+                this.tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.switchTab(tab.getAttribute('data-tab'));
+                    });
+                });
+
+                // Form submissions
+                this.usernameForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleUsernameChange();
+                });
+
+                this.passwordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handlePasswordChange();
+                });
+            },
+
+            openModal: function() {
+                this.modal.style.display = 'block';
+                // Reset forms
+                this.usernameForm.reset();
+                this.passwordForm.reset();
+                // Default to first tab
+                this.switchTab('change-username');
+            },
+
+            closeModal: function() {
+                this.modal.style.display = 'none';
+            },
+
+            switchTab: function(tabId) {
+                // Update active tab
+                this.tabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === tabId) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+
+                // Show corresponding content
+                this.tabContents.forEach(content => {
+                    if (content.id === `${tabId}-content`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            },
+
+            handleUsernameChange: function() {
+                const currentPassword = document.getElementById('current-password-username').value;
+                const newUsername = document.getElementById('new-username').value;
+
+                if (!currentPassword || !newUsername) {
+                    uiController.showToast('Error', 'All fields are required', 'error');
+                    return;
+                }
+
+                // If offline, queue the request
+                if (!navigator.onLine || !appState.apiConnected) {
+                    appState.offlineQueue.push({
+                        type: 'username',
+                        data: {
+                            currentPassword,
+                            newUsername
+                        }
+                    });
+                    uiController.showToast('Offline Mode', 'Your request will be processed when connection is restored', 'info');
+                    this.closeModal();
+                    return;
+                }
+
+                // API request to change username
+                apiService.updateUsername(currentPassword, newUsername)
+                    .then(response => {
+                        if (response.success) {
+                            uiController.showToast('Success', 'Username updated successfully', 'success');
+                            this.closeModal();
+                        } else {
+                            uiController.showToast('Error', response.message || 'Failed to update username', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        uiController.showToast('Error', 'Failed to update username', 'error');
+                        console.error('Username update error:', error);
+                    });
+            },
+
+            handlePasswordChange: function() {
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    uiController.showToast('Error', 'All fields are required', 'error');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    uiController.showToast('Error', 'New passwords do not match', 'error');
+                    return;
+                }
+
+                // If offline, queue the request
+                if (!navigator.onLine || !appState.apiConnected) {
+                    appState.offlineQueue.push({
+                        type: 'password',
+                        data: {
+                            currentPassword,
+                            newPassword
+                        }
+                    });
+                    uiController.showToast('Offline Mode', 'Your request will be processed when connection is restored', 'info');
+                    this.closeModal();
+                    return;
+                }
+
+                // API request to change password
+                apiService.updatePassword(currentPassword, newPassword)
+                    .then(response => {
+                        if (response.success) {
+                            uiController.showToast('Success', 'Password updated successfully', 'success');
+                            this.closeModal();
+                        } else {
+                            uiController.showToast('Error', response.message || 'Failed to update password', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        uiController.showToast('Error', 'Failed to update password', 'error');
+                        console.error('Password update error:', error);
+                    });
+            }
+        };
+
+        // Add API service methods for account updates
+        if (typeof apiService !== 'undefined') {
+            apiService.updateUsername = async function(currentPassword, newUsername) {
+                try {
+                    const response = await fetch(`${config.apiEndpoint}/user/update-username`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${config.apiToken}`
+                        },
+                        body: JSON.stringify({
+                            currentPassword,
+                            newUsername
+                        })
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('API error:', error);
+                    return {
+                        success: false,
+                        message: 'Network error'
+                    };
+                }
+            };
+
+            apiService.updatePassword = async function(currentPassword, newPassword) {
+                try {
+                    const response = await fetch(`${config.apiEndpoint}/user/update-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${config.apiToken}`
+                        },
+                        body: JSON.stringify({
+                            currentPassword,
+                            newPassword
+                        })
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('API error:', error);
+                    return {
+                        success: false,
+                        message: 'Network error'
+                    };
+                }
+            };
+
+            // Add offline queue processing for account updates
+            const originalProcessOfflineQueue = apiService.processOfflineQueue;
+
+            apiService.processOfflineQueue = async function() {
+                if (originalProcessOfflineQueue) {
+                    await originalProcessOfflineQueue();
+                }
+
+                for (let i = 0; i < appState.offlineQueue.length; i++) {
+                    const request = appState.offlineQueue[i];
+
+                    if (request.type === 'username') {
+                        await apiService.updateUsername(request.data.currentPassword, request.data.newUsername);
+                        appState.offlineQueue.splice(i, 1);
+                        i--;
+                    } else if (request.type === 'password') {
+                        await apiService.updatePassword(request.data.currentPassword, request.data.newPassword);
+                        appState.offlineQueue.splice(i, 1);
+                        i--;
+                    }
+                }
+            };
+        }
+
+        // Initialize account manager when document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add the account manager modal to the page
+            document.body.insertAdjacentHTML('beforeend', `
+        <!-- Account Manager Modal -->
+        <div class="modal" id="account-manager-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Account Manager</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="change-username">Change Username</div>
+                        <div class="tab" data-tab="change-password">Change Password</div>
+                    </div>
+                    
+                    <div class="tab-content" id="change-username-content">
+                        <form id="username-form">
+                            <div class="form-group">
+                                <label for="current-password-username">Current Password</label>
+                                <input type="password" id="current-password-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-username">New Username</label>
+                                <input type="text" id="new-username" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Username</button>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-content hidden" id="change-password-content">
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+            // Initialize the account manager
+            accountManager.init();
+        });
     </script>
+    <?php include "script.php"; ?>
 </body>
 
 </html>

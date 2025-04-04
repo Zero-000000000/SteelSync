@@ -28,7 +28,7 @@
         position: relative;
         width: 100%;
         height: 100vh;
-        background-image: url(/images/first.png);
+        background-image: url(images/first.png);
         background-size: cover;
         background-position: center;
         display: flex;
@@ -656,7 +656,7 @@
         <div class="overlay-left">
             <div class="company-info">
                 <div class="tech-accent"></div>
-                <img class="company-logo" src="/images/logo.png" alt="Intellitech Systems Logo">
+                <img class="company-logo" src="images/logo.png" alt="Intellitech Systems Logo">
                 <h1 class="company-name">Intellitech <span class="systems">Systems</span></h1>
                 <p class="company-tagline">Engineering And Technical Services</p>
                 <a href="#contact" class="cta-button">Explore Services</a>
@@ -743,7 +743,7 @@
     </div>
 
     <div class="client-portfolio-banner">
-        <img src="/images/client.png" alt="Intellitech Systems Client Portfolio">
+        <img src="images/client.png" alt="Intellitech Systems Client Portfolio">
     </div>
 
     <section class="client">
@@ -752,7 +752,7 @@
 
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/11.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
@@ -766,7 +766,7 @@
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
@@ -778,7 +778,7 @@
             </div>
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/11.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
@@ -790,7 +790,7 @@
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
@@ -803,7 +803,7 @@
 
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/11.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
@@ -815,7 +815,7 @@
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>

@@ -106,17 +106,21 @@
 
     .employee-details {
         margin-bottom: 20px;
+
     }
 
     .form-group {
         display: flex;
         align-items: center;
         margin-bottom: 15px;
+        max-width: 280px;
+
     }
 
     .form-group label {
         width: 150px;
         font-weight: normal;
+
     }
 
     .form-control {
@@ -125,11 +129,12 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         font-size: 14px;
+
     }
 
     .employee-details .form-control {
         flex: 0 0 auto;
-        width: 600px;
+        width: 150px;
         /* You can adjust this value */
         max-width: 100%;
     }
@@ -313,7 +318,7 @@
                 <div class="payroll-form">
                     <div class="employee-details">
                         <div class="form-group">
-                            <label>Name of employee:</label>
+                            <label>Name:</label>
                             <input type="text" value="Jennylyn Vinuya" class="form-control">
                         </div>
 

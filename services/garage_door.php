@@ -292,7 +292,7 @@
             <h1>Sectional Garage Door</h1>
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
+                    <img src="/images/door1.jpeg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
