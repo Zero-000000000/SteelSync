@@ -1,5 +1,3 @@
-Angelo Acquiatan
-
 
 -- Create the database
 CREATE DATABASE IF NOT EXISTS steelsync;
