@@ -678,48 +678,48 @@
 
     <div class="carousel-container">
         <div class="carousel">
-            <div class="slide active" style="background-image: url('/api/placeholder/900/400');">
+            <div class="slide active" style="background-image: url('images/gate.jpeg');">
                 <div class="slide-content">
                     <h2>Gate Automation</h2>
-                    <p>A&M Technology offers gate automation systems, delivering secure, convenient,
+                    <p>Intellitech System offers gate automation systems, delivering secure, convenient,
                         and efficient solutions for automated access control.</p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: url('/api/placeholder/900/400');">
+            <div class="slide" style="background-image: url('images/metal.jpg');">
                 <div class="slide-content">
                     <h2>Gate Fabrication</h2>
-                    <p>A&M Technology specializes in metal and steel fabrication,
+                    <p>Intellitech System specializes in metal and steel fabrication,
                         providing customized solutions for durable and high-quality structural and industrial needs.</p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: url('/api/placeholder/900/400');">
+            <div class="slide" style="background-image: url('images/door1.jpeg');">
                 <div class="slide-content">
                     <h2>Sectional Garage Door</h2>
-                    <p>A&M Technology offers pconstructed with multiple horizontal panels hinged together, allowing them to open vertically
+                    <p>Intellitech System offers pconstructed with multiple horizontal panels hinged together, allowing them to open vertically
                         and slide into horizontal tracks parallel to the garage ceiling, maximizing space inside and outside the garage. </p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: url('/api/placeholder/900/400');">
+            <div class="slide" style="background-image: url('images/roll1.jpg');">
                 <div class="slide-content">
                     <h2>Roll Up Door</h2>
-                    <p>A&M Technology provides doors that roll up into a tight coil above the opening, using horizontal slats that move vertically within tracks</p>
+                    <p>Intellitech System provides doors that roll up into a tight coil above the opening, using horizontal slats that move vertically within tracks</p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: url('/api/placeholder/900/400');">
-                <div class="slide-content">
+            <div class="slide" style="background-image: url('images/electric.jpeg');">
+                <div class="slide-content">S
                     <h2>Smart Electric Fence Out</h2>
-                    <p>A&M Technology offers technology-driven perimeter security system that uses sensors, communication devices, and AI to detect, deter, and delay unauthorized intrusions, often with real-time alerts and remote monitoring capabilities</p>
+                    <p>Intellitech System offers technology-driven perimeter security system that uses sensors, communication devices, and AI to detect, deter, and delay unauthorized intrusions, often with real-time alerts and remote monitoring capabilities</p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
-            <div class="slide" style="background-image: url('/api/placeholder/900/400');">
+            <div class="slide" style="background-image: url('images/smart.jpg');">
                 <div class="slide-content">
                     <h2>Smart Curtain</h2>
-                    <p>A&M Technology installs motorized curtains that can be opened and closed automatically, often via app control or integration with home automation systems, offering convenience, energy efficiency, and enhanced privacy</p>
+                    <p>Intellitech System installs motorized curtains that can be opened and closed automatically, often via app control or integration with home automation systems, offering convenience, energy efficiency, and enhanced privacy</p>
                     <a href="#" class="read-more">Read More</a>
                 </div>
             </div>
@@ -752,10 +752,10 @@
 
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/bato.jpeg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
+                    <h3><i></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Senator Ronald "Bato" Dela Rosa</h3>
                     <p>ARCOM STEELE</p>
                     <p>South Forbes Laguna</p>
                     <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
@@ -766,62 +766,66 @@
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/door.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
-                    <p>ARCOM STEELE</p>
+                    <h3><i></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Mr. Christopher Perigrino</h3>
+                    </h3>
+                    <p>Forbes Park</p>
                     <p>South Forbes Laguna</p>
-                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                    <p>Supply And Installation of Sectional Garage</p>
 
                 </div>
             </div>
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/omar.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
-                    <p>ARCOM STEELE</p>
-                    <p>South Forbes Laguna</p>
-                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                    <h3><i></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mr. Omar Roa</h3>
+                    <p>206 Matabungkay, Ayala Alabang,
+                        Muntinlupa</p>
+                    <p>Fabrication and Automation</p>
                 </div>
             </div>
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/fabrication.jpeg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
-                    <p>ARCOM STEELE</p>
-                    <p>South Forbes Laguna</p>
-                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                    <h3>
+                        </i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mr.Caloy Ocampo
+                    </h3>
+                    <p>Lot 9 BLK 4 Phase IV, Flamingo St., Vista
+                        Verde South, Bacoor, Cavite</p>
+                    <p>Supply and Installation of Automatic</p>
+                    <p>Swing Gate Opener and Accessories
+                        BIFOLD</p>
 
                 </div>
             </div>
 
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Metal welding with sparks">
+                    <img src="images/electric1.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
-                    <p>ARCOM STEELE</p>
-                    <p>South Forbes Laguna</p>
-                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                    <h3><i></i>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ms. Maritess Babalcon</h3>
+                    <p>Marikina City</p>
+                    <p>+63 999 229 8727</p>
+                    <p>Supply and Installation of Smart Electric Fence</p>
                 </div>
             </div>
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="images/door3.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i class="fas fa-fire"></i> Senator Ronald "Bato" Dela Rosa</h3>
-                    <p>ARCOM STEELE</p>
-                    <p>South Forbes Laguna</p>
-                    <p>Fabrication And Installation of Automatic Bi-fold Gate</p>
+                    <h3><i></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ar Joanne Amboy</h3>
+                    <p>BLK 4 Lot 9, Ph 3, Farmhills Subd., Brgy. Ulat, Silang, Cavite</p>
+                    <p>Fabrication and Installation of Brand New Sectional Garage Door and Accessories</p>
 
                 </div>
             </div>

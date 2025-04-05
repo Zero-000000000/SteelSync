@@ -191,7 +191,7 @@
         /* Fabrication Section */
         .fabrication {
             margin-bottom: 50px;
-            background-image: url('/images/11.jpg');
+            background-image: url('../images/door.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -292,7 +292,7 @@
             <h1>Sectional Garage Door</h1>
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="/images/door1.jpeg" alt="Metal fabrication workshop with worker welding">
+                    <img src="../images/door1.jpeg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>

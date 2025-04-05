@@ -148,7 +148,7 @@ $conn->close();
 
             <button type="submit">Login</button>
         </form>
-        <a href="#" class="forgot-password">Forgot Password?</a>
+        <a href="forgot_password.php" class="forgot-password">Forgot Password?</a>
     </div>
 </body>
 

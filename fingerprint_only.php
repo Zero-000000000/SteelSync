@@ -141,7 +141,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Update time and date
             function updateDateTime() {
                 const now = new Date();
@@ -167,13 +167,13 @@
                 notification.text(message);
                 notification.fadeIn();
 
-                setTimeout(function () {
+                setTimeout(function() {
                     notification.fadeOut();
                 }, 5000);
             }
 
             // Scan fingerprint
-            $('#scan-button').click(function () {
+            $('#scan-button').click(function() {
                 const button = $(this);
                 const status = $('#scan-status');
 
@@ -182,7 +182,7 @@
                 status.find('p').text('Scanning...');
 
                 // Simulate scanning - in a real app, this would be an AJAX call to the PHP backend
-                setTimeout(function () {
+                setTimeout(function() {
                     // Simulate success
                     const isSuccess = Math.random() > 0.1; //success rate for demo
 
@@ -223,7 +223,7 @@
                     status.find('.spinner-border').addClass('d-none');
 
                     // Reset status after a few seconds
-                    setTimeout(function () {
+                    setTimeout(function() {
                         status.find('p').text('Place your finger on the scanner');
                         status.find('p').removeClass('text-success text-danger').addClass('text-muted');
                     }, 3000);

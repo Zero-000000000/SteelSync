@@ -595,7 +595,6 @@
                 <div class="about-content">
                     <h2 class="about-heading">ABOUT <strong>Intellitech Systems</strong></h2>
                     <p class="company-description">
-                        ChatGPT said:
                         Intellitech Systems was founded on March 22, 2022, by engineer and businessman Richard Bartolome, who
                         brought his extensive experience in gate fabrication and automation to the company. Officially registered on
                         April 27, 2022, the company was established with a vision to exceed previous industry standards through innovation and quality service.

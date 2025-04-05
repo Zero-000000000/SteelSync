@@ -7,7 +7,7 @@ if (!isset($_SESSION["user"])) {
     exit();
 }
 // Verify the user has the correct role
-if ($_SESSION["role"] !== 'super_admin') {
+if ($_SESSION["role"] !== 'hr_admin') {
     // Redirect to appropriate page or show error
 
     header("Location: /steelsync/admin/login.php");
@@ -48,7 +48,7 @@ if ($_SESSION["role"] !== 'super_admin') {
                 <h2>ACCOUNT MANAGER</h2>
                 <div class="tabs">
                     <a href="#" class="tab <?php echo ($_SESSION['role'] == 'employee') ? 'active' : ''; ?>">Employee</a>
-                    <a href="#" class="tab <?php echo ($_SESSION['role'] == 'administrator') ? 'active' : ''; ?>">Administrator</a>
+
                 </div>
             </div>
 

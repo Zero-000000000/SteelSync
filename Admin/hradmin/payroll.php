@@ -7,7 +7,7 @@ if (!isset($_SESSION["user"])) {
     exit();
 }
 // Verify the user has the correct role
-if ($_SESSION["role"] !== 'super_admin') {
+if ($_SESSION["role"] !== 'hr_admin') {
     // Redirect to appropriate page or show error
     header("Location: login.php");
     exit();

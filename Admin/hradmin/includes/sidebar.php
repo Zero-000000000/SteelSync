@@ -16,7 +16,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <aside class="sidebar">
         <ul class="sidebar--items">
             <li>
-                <a href="index.php" <?php echo ($current_page == 'index.php') ? 'id="active--link"' : ''; ?>>
+                <a href="hr_admin.php" <?php echo ($current_page == 'index.php') ? 'id="active--link"' : ''; ?>>
                     <span class="icon icon-1"><i class="fas fa-th-large"></i></span>
                     <span class="sidebar--item">Dashboard</span>
                 </a>

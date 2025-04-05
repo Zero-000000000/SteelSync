@@ -23,7 +23,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </li>
             <li>
                 <a href="Apointment.php" <?php echo ($current_page == 'Apointment.php') ? 'id="active--link"' : ''; ?>>
-                    <span class="icon icon-1"><i class="fas fa-th-large"></i></span>
+                    <span class="icon icon-1"><i class="fas fa-calendar-alt"></i></span>
                     <span class="sidebar--item">Apointment</span>
                 </a>
             </li>
@@ -53,7 +53,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <!-- Other sidebar items -->
             <li>
                 <a href="pointofsale.php" <?php echo ($current_page == 'pointofsale.php') ? 'id="active--link"' : ''; ?>>
-                    <span class="icon icon-4"><i class="fas fa-calendar-check"></i></span>
+                    <span class="icon icon-4"><i class="fas fa-cash-register"></i></span>
                     <span class="sidebar--item">Point of Sale</span>
                 </a>
             </li>

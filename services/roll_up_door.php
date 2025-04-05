@@ -190,7 +190,7 @@
 
         /* Fabrication Section */
         .fabrication {
-            background-image: url('/images/11.jpg');
+            background-image: url('../images/roll2.webp');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -372,7 +372,7 @@
             <h1>Roll Up Door</h1>
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
+                    <img src="../images/roll2.webp" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
@@ -447,7 +447,7 @@
 
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="../images/roll1.jpg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i>Fire-Rated Rollup Door</h3>
@@ -461,7 +461,7 @@
 
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="../images/roll2.webp" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-wrench"></i> Weather-Resistant Rollup Door </h3>
@@ -475,7 +475,7 @@
             </div>
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="../images/secu.webp" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i>Rollup Security Door</h3>

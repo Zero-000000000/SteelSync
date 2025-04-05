@@ -190,7 +190,7 @@
 
         /* Fabrication Section */
         .fabrication {
-            background-image: url('/images/11.jpg');
+            background-image: url('../images/electric1.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -292,7 +292,7 @@
             <h1>Smart Electric Fence</h1>
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
+                    <img src="../images/electric1.jpg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>

@@ -175,19 +175,19 @@ if ($_SESSION["role"] !== 'support_admin') {
         <div class="metrics-container">
             <div class="metric-box">
                 <h3>Customer Total</h3>
-                <p>0</p>
+                <p>40</p>
             </div>
             <div class="metric-box">
                 <h3>New Customer</h3>
-                <p>0</p>
+                <p>10</p>
             </div>
             <div class="metric-box">
                 <h3>Total Complete Service</h3>
-                <p>0</p>
+                <p>50</p>
             </div>
             <div class="metric-box">
                 <h3>Total Income</h3>
-                <p>0</p>
+                <p>₱ 100000 </p>
             </div>
         </div>
 
@@ -208,7 +208,7 @@ if ($_SESSION["role"] !== 'support_admin') {
         <div class="section-container">
             <div class="section">
                 <h3>Attendance Statistics</h3>
-                <p>Total Employees: 38</p>
+                <p>Total Employees: 39</p>
             </div>
             <div class="section">
                 <h3>Inventory Overview</h3>
@@ -216,15 +216,7 @@ if ($_SESSION["role"] !== 'support_admin') {
             </div>
         </div>
 
-        <div class="section">
-            <h3>Input Payroll Data</h3>
-            <p>Enter details accurately</p>
-            <div class="payroll-input">
-                <input type="text" placeholder="Hours Worked">
-                <input type="text" placeholder="Overtime Hours (if applicable)">
-            </div>
-            <button class="submit-btn">Submit</button>
-        </div>
+
     </div>
     </div>
 
@@ -296,10 +288,10 @@ if ($_SESSION["role"] !== 'support_admin') {
         var salesChart = new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['Kupal', 'Kulane', 'Kulugo'],
+                labels: ['Gate Automation', 'Gate Fabrication', 'Sectional Garage Door', 'Sectional Garage Door', ],
                 datasets: [{
-                    data: [30, 50, 20],
-                    backgroundColor: ['#3498db', '#2ecc71', '#f39c12'],
+                    data: [30, 50, 10, 10],
+                    backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#FFFF00'],
                     borderColor: '#fff',
                     borderWidth: 2
                 }]

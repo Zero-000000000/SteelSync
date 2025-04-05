@@ -190,7 +190,7 @@
 
         /* Fabrication Section */
         .fabrication {
-            background-image: url('/images/11.jpg');
+            background-image: url('../images/fabrication.jpeg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -289,6 +289,9 @@
             height: auto;
             display: block;
             transition: transform 0.5s ease;
+            max-height: 460px;
+            max-width: 700px;
+
         }
 
         .work-image:hover img {
@@ -372,7 +375,7 @@
             <h1>Gate Automation</h1>
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="/images/11.jpg" alt="Metal fabrication workshop with worker welding">
+                    <img src="../images/fabrication.jpeg" alt="Metal fabrication workshop with worker welding">
                 </div>
                 <div class="hero-text">
                     <h2>At Intellitech Systems</h2>
@@ -449,7 +452,7 @@
             <!-- Metal Works Section -->
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="../images/sliding.jpeg" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> SLIDING GATE</h3>
@@ -466,7 +469,7 @@
             <!-- Stainless Works Section -->
             <div class="work-section stainless-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Stainless steel welding with sparks">
+                    <img src="../images/fabrication.jpeg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-wrench"></i> SWING GATE</h3>
@@ -480,7 +483,7 @@
             </div>
             <div class="work-section metal-works">
                 <div class="work-image">
-                    <img src="/images/11.jpg" alt="Metal welding with sparks">
+                    <img src="../images/baricade.webp" alt="Metal welding with sparks">
                 </div>
                 <div class="work-text">
                     <h3><i class="fas fa-fire"></i> BARRIER GATE</h3>

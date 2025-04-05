@@ -232,21 +232,21 @@
                 link: 'services/gate automation.php'
             },
             {
-                image: 'images/fabrication.jpeg',
+                image: 'images/metal.jpg',
                 icon: 'fa-solid fa-home',
                 title: 'Gate Fabrication',
                 description: 'Custom-designed gates crafted with precision and aesthetic appeal.',
                 link: 'services/gate_fabrication.php'
             },
             {
-                image: 'images/sectional.jpeg',
+                image: 'images/door.jpg',
                 icon: 'fa-solid fa-camera',
                 title: 'Sectional Garage Door',
                 description: 'Modern garage doors offering superior insulation and security.',
                 link: 'services/garage_door.php'
             },
             {
-                image: 'images/11.jpg',
+                image: 'images/roll1.jpg',
                 icon: 'fa-solid fa-bolt',
                 title: 'Roll Up Door',
                 description: 'High-performance doors for commercial and industrial applications.',
@@ -260,7 +260,7 @@
                 link: 'services/electric_fence.php'
             },
             {
-                image: 'images/11.jpg',
+                image: 'images/smart.jpg',
                 icon: 'fas fa-home',
                 title: 'Smart Curtain',
                 description: 'Automated curtain systems with intelligent home integration.',
