@@ -44,6 +44,13 @@ if ($_SESSION["role"] !== 'super_admin') {
             width: calc(100% - 103px);
         }
 
+        .payroll-manager-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
         /* Payroll Header - Remains in place */
         .payroll-header {
             display: flex;
@@ -655,118 +662,121 @@ if ($_SESSION["role"] !== 'super_admin') {
     <?php include "includes/salarycomputation.php"; ?>
 
     <div class="main--content">
-        <!-- Payroll Header - Stays in place -->
-        <div class="payroll-header">
-            <h2>PAYROLL</h2>
-            <div class="header-controls">
-                <div class="date-picker">
-                    <i class="fas fa-calendar"></i>
-                    <span id="currentPayPeriod">Jan 1 2025 - Jan 15 2025</span>
+        <div class="payroll-manager-container">
+            <!-- Payroll Header - Stays in place -->
+            <div class="payroll-header">
+                <h2>PAYROLL</h2>
+                <div class="header-controls">
+                    <div class="date-picker">
+                        <i class="fas fa-calendar"></i>
+                        <span id="currentPayPeriod">Jan 1 2025 - Jan 15 2025</span>
+                    </div>
+                    <button class="download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i>
+                        <span>Download</span>
+                    </button>
                 </div>
-                <button class="download-btn" id="downloadBtn">
-                    <i class="fas fa-download"></i>
-                    <span>Download</span>
-                </button>
             </div>
-        </div>
 
-        <!-- Filter controls -->
-        <div class="filter-controls">
-            <div class="filter-group">
-                <label class="filter-label" for="roleFilter">Role:</label>
-                <select class="filter-select" id="roleFilter">
-                    <option value="all">All Roles</option>
-                    <option value="employee">Employee</option>
-                    <option value="administrator">Administrator</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label" for="positionFilter">Position:</label>
-                <select class="filter-select" id="positionFilter">
-                    <option value="all">All Positions</option>
-                    <!-- Positions will be populated dynamically -->
-                </select>
-            </div>
-            <div class="filter-group">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search by name...">
-            </div>
-        </div>
-
-        <!-- Employee Table - Will be populated dynamically -->
-        <table class="employees-table">
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Position</th>
-                    <th>Role</th>
-                    <th>Basic Pay</th>
-
-                    <th>Regular U.T</th>
-                    <th>Total Hours</th>
-                    <th>Total Earnings</th>
-                </tr>
-            </thead>
-            <tbody id="employeeTableBody">
-                <!-- Employee data will be loaded here via JavaScript -->
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            <div class="pagination-info" id="paginationInfo">
-                <span>Loading entries...</span>
-            </div>
-            <div class="pagination-controls" id="paginationControls">
-                <!-- Pagination buttons will be added dynamically -->
-            </div>
-        </div>
-
-        <!-- Button to open payroll modal -->
-
-        <div class="doctors">
-            <div class="title">
-                <h2 class="section--title">Employees</h2>
-                <div class="doctors--right--btns">
-                    <select name="date" id="date" class="dropdown doctor--filter">
-                        <option>Filter</option>
-                        <option value="free"></option>
-                        <option value="scheduled">Training & Control Operations Manager</option>
-                        <option value="free">Training & Control Operations Manager</option>
-                        <option value="scheduled">Training & Control Operations Manager</option>
-                        <option value="free">Training & Control Operations Manager</option>
-                        <option value="scheduled">Training & Control Operations Manager</option>
+            <!-- Filter controls -->
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label class="filter-label" for="roleFilter">Role:</label>
+                    <select class="filter-select" id="roleFilter">
+                        <option value="all">All Roles</option>
+                        <option value="employee">Employee</option>
+                        <option value="administrator">Administrator</option>
                     </select>
-                    <button class="add"><i class="ri-add-line"></i>Add Employees</button>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="positionFilter">Position:</label>
+                    <select class="filter-select" id="positionFilter">
+                        <option value="all">All Positions</option>
+                        <!-- Positions will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by name...">
                 </div>
             </div>
-            <div class="doctors--cards">
-                <a href="#" class="doctor--card" id="openPayrollBtn">
-                    <div class="img--box--cover">
-                        <div class="img--box">
-                            <img src="../images/employee/profile.png" alt="Joel Ponce">
-                        </div>
-                    </div>
-                    <p class="scheduled">Joel Ponce</p>
-                </a>
-                <a href="#" class="doctor--card" id="openPayrollBtn">
-                    <div class="img--box--cover">
-                        <div class="img--box">
-                            <img src="../images/employee/profile.png" alt="Joel Ponce">
-                        </div>
-                    </div>
-                    <p class="scheduled">Joel Ponce</p>
-                </a>
-                <a href="#" class="doctor--card" id="openPayrollBtn">
-                    <div class="img--box--cover">
-                        <div class="img--box">
-                            <img src="../images/employee/profile.png" alt="Joel Ponce">
-                        </div>
-                    </div>
-                    <p class="scheduled">Joel Ponce</p>
-                </a>
 
+            <!-- Employee Table - Will be populated dynamically -->
+            <table class="employees-table">
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Position</th>
+                        <th>Role</th>
+                        <th>Basic Pay</th>
+                        <th>Regular O.T</th>
+                        <th>Regular U.T</th>
+                        <th>Total Hours</th>
+                        <th>Total Earnings</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    <!-- Employee data will be loaded here via JavaScript -->
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info" id="paginationInfo">
+                    <span>Loading entries...</span>
+                </div>
+                <div class="pagination-controls" id="paginationControls">
+                    <!-- Pagination buttons will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Button to open payroll modal -->
+
+            <div class="doctors">
+                <div class="title">
+                    <h2 class="section--title">Employees</h2>
+                    <div class="doctors--right--btns">
+                        <select name="date" id="date" class="dropdown doctor--filter">
+                            <option>Filter</option>
+                            <option value="free"></option>
+                            <option value="scheduled">Training & Control Operations Manager</option>
+                            <option value="free">Training & Control Operations Manager</option>
+                            <option value="scheduled">Training & Control Operations Manager</option>
+                            <option value="free">Training & Control Operations Manager</option>
+                            <option value="scheduled">Training & Control Operations Manager</option>
+                        </select>
+                        <button class="add"><i class="ri-add-line"></i>Add Employees</button>
+                    </div>
+                </div>
+                <div class="doctors--cards">
+                    <a href="#" class="doctor--card" id="openPayrollBtn">
+                        <div class="img--box--cover">
+                            <div class="img--box">
+                                <img src="../images/employee/profile.png" alt="Joel Ponce">
+                            </div>
+                        </div>
+                        <p class="scheduled">Joel Ponce</p>
+                    </a>
+                    <a href="#" class="doctor--card" id="openPayrollBtn">
+                        <div class="img--box--cover">
+                            <div class="img--box">
+                                <img src="../images/employee/profile.png" alt="Joel Ponce">
+                            </div>
+                        </div>
+                        <p class="scheduled">Joel Ponce</p>
+                    </a>
+                    <a href="#" class="doctor--card" id="openPayrollBtn">
+                        <div class="img--box--cover">
+                            <div class="img--box">
+                                <img src="../images/employee/profile.png" alt="Joel Ponce">
+                            </div>
+                        </div>
+                        <p class="scheduled">Joel Ponce</p>
+                    </a>
+
+                </div>
             </div>
         </div>
+
     </div>
 
     <!-- JavaScript to handle employee data and interactions -->
@@ -1059,7 +1069,7 @@ if ($_SESSION["role"] !== 'super_admin') {
                         <td>${employee.position}</td>
                         <td>${employee.role.charAt(0).toUpperCase() + employee.role.slice(1)}</td>
                         <td>${formattedBasicPay}</td>
-                        
+                        <td>${employee.regOT.toFixed(2)}</td>
                         <td>${employee.regUT.toFixed(2)}</td>
                         <td>${employee.totalHours.toFixed(2)}</td>
                         <td>${formattedEarnings}</td>

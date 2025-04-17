@@ -34,6 +34,10 @@
             color: var(--text-dark);
         }
 
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         .contact-container {
             max-width: 700px;
             width: 100%;

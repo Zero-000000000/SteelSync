@@ -462,6 +462,10 @@
             text-align: center;
         }
 
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         /* Responsive design */
         @media (max-width: 992px) {
             .container {

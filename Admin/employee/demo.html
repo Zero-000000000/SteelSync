@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellitech System | Employee Attendance Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-grey: #2d3748;
+            --secondary-grey: #4a5568;
+            --light-grey: #f7fafc;
+            --bg-grey: #edf2f7;
+            --border-grey: #e2e8f0;
+            --primary-orange: #ed8936;
+            --secondary-orange: #f6ad55;
+            --accent-orange: #dd6b20;
+            --success-green: #48bb78;
+            --error-red: #f56565;
+            --info-blue: #4299e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-grey);
+            color: var(--primary-grey);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header styles */
+        .header {
+            background-color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-grey);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            color: var(--primary-orange);
+            margin-right: 0.5rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            color: var(--secondary-grey);
+            font-size: 1.25rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary-orange);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--primary-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        /* Time card styles */
+        .time-card {
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .time-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .time-card.checked-in::after {
+            background-color: var(--success-green);
+        }
+
+        .time-card.checked-out::after {
+            background-color: var(--primary-orange);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge i {
+            margin-right: 0.5rem;
+        }
+
+        .status-badge.checked-in {
+            background-color: rgba(72, 187, 120, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-badge.checked-out {
+            background-color: rgba(237, 137, 54, 0.1);
+            color: var(--primary-orange);
+        }
+
+        .current-time {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-grey);
+        }
+
+        .current-date {
+            color: var(--secondary-grey);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.25rem;
+            color: var(--success-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            outline: none;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-time-in {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+
+        .btn-time-in:hover:not(:disabled) {
+            background-color: var(--accent-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-time-out {
+            background-color: white;
+            color: var(--primary-grey);
+            border: 2px solid var(--bg-grey);
+        }
+
+        .btn-time-out:hover:not(:disabled) {
+            background-color: var(--bg-grey);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Location card styles */
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-grey);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title-text {
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title-text i {
+            margin-right: 0.5rem;
+            color: var(--primary-orange);
+        }
+
+        .section-actions {
+            font-size: 0.875rem;
+            font-weight: normal;
+            color: var(--primary-orange);
+            cursor: pointer;
+        }
+
+        .section-actions i {
+            margin-left: 0.25rem;
+        }
+
+        .location-card {
+            padding: 1.5rem;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            color: var(--secondary-grey);
+            margin-top: 0.5rem;
+        }
+
+        .location-info i {
+            margin-right: 0.75rem;
+            color: var(--primary-orange);
+            font-size: 1.25rem;
+        }
+
+        .accuracy-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            background-color: rgba(66, 153, 225, 0.1);
+            color: var(--info-blue);
+            margin-left: 0.5rem;
+        }
+
+        .high-accuracy {
+            color: var(--success-green);
+        }
+
+        .medium-accuracy {
+            color: var(--primary-orange);
+        }
+
+        .low-accuracy {
+            color: var(--error-red);
+        }
+
+        .map-container {
+            width: 100%;
+            height: 150px;
+            background-color: var(--bg-grey);
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: var(--secondary-grey);
+        }
+
+        .map-placeholder i {
+            font-size: 2rem;
+            color: var(--border-grey);
+        }
+
+        .accuracy-info {
+            font-size: 0.75rem;
+            color: var(--secondary-grey);
+            margin-top: 0.25rem;
+        }
+
+        /* History card styles */
+        .history-card {
+            padding: 1.5rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-box {
+            background-color: var(--bg-grey);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-grey);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--secondary-grey);
+            text-transform: uppercase;
+        }
+
+        .history-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-grey);
+            margin-bottom: 1rem;
+        }
+
+        .history-tab {
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: var(--secondary-grey);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .history-tab.active {
+            color: var(--primary-orange);
+        }
+
+        .history-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-orange);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background-color: var(--bg-grey);
+            transition: transform 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .history-time {
+            font-weight: 600;
+            color: var(--primary-grey);
+            display: flex;
+            align-items: center;
+        }
+
+        .history-date {
+            font-size: 0.75rem;
+            color: var(--secondary-grey);
+            margin-left: 0.5rem;
+        }
+
+        .history-location {
+            font-size: 0.875rem;
+            color: var(--secondary-grey);
+        }
+
+        .history-type {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .history-type.in {
+            color: var(--success-green);
+        }
+
+        .history-type.out {
+            color: var(--primary-orange);
+        }
+
+        .history-type i {
+            margin-right: 0.5rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--secondary-grey);
+        }
+
+        .empty-history i {
+            font-size: 2.5rem;
+            color: var(--border-grey);
+            margin-bottom: 1rem;
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background-color: var(--primary-orange);
+            animation: shrink 3s linear forwards;
+        }
+
+        .toast.success::after {
+            background-color: var(--success-green);
+        }
+
+        .toast.error::after {
+            background-color: var(--error-red);
+        }
+
+        .toast-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: var(--secondary-grey);
+        }
+
+        .toast-close {
+            color: var(--secondary-grey);
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes shrink {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        /* Loading indicators */
+        .loading {
+            display: inline-flex;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(237, 137, 54, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-orange);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error state */
+        .error-state {
+            color: var(--error-red);
+            display: flex;
+            align-items: center;
+        }
+
+        .error-state i {
+            margin-right: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--secondary-grey);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer span {
+            color: var(--primary-orange);
+            font-weight: 600;
+        }
+
+        /* API connection indicator */
+        .api-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+
+        .api-status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .api-status-indicator.connected {
+            background-color: var(--success-green);
+        }
+
+        .api-status-indicator.disconnected {
+            background-color: var(--error-red);
+        }
+
+        /* Settings modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-grey);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-grey);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--secondary-grey);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-grey);
+        }
+
+        .settings-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-grey);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .settings-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(237, 137, 54, 0.1);
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-grey);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--bg-grey);
+            color: var(--secondary-grey);
+        }
+
+        .modal-btn-primary {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+
+        /* Demo mode toggle */
+        .demo-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background-color: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-toggle i {
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+
+            .header,
+            .main-content,
+            .footer {
+                padding: 1rem;
+            }
+
+            .time-card {
+                padding: 1.5rem;
+            }
+
+            .current-time {
+                font-size: 2.5rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-clock logo-icon"></i>
+                Intellitech System
+            </div>
+            <div class="user-menu">
+                <div class="notification-icon" id="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">2</span>
+                </div>
+                <div class="avatar" id="settings-btn">EM</div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="card time-card checked-out" id="time-status-card">
+                <div class="status-badge checked-out" id="status-badge">
+                    <i class="fas fa-circle"></i>
+                    CHECKED OUT
+                </div>
+
+                <div class="current-time" id="current-time">--:--</div>
+                <div class="current-date" id="current-date">--</div>
+                <div class="timer-display" id="timer-display">00:00:00</div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-time-in" id="time-in-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        TIME IN
+                    </button>
+                    <button class="btn btn-time-out" id="time-out-btn" disabled>
+                        <i class="fas fa-sign-out-alt"></i>
+                        TIME OUT
+                    </button>
+                </div>
+            </div>
+
+            <div class="card location-card">
+                <div class="section-title">
+                    <div class="section-title-text">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Current Location
+                    </div>
+                    <div class="section-actions" id="refresh-location">
+                        Refresh <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+                <div class="location-info" id="location-info">
+                    <i class="fas fa-crosshairs"></i>
+                    <span id="location-text">Detecting your location...</span>
+                </div>
+                <div class="map-container" id="map-container">
+                    <div class="map-placeholder" id="map-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <div>Map will appear here</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card history-card">
+                <div class="section-title">
+                    <div class="section-title-text">
+                        <i class="fas fa-chart-bar"></i>
+                        Activity Summary
+                    </div>
+                    <div class="section-actions" id="view-reports">
+                        Reports <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-value" id="hours-today">0.0h</div>
+                        <div class="stat-label">Today</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="hours-week">0.0h</div>
+                        <div class="stat-label">This Week</div>
+                    </div>
+                </div>
+
+                <div class="history-tabs">
+                    <div class="history-tab active" data-tab="today">Today</div>
+                    <div class="history-tab" data-tab="week">This Week</div>
+                </div>
+
+                <div class="history-list" id="history-list">
+                    <div class="empty-history" id="empty-history">
+                        <i class="far fa-calendar"></i>
+                        <p>No activity recorded today</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            © 2025 <span>Intellitech System</span> | Employee Time Tracking
+            <div class="api-status" id="api-status">
+                <div class="api-status-indicator connected" id="api-indicator"></div>
+                <span id="api-status-text">API connected (demo mode)</span>
+            </div>
+        </footer>
+
+        <!-- Toast container -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- Settings Modal -->
+        <div class="modal-overlay" id="settings-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-title">Demo Mode Settings</div>
+                    <button class="modal-close" id="modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <div class="settings-label">Employee Name</div>
+                        <input type="text" class="settings-input" id="employee-name" value="John Doe">
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-label">Employee ID</div>
+                        <input type="text" class="settings-input" id="employee-id" value="EM1001">
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-label">Department</div>
+                        <input type="text" class="settings-input" id="employee-dept" value="Development">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn modal-btn-secondary" id="modal-cancel">Cancel</button>
+                    <button class="modal-btn modal-btn-primary" id="modal-save">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="demo-toggle" id="demo-toggle">
+        <i class="fas fa-toggle-on"></i>
+        <span>Demo Mode</span>
+    </button>
+
+    <script>
+        // Demo configuration - no API needed
+        const config = {
+            demoMode: true,
+            employee: {
+                id: 'EM1001',
+                name: 'John Doe',
+                initials: 'JD',
+                department: 'Development'
+            },
+            refreshRate: 60000,
+            toastDuration: 3000,
+            minLocationAccuracy: 50,
+            demoLocation: {
+                latitude: 37.7749,
+                longitude: -122.4194,
+                accuracy: 15,
+                address: {
+                    street: 'St Carlos',
+                    city: 'Baliwag',
+                    state: 'Bulacan',
+                    country: 'Philippines'
+                }
+            }
+        };
+
+        // State Management
+        const appState = {
+            isCheckedIn: false,
+            lastCheckin: null,
+            currentPosition: null,
+            locationAddress: null,
+            locationAccuracy: null,
+            apiConnected: true, // Always connected in demo mode
+            activeTab: 'today',
+            history: [],
+            sessionHours: 0,
+            weeklyHours: 0,
+            isProcessing: false,
+            timerInterval: null,
+            demoLocations: [
+                {
+                    latitude: 37.7749,
+                    longitude: -122.4194,
+                    accuracy: 15,
+                    address: {
+                        street: 'St Carlos',
+                        city: 'Baliwag',
+                        state: 'Bulacan',
+                        country: 'Philippines'
+                    }
+                },
+                {
+                    latitude: 34.0522,
+                    longitude: -118.2437,
+                    accuracy: 25,
+                    address: {
+                        street: 'St Carlos',
+                        city: 'Baliwag',
+                        state: 'Bulacan',
+                        country: 'Philippines'
+                    }
+                },
+                {
+                    latitude: 40.7128,
+                    longitude: -74.0060,
+                    accuracy: 50,
+                    address: {
+                        street: 'St Carlos',
+                        city: 'Baliwag',
+                        state: 'Bulacan',
+                        country: 'Philippines'
+                    }
+                }
+            ]
+        };
+
+        // Generate demo history data
+        function generateDemoHistory() {
+            const today = new Date();
+            const history = [];
+
+            // Generate today's entries
+            const todayCheckIn = new Date(today);
+            todayCheckIn.setHours(9, 0, 0);
+
+            const todayCheckOut = new Date(today);
+            todayCheckOut.setHours(17, 30, 0);
+
+            history.push({
+                type: 'IN',
+                timestamp: todayCheckIn.toISOString(),
+                location: {
+                    latitude: 37.7749,
+                    longitude: -122.4194,
+                    accuracy: 15,
+                    address: {
+                        street: 'St Carlos',
+                        city: 'Baliwag',
+                        state: 'Bulacan',
+                        country: 'Philippines'
+                    }
+                }
+            });
+
+            history.push({
+                type: 'OUT',
+                timestamp: todayCheckOut.toISOString(),
+                location: {
+                    latitude: 37.7749,
+                    longitude: -122.4194,
+                    accuracy: 25,
+                    address: {
+                        street: 'St Carlos',
+                        city: 'Baliwag',
+                        state: 'Bulacan',
+                        country: 'Philippines'
+                    }
+                }
+            });
+
+            // Generate week's entries
+            for (let i = 1; i <= 5; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+
+                const checkIn = new Date(date);
+                checkIn.setHours(8 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 60), 0);
+
+                const checkOut = new Date(date);
+                checkOut.setHours(17 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 60), 0);
+
+                const locationIndex = Math.floor(Math.random() * appState.demoLocations.length);
+                const location = appState.demoLocations[locationIndex];
+
+                history.push({
+                    type: 'IN',
+                    timestamp: checkIn.toISOString(),
+                    location: location
+                });
+
+                history.push({
+                    type: 'OUT',
+                    timestamp: checkOut.toISOString(),
+                    location: location
+                });
+            }
+
+            return history;
+        }
+
+        // DOM Elements
+        const elements = {
+            timeStatusCard: document.getElementById('time-status-card'),
+            statusBadge: document.getElementById('status-badge'),
+            currentTimeEl: document.getElementById('current-time'),
+            currentDateEl: document.getElementById('current-date'),
+            timerDisplay: document.getElementById('timer-display'),
+            timeInBtn: document.getElementById('time-in-btn'),
+            timeOutBtn: document.getElementById('time-out-btn'),
+            locationText: document.getElementById('location-text'),
+            locationInfo: document.getElementById('location-info'),
+            refreshLocation: document.getElementById('refresh-location'),
+            mapContainer: document.getElementById('map-container'),
+            mapPlaceholder: document.getElementById('map-placeholder'),
+            historyList: document.getElementById('history-list'),
+            emptyHistory: document.getElementById('empty-history'),
+            historyTabs: document.querySelectorAll('.history-tab'),
+            hoursToday: document.getElementById('hours-today'),
+            hoursWeek: document.getElementById('hours-week'),
+            apiStatus: document.getElementById('api-status'),
+            apiIndicator: document.getElementById('api-indicator'),
+            apiStatusText: document.getElementById('api-status-text'),
+            toastContainer: document.getElementById('toast-container'),
+            settingsBtn: document.getElementById('settings-btn'),
+            settingsModal: document.getElementById('settings-modal'),
+            modalClose: document.getElementById('modal-close'),
+            modalCancel: document.getElementById('modal-cancel'),
+            modalSave: document.getElementById('modal-save'),
+            employeeNameInput: document.getElementById('employee-name'),
+            employeeIdInput: document.getElementById('employee-id'),
+            employeeDeptInput: document.getElementById('employee-dept'),
+            notificationIcon: document.getElementById('notification-icon'),
+            viewReports: document.getElementById('view-reports'),
+            demoToggle: document.getElementById('demo-toggle')
+        };
+
+        // Utility Functions
+        const utils = {
+            formatTime: (date) => {
+                return date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            },
+
+            formatDate: (date) => {
+                return date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+            },
+
+            calculateHours: (startTime, endTime) => {
+                const diff = Math.abs(endTime - startTime) / 36e5;
+                return parseFloat(diff.toFixed(1));
+            },
+
+            formatAddress: (address) => {
+                if (!address) return 'Unknown location';
+                return `${address.street || ''}, ${address.city || ''}`;
+            },
+
+            getRandomAccuracy: () => {
+                // Return random accuracy between 5 and 50 meters
+                return Math.floor(Math.random() * 45) + 5;
+            },
+
+            formatTimer: (seconds) => {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+
+                return [
+                    hours.toString().padStart(2, '0'),
+                    minutes.toString().padStart(2, '0'),
+                    secs.toString().padStart(2, '0')
+                ].join(':');
+            }
+        };
+
+        // Demo API Service - Simulates API calls
+        const demoApiService = {
+            checkIn: async function (location) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            success: true,
+                            message: 'Checked in successfully'
+                        });
+                    }, 800); // Simulate network delay
+                });
+            },
+
+            checkOut: async function (location) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            success: true,
+                            message: 'Checked out successfully'
+                        });
+                    }, 800); // Simulate network delay
+                });
+            },
+
+            getTimeHistory: async function (period) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const history = generateDemoHistory();
+                        const filteredHistory = period === 'today' ?
+                            history.filter(entry => {
+                                const entryDate = new Date(entry.timestamp);
+                                const today = new Date();
+                                return entryDate.toDateString() === today.toDateString();
+                            }) :
+                            history;
+
+                        resolve({
+                            entries: filteredHistory
+                        });
+                    }, 500);
+                });
+            },
+
+            getTimeStats: async function () {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Calculate today's hours
+                        let todayHours = 0;
+                        const today = new Date();
+                        const todayEntries = generateDemoHistory().filter(entry => {
+                            const entryDate = new Date(entry.timestamp);
+                            return entryDate.toDateString() === today.toDateString();
+                        });
+
+                        if (todayEntries.length >= 2) {
+                            const checkIn = new Date(todayEntries[0].timestamp);
+                            const checkOut = new Date(todayEntries[1].timestamp);
+                            todayHours = utils.calculateHours(checkIn, checkOut);
+                        }
+
+                        // Calculate weekly hours (random between 35-45)
+                        const weeklyHours = 40 + (Math.random() * 10 - 5);
+
+                        resolve({
+                            today: todayHours,
+                            week: parseFloat(weeklyHours.toFixed(1))
+                        });
+                    }, 500);
+                });
+            },
+
+            getAddressFromCoords: async function (lat, lng) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Find the closest demo location
+                        let closestLocation = appState.demoLocations[0];
+                        let minDistance = Infinity;
+
+                        for (const location of appState.demoLocations) {
+                            const distance = Math.sqrt(
+                                Math.pow(location.latitude - lat, 2) +
+                                Math.pow(location.longitude - lng, 2)
+                            );
+
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestLocation = location;
+                            }
+                        }
+
+                        resolve(closestLocation.address);
+                    }, 300);
+                });
+            }
+        };
+
+        // Time Controller
+        const timeController = {
+            clockInterval: null,
+
+            init: function () {
+                this.updateClock();
+                this.clockInterval = setInterval(this.updateClock.bind(this), 1000);
+                this.fetchStatus();
+                this.fetchHistory();
+                this.fetchStats();
+
+                elements.timeInBtn.addEventListener('click', this.handleTimeIn.bind(this));
+                elements.timeOutBtn.addEventListener('click', this.handleTimeOut.bind(this));
+
+                elements.historyTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.changeHistoryTab(tab.getAttribute('data-tab'));
+                    });
+                });
+            },
+
+            updateClock: function () {
+                const now = new Date();
+                elements.currentTimeEl.textContent = utils.formatTime(now);
+                elements.currentDateEl.textContent = utils.formatDate(now);
+            },
+
+            startTimer: function () {
+                if (appState.timerInterval) {
+                    clearInterval(appState.timerInterval);
+                }
+
+                // Start from 0 if no lastCheckin time (shouldn't happen)
+                let startTime = appState.lastCheckin ? appState.lastCheckin.getTime() : new Date().getTime();
+
+                // Update immediately
+                this.updateTimerDisplay(startTime);
+
+                // Then update every second
+                appState.timerInterval = setInterval(() => {
+                    this.updateTimerDisplay(startTime);
+                }, 1000);
+            },
+
+            updateTimerDisplay: function (startTime) {
+                const now = new Date().getTime();
+                const elapsedSeconds = Math.floor((now - startTime) / 1000);
+                elements.timerDisplay.textContent = utils.formatTimer(elapsedSeconds);
+            },
+
+            stopTimer: function () {
+                if (appState.timerInterval) {
+                    clearInterval(appState.timerInterval);
+                    appState.timerInterval = null;
+                }
+                elements.timerDisplay.textContent = '00:00:00';
+            },
+
+            fetchStatus: async function () {
+                // In demo mode, we don't need to fetch status from API
+                // Just use the current appState.isCheckedIn value
+                if (appState.isCheckedIn) {
+                    this.updateUIForCheckedIn();
+                } else {
+                    this.updateUIForCheckedOut();
+                }
+            },
+
+            fetchHistory: async function () {
+                try {
+                    const period = appState.activeTab;
+                    const historyData = await demoApiService.getTimeHistory(period);
+
+                    appState.history = historyData.entries || [];
+                    this.renderHistory();
+                } catch (error) {
+                    console.error('Error fetching history:', error);
+                }
+            },
+
+            fetchStats: async function () {
+                try {
+                    const statsData = await demoApiService.getTimeStats();
+
+                    appState.sessionHours = statsData.today || 0;
+                    appState.weeklyHours = statsData.week || 0;
+
+                    elements.hoursToday.textContent = `${appState.sessionHours.toFixed(1)}h`;
+                    elements.hoursWeek.textContent = `${appState.weeklyHours.toFixed(1)}h`;
+                } catch (error) {
+                    console.error('Error fetching stats:', error);
+                }
+            },
+
+            handleTimeIn: async function () {
+                if (appState.isProcessing) return;
+
+                try {
+                    appState.isProcessing = true;
+                    uiController.setButtonLoading(elements.timeInBtn, true);
+
+                    // Simulate getting location
+                    const location = {
+                        coords: {
+                            latitude: config.demoLocation.latitude,
+                            longitude: config.demoLocation.longitude,
+                            accuracy: utils.getRandomAccuracy()
+                        }
+                    };
+
+                    await demoApiService.checkIn({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                        accuracy: location.coords.accuracy,
+                        address: config.demoLocation.address
+                    });
+
+                    appState.isCheckedIn = true;
+                    appState.lastCheckin = new Date();
+
+                    this.updateUIForCheckedIn();
+                    this.fetchHistory();
+
+                    // Start the timer
+                    this.startTimer();
+
+                    // Update location display
+                    appState.currentPosition = location;
+                    appState.locationAccuracy = location.coords.accuracy;
+                    appState.locationAddress = config.demoLocation.address;
+
+                    elements.locationText.innerHTML = `
+                        ${utils.formatAddress(config.demoLocation.address)}
+                        <span class="accuracy-badge high-accuracy">±${location.coords.accuracy}m</span>
+                    `;
+
+                    elements.mapPlaceholder.innerHTML = `
+                        <i class="fas fa-map-pin high-accuracy"></i>
+                        <div>${location.coords.latitude.toFixed(6)}, ${location.coords.longitude.toFixed(6)}</div>
+                        <small class="accuracy-info">Accuracy: ±${location.coords.accuracy}m</small>
+                    `;
+
+                    uiController.showToast('Checked In', 'You have successfully checked in.', 'success');
+                } catch (error) {
+                    console.error('Check-in error:', error);
+                    uiController.showToast('Check-in Failed', error.message, 'error');
+                } finally {
+                    appState.isProcessing = false;
+                    uiController.setButtonLoading(elements.timeInBtn, false);
+                }
+            },
+
+            handleTimeOut: async function () {
+                if (appState.isProcessing) return;
+
+                try {
+                    appState.isProcessing = true;
+                    uiController.setButtonLoading(elements.timeOutBtn, true);
+
+                    // Simulate getting location
+                    const location = {
+                        coords: {
+                            latitude: config.demoLocation.latitude + (Math.random() * 0.001 - 0.0005),
+                            longitude: config.demoLocation.longitude + (Math.random() * 0.001 - 0.0005),
+                            accuracy: utils.getRandomAccuracy()
+                        }
+                    };
+
+                    let sessionHours = 0;
+                    if (appState.lastCheckin) {
+                        sessionHours = utils.calculateHours(appState.lastCheckin, new Date());
+                    }
+
+                    await demoApiService.checkOut({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                        accuracy: location.coords.accuracy,
+                        address: config.demoLocation.address,
+                        hours: sessionHours
+                    });
+
+                    appState.isCheckedIn = false;
+                    appState.lastCheckin = null;
+
+                    this.updateUIForCheckedOut();
+                    this.fetchHistory();
+                    this.fetchStats();
+
+                    // Stop the timer
+                    this.stopTimer();
+
+                    // Update location display
+                    appState.currentPosition = location;
+                    appState.locationAccuracy = location.coords.accuracy;
+                    appState.locationAddress = config.demoLocation.address;
+
+                    elements.locationText.innerHTML = `
+                        ${utils.formatAddress(config.demoLocation.address)}
+                        <span class="accuracy-badge high-accuracy">±${location.coords.accuracy}m</span>
+                    `;
+
+                    elements.mapPlaceholder.innerHTML = `
+                        <i class="fas fa-map-pin high-accuracy"></i>
+                        <div>${location.coords.latitude.toFixed(6)}, ${location.coords.longitude.toFixed(6)}</div>
+                        <small class="accuracy-info">Accuracy: ±${location.coords.accuracy}m</small>
+                    `;
+
+                    uiController.showToast('Checked Out', `You worked ${sessionHours.toFixed(1)} hours this session.`, 'success');
+                } catch (error) {
+                    console.error('Check-out error:', error);
+                    uiController.showToast('Check-out Failed', error.message, 'error');
+                } finally {
+                    appState.isProcessing = false;
+                    uiController.setButtonLoading(elements.timeOutBtn, false);
+                }
+            },
+
+            updateUIForCheckedIn: function () {
+                elements.timeStatusCard.classList.remove('checked-out');
+                elements.timeStatusCard.classList.add('checked-in');
+
+                elements.statusBadge.classList.remove('checked-out');
+                elements.statusBadge.classList.add('checked-in');
+                elements.statusBadge.innerHTML = '<i class="fas fa-circle"></i> CHECKED IN';
+
+                elements.timeInBtn.disabled = true;
+                elements.timeOutBtn.disabled = false;
+
+                // Show the timer
+                elements.timerDisplay.style.display = 'block';
+            },
+
+            updateUIForCheckedOut: function () {
+                elements.timeStatusCard.classList.remove('checked-in');
+                elements.timeStatusCard.classList.add('checked-out');
+
+                elements.statusBadge.classList.remove('checked-in');
+                elements.statusBadge.classList.add('checked-out');
+                elements.statusBadge.innerHTML = '<i class="fas fa-circle"></i> CHECKED OUT';
+
+                elements.timeInBtn.disabled = false;
+                elements.timeOutBtn.disabled = true;
+
+                // Hide the timer
+                elements.timerDisplay.style.display = 'none';
+            },
+
+            changeHistoryTab: function (tabName) {
+                appState.activeTab = tabName;
+
+                elements.historyTabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === tabName) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+
+                this.fetchHistory();
+            },
+
+            renderHistory: function () {
+                const historyList = elements.historyList;
+
+                while (historyList.firstChild) {
+                    historyList.removeChild(historyList.firstChild);
+                }
+
+                if (!appState.history || appState.history.length === 0) {
+                    historyList.appendChild(elements.emptyHistory);
+                    return;
+                }
+
+                elements.emptyHistory.remove();
+
+                const sortedHistory = [...appState.history].sort((a, b) => {
+                    return new Date(b.timestamp) - new Date(a.timestamp);
+                });
+
+                sortedHistory.forEach(entry => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+
+                    const entryTime = new Date(entry.timestamp);
+                    const formattedTime = utils.formatTime(entryTime);
+                    const formattedDate = entryTime.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    historyItem.innerHTML = `
+                        <div class="history-info">
+                            <div class="history-time">
+                                ${formattedTime}
+                                <span class="history-date">${formattedDate}</span>
+                            </div>
+                            <div class="history-location">${entry.location.address ? utils.formatAddress(entry.location.address) : 'Unknown location'}</div>
+                        </div>
+                        <div class="history-type ${entry.type.toLowerCase()}">
+                            <i class="fas fa-${entry.type === 'IN' ? 'sign-in-alt' : 'sign-out-alt'}"></i>
+                            ${entry.type}
+                        </div>
+                    `;
+
+                    historyList.appendChild(historyItem);
+                });
+            }
+        };
+
+        // Location Controller - Simulated for demo
+        const locationController = {
+            init: function () {
+                this.updateLocation();
+                elements.refreshLocation.addEventListener('click', this.updateLocation.bind(this));
+            },
+
+            updateLocation: async function () {
+                elements.locationText.textContent = 'Updating location...';
+                elements.refreshLocation.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                elements.locationInfo.classList.remove('error-state');
+
+                try {
+                    // Simulate getting location with a delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Use demo location with slight random variation
+                    const position = {
+                        coords: {
+                            latitude: config.demoLocation.latitude + (Math.random() * 0.001 - 0.0005),
+                            longitude: config.demoLocation.longitude + (Math.random() * 0.001 - 0.0005),
+                            accuracy: utils.getRandomAccuracy()
+                        }
+                    };
+
+                    appState.currentPosition = position;
+                    const accuracy = Math.round(position.coords.accuracy);
+                    appState.locationAccuracy = accuracy;
+
+                    // Visual feedback based on accuracy
+                    let accuracyClass = 'low-accuracy';
+                    if (accuracy < 20) accuracyClass = 'high-accuracy';
+                    else if (accuracy < 100) accuracyClass = 'medium-accuracy';
+
+                    const address = await demoApiService.getAddressFromCoords(
+                        position.coords.latitude,
+                        position.coords.longitude
+                    );
+
+                    appState.locationAddress = address;
+                    elements.locationText.innerHTML = `
+                        ${utils.formatAddress(address)}
+                        <span class="accuracy-badge ${accuracyClass}">±${accuracy}m</span>
+                    `;
+
+                    // Update map placeholder with accuracy information
+                    elements.mapPlaceholder.innerHTML = `
+                        <i class="fas fa-map-pin ${accuracyClass}"></i>
+                        <div>${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}</div>
+                        <small class="accuracy-info">Accuracy: ±${accuracy}m</small>
+                    `;
+
+                } catch (error) {
+                    console.error('Location error:', error);
+                    elements.locationText.textContent = 'Location updated (demo mode)';
+                } finally {
+                    elements.refreshLocation.innerHTML = 'Refresh <i class="fas fa-sync-alt"></i>';
+                }
+            }
+        };
+
+        // UI Controller
+        const uiController = {
+            init: function () {
+                this.setupModals();
+                this.setupAvatarInitials();
+                this.updateApiStatus(true); // Always connected in demo mode
+
+                elements.viewReports.addEventListener('click', this.handleViewReports.bind(this));
+                elements.notificationIcon.addEventListener('click', this.handleNotifications.bind(this));
+                elements.demoToggle.addEventListener('click', this.toggleDemoMode.bind(this));
+
+                // Set demo mode indicator
+                elements.apiStatusText.textContent = 'API connected (demo mode)';
+            },
+
+            setupModals: function () {
+                elements.settingsBtn.addEventListener('click', () => {
+                    // Populate modal with current employee info
+                    elements.employeeNameInput.value = config.employee.name;
+                    elements.employeeIdInput.value = config.employee.id;
+                    elements.employeeDeptInput.value = config.employee.department;
+
+                    elements.settingsModal.classList.add('active');
+                });
+
+                elements.modalClose.addEventListener('click', () => {
+                    elements.settingsModal.classList.remove('active');
+                });
+
+                elements.modalCancel.addEventListener('click', () => {
+                    elements.settingsModal.classList.remove('active');
+                });
+
+                elements.modalSave.addEventListener('click', async () => {
+                    const employeeName = elements.employeeNameInput.value.trim();
+                    const employeeId = elements.employeeIdInput.value.trim();
+                    const employeeDept = elements.employeeDeptInput.value.trim();
+
+                    if (!employeeName || !employeeId || !employeeDept) {
+                        this.showToast('Validation Error', 'All fields are required', 'error');
+                        return;
+                    }
+
+                    // Update config
+                    config.employee.name = employeeName;
+                    config.employee.id = employeeId;
+                    config.employee.department = employeeDept;
+
+                    // Update initials
+                    const nameParts = employeeName.split(' ');
+                    let initials = '';
+                    if (nameParts.length > 0) initials += nameParts[0].charAt(0).toUpperCase();
+                    if (nameParts.length > 1) initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+                    config.employee.initials = initials || 'ME';
+
+                    // Update UI
+                    elements.settingsBtn.textContent = initials || 'ME';
+
+                    this.showToast('Settings Saved', 'Employee information updated', 'success');
+                    elements.settingsModal.classList.remove('active');
+                });
+            },
+
+            setupAvatarInitials: function () {
+                const nameParts = config.employee.name.split(' ');
+                let initials = '';
+
+                if (nameParts.length > 0) {
+                    initials += nameParts[0].charAt(0).toUpperCase();
+                }
+
+                if (nameParts.length > 1) {
+                    initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+                }
+
+                elements.settingsBtn.textContent = initials || 'ME';
+            },
+
+            updateApiStatus: function (connected) {
+                if (connected) {
+                    elements.apiIndicator.classList.remove('disconnected');
+                    elements.apiIndicator.classList.add('connected');
+                    elements.apiStatusText.textContent = 'API connected (demo mode)';
+                } else {
+                    elements.apiIndicator.classList.remove('connected');
+                    elements.apiIndicator.classList.add('disconnected');
+                    elements.apiStatusText.textContent = 'API not connected';
+                }
+            },
+
+            showToast: function (title, message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                let iconClass;
+                switch (type) {
+                    case 'success':
+                        iconClass = 'fas fa-check-circle';
+                        break;
+                    case 'error':
+                        iconClass = 'fas fa-exclamation-circle';
+                        break;
+                    default:
+                        iconClass = 'fas fa-info-circle';
+                }
+
+                toast.innerHTML = `
+                    <div class="toast-icon"><i class="${iconClass}"></i></div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <div class="toast-close"><i class="fas fa-times"></i></div>
+                `;
+
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.remove();
+                });
+
+                setTimeout(() => {
+                    toast.remove();
+                }, config.toastDuration);
+
+                elements.toastContainer.appendChild(toast);
+            },
+
+            setButtonLoading: function (button, isLoading) {
+                if (isLoading) {
+                    button.innerHTML = `<span class="loading"></span> ${button.textContent.trim()}`;
+                    button.disabled = true;
+                } else {
+                    const icon = button.id === 'time-in-btn' ? 'fas fa-sign-in-alt' : 'fas fa-sign-out-alt';
+                    button.innerHTML = `<i class="${icon}"></i> ${button.textContent.trim()}`;
+                    button.disabled = false;
+                }
+            },
+
+            handleViewReports: function () {
+                this.showToast('Reports', 'This would open the reports dashboard in a real app', 'info');
+            },
+
+            handleNotifications: function () {
+                this.showToast('Notifications', 'Showing your notifications (demo mode)', 'info');
+            },
+
+            toggleDemoMode: function () {
+                // This is just for show since we're already in demo mode
+                this.showToast('Demo Mode', 'You are already in demo mode', 'info');
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            timeController.init();
+            locationController.init();
+            uiController.init();
+
+            // Generate initial history
+            timeController.fetchHistory();
+            timeController.fetchStats();
+        });
+    </script>
+</body>
+
+</html>

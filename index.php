@@ -313,6 +313,10 @@
         }
     }
 
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
     /* Section Divider */
     .section-divider {
         margin: 40px 0;
@@ -823,7 +827,7 @@
                     <img src="images/door3.jpg" alt="Stainless steel welding with sparks">
                 </div>
                 <div class="work-text">
-                    <h3><i></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ar Joanne Amboy</h3>
+                    <h3><i></i> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ar Joanne Amboy</h3>
                     <p>BLK 4 Lot 9, Ph 3, Farmhills Subd., Brgy. Ulat, Silang, Cavite</p>
                     <p>Fabrication and Installation of Brand New Sectional Garage Door and Accessories</p>
 

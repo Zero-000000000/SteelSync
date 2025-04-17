@@ -26,6 +26,10 @@
             font-weight: bold;
         }
 
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         .date-display {
             font-size: 1.5rem;
         }

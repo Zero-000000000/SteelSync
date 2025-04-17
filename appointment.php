@@ -41,6 +41,10 @@
             padding: 30px;
         }
 
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         .form-title {
             text-align: center;
             color: #333;

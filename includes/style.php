@@ -413,6 +413,7 @@
             transform: rotate(-45deg) translate(5px, -5px);
         }
 
+
         /* Main navigation styling */
         .nav {
             position: fixed;

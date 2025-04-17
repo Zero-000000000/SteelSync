@@ -319,31 +319,42 @@
                     <div class="employee-details">
                         <div class="form-group">
                             <label>Name:</label>
-                            <input type="text" value="Joel Ponce" class="form-control">
+                            <input type="text" value="Jennylyn Vinuya" class="form-control">
                         </div>
 
                         <div class="form-group">
                             <label>Designation:</label>
-                            <input type="text" value="Training & Control Operations Manager" class="form-control">
+                            <input type="text" value="Welder/Mason" class="form-control">
                         </div>
 
                         <div class="form-group">
                             <label>Salary Method:</label>
-                            <input type="text" value="Cash" class="form-control">
+                            <input type="text" value="Cashless" class="form-control">
                         </div>
                     </div>
 
                     <div class="payroll-sections">
                         <div class="section earnings-section">
-                            <h3 class="section-title">Regular Pay</h3>
+                            <h3 class="section-title">Regular and Overtime Pay</h3>
 
                             <div class="form-row">
                                 <label>Basic Pay:</label>
                                 <div class="input-group">
                                     <div class="currency">₱</div>
-                                    <input type="text" value="87.5" class="form-control rate-input" id="basicRate">
+                                    <input type="text" value="700" class="form-control rate-input" id="basicRate">
                                     <div class="units">
                                         <input type="text" value="9" class="form-control hours-input" id="basicHours">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <label>Regular O.T:</label>
+                                <div class="input-group">
+                                    <div class="currency">₱</div>
+                                    <input type="text" value="87.50" class="form-control rate-input" id="otRate">
+                                    <div class="units">
+                                        <input type="text" value="12.59" class="form-control hours-input" id="otHours">
                                     </div>
                                 </div>
                             </div>
@@ -354,7 +365,7 @@
                                     <div class="currency">₱</div>
                                     <input type="text" value="87.50" class="form-control rate-input" id="utRate">
                                     <div class="units">
-                                        <input type="text" value="2.00" class="form-control hours-input" id="utHours">
+                                        <input type="text" value="35.00" class="form-control hours-input" id="utHours">
                                     </div>
                                 </div>
                             </div>
@@ -462,6 +473,8 @@
             // Get input fields
             const basicRate = document.getElementById('basicRate');
             const basicHours = document.getElementById('basicHours');
+            const otRate = document.getElementById('otRate');
+            const otHours = document.getElementById('otHours');
             const utRate = document.getElementById('utRate');
             const utHours = document.getElementById('utHours');
             const totalHours = document.getElementById('totalHours');
@@ -479,7 +492,7 @@
 
             // Get all editable inputs
             const editableInputs = [
-                basicRate, basicHours, utRate, utHours,
+                basicRate, basicHours, otRate, otHours, utRate, utHours,
                 cashBond, cashBills, cashAdvance, hdmf, sss, philhealth
             ];
 
@@ -542,10 +555,11 @@
             // Calculate total hours
             function calculateTotalHours() {
                 const regular = parseFloat(basicHours.value) || 0;
+                const overtime = parseFloat(otHours.value) || 0;
                 const undertime = parseFloat(utHours.value) || 0;
 
-                // Total hours (regular - undertime)
-                const total = regular - undertime;
+                // Total hours (regular + overtime - undertime)
+                const total = regular + overtime - undertime;
                 totalHours.value = total.toFixed(2);
 
                 return total;
@@ -558,13 +572,18 @@
                 const bHours = parseFloat(basicHours.value) || 0;
                 const basicPay = bRate * bHours;
 
+                // Overtime pay calculation
+                const oRate = parseFloat(otRate.value.replace(/,/g, '')) || 0;
+                const oHours = parseFloat(otHours.value) || 0;
+                const overtimePay = oRate * oHours;
+
                 // Undertime deduction calculation
                 const uRate = parseFloat(utRate.value.replace(/,/g, '')) || 0;
                 const uHours = parseFloat(utHours.value) || 0;
                 const undertimeDeduction = uRate * uHours;
 
                 // Calculate total earnings
-                const earnings = basicPay - undertimeDeduction;
+                const earnings = basicPay + overtimePay - undertimeDeduction;
 
                 // Format with commas
                 totalEarnings.value = earnings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

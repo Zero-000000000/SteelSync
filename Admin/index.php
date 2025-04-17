@@ -70,31 +70,115 @@ if ($_SESSION["role"] !== 'super_admin') {
             font-style: italic;
         }
 
-        .metrics-container {
+
+
+        .cards {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
-        .metric-box {
-            flex: 1;
-            background-color: #fff;
+        .card {
             padding: 20px;
-            text-align: center;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            min-width: 230px;
+            height: auto;
+            transition: .3s;
         }
 
-        .metric-box h3 {
-            margin: 0;
-            font-size: 18px;
-            color: #333;
+        .card:hover {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
-        .metric-box p {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 5px 0 0;
+        .card--data {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .card h1 {
+            font-size: 30px;
+            margin-top: 10px;
+        }
+
+        .card--icon--lg {
+            font-size: 80px;
+        }
+
+        .card--stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .card--stats span {
+            display: flex;
+            align-items: center;
+        }
+
+        .card--icon {
+            margin-right: 5px;
+        }
+
+        .stat--icon {
+            color: #5f5ce0;
+        }
+
+        .up--arrow {
+            color: #70d7a5;
+        }
+
+        .down--arrow {
+            color: #e86786;
+        }
+
+        .card-1 {
+            background-color: rgba(80, 115, 251, .1);
+        }
+
+        .card-1 .card--title {
+            color: rgba(80, 115, 251, 1);
+        }
+
+        .card-1 .card--icon--lg {
+            color: rgba(80, 115, 251, .4);
+        }
+
+        .card-2 {
+            background-color: rgba(241, 210, 67, .1);
+        }
+
+        .card-2 .card--title {
+            color: rgba(241, 210, 67, 1);
+        }
+
+        .card-2 .card--icon--lg {
+            color: rgba(241, 210, 67, .4);
+        }
+
+        .card-3 {
+            background-color: rgba(112, 215, 165, .1);
+        }
+
+        .card-3 .card--title {
+            color: rgba(112, 215, 165, 1);
+        }
+
+        .card-3 .card--icon--lg {
+            color: rgba(112, 215, 165, .4);
+        }
+
+        .card-4 {
+            background-color: rgba(227, 106, 200, .1);
+        }
+
+        .card-4 .card--title {
+            color: rgba(227, 106, 200, 1);
+        }
+
+        .card-4 .card--icon--lg {
+            color: rgba(227, 106, 200, .4);
         }
 
         .chart-container {
@@ -173,22 +257,42 @@ if ($_SESSION["role"] !== 'super_admin') {
         </div>
 
         <!-- Metrics -->
-        <div class="metrics-container">
-            <div class="metric-box">
-                <h3>Customer Total</h3>
-                <p>40</p>
+        <div class="cards">
+            <div class="card card-1">
+                <div class="card--data">
+                    <div class="card--content">
+                        <h5 class="card--title">Total Customer</h5>
+                        <h1>152</h1>
+                    </div>
+                    <i class="ri-user-2-line card--icon--lg"></i>
+                </div>
             </div>
-            <div class="metric-box">
-                <h3>New Customer</h3>
-                <p>10</p>
+            <div class="card card-2">
+                <div class="card--data">
+                    <div class="card--content">
+                        <h5 class="card--title">New Customer</h5>
+                        <h1>1145</h1>
+                    </div>
+                    <i class="ri-user-line card--icon--lg"></i>
+                </div>
             </div>
-            <div class="metric-box">
-                <h3>Total Complete Service</h3>
-                <p>50</p>
+            <div class="card card-3">
+                <div class="card--data">
+                    <div class="card--content">
+                        <h5 class="card--title">Total Complete Service</h5>
+                        <h1>102</h1>
+                    </div>
+                    <i class="ri-check-line card--icon--lg"></i>
+                </div>
             </div>
-            <div class="metric-box">
-                <h3>Total Income</h3>
-                <p>₱ 100000 </p>
+            <div class="card card-4">
+                <div class="card--data">
+                    <div class="card--content">
+                        <h5 class="card--title">Total Income</h5>
+                        <h1>15</h1>
+                    </div>
+                    <i class="ri-money-dollar-circle-line card--icon--lg"></i>
+                </div>
             </div>
         </div>
 

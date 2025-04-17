@@ -377,7 +377,7 @@ if ($_SESSION["role"] !== 'super_admin') {
     <div id="orderModal-sales" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Add New Materials</h2><br><br>
+            <h2>Add New Assets</h2><br><br>
             <form id="materialsOrderForm">
                 <div class="form-row">
                     <div class="form-group">
