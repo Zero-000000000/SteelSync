@@ -1,0 +1,29 @@
+.row-item.employee-name {
+    position: relative;
+}
+
+.archived-badge {
+    background-color: #f39c12;
+    color: white;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+.table-row.archived {
+    opacity: 0.7;
+    background-color: #f9f9f9;
+}
+
+.table-row.archived .row-item {
+    color: #999;
+}
+
+.action-btn.restore-btn {
+    background-color: #2ecc71;
+}
+
+.action-btn.restore-btn:hover {
+    background-color: #27ae60;
+}

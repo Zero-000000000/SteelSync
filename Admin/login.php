@@ -25,10 +25,10 @@ function redirectBasedOnRole($role)
             header("Location: index.php");
             break;
         case 'hr_admin':
-            header("Location: hradmin/hr_admin.php");
+            header("Location: payroll.php");
             break;
         case 'support_admin':
-            header("Location: supportadmin/index.php");
+            header("Location: index.php");
             break;
         case 'employee':
             header("Location: employee/index.php");
@@ -124,7 +124,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SteelSync - Login</title>
-    <link rel="stylesheet" href="css.css/login.css">
+    <link rel="stylesheet" href="css/login.css">
 
 </head>
 

@@ -1,19 +1,6 @@
 <?php
-session_start();
-
-// Redirect to login if no user is logged in
-if (!isset($_SESSION["user"])) {
-    header("Location: /steelsync/admin/login.php");
-    exit();
-}
-// Verify the user has the correct role
-if ($_SESSION["role"] !== 'super_admin') {
-    // Redirect to appropriate page or show error
-    header("Location: /steelsync/admin/login.php");
-    exit();
-}
+require_once 'includes/auth.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,40 +14,10 @@ if ($_SESSION["role"] !== 'super_admin') {
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="css.css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/account-manager.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /**dito mo lagay yung css ng fix assets content yung css sa taas default yan format ng main--content wag mo aalisin*/
-        .row-item.employee-name {
-            position: relative;
-        }
 
-        .archived-badge {
-            background-color: #f39c12;
-            color: white;
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            margin-left: 5px;
-        }
-
-        .table-row.archived {
-            opacity: 0.7;
-            background-color: #f9f9f9;
-        }
-
-        .table-row.archived .row-item {
-            color: #999;
-        }
-
-        .action-btn.restore-btn {
-            background-color: #2ecc71;
-        }
-
-        .action-btn.restore-btn:hover {
-            background-color: #27ae60;
-        }
-    </style>
 </head>
 
 <body>
