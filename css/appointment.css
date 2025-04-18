@@ -1,0 +1,122 @@
+:root {
+
+    --bg-light: #f7f7f7;
+
+}
+
+* {
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Arial', sans-serif;
+    background-color: var(--bg-light);
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.appointment-container {
+    background-color: white;
+    border-radius: 12px;
+    margin-left: 350px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    justify-content: center;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.form-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.form-subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row>* {
+    flex: 1;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff6b35;
+    opacity: 0.7;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 12px 12px 35px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6b35;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #ff8c57;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+.submit-btn svg {
+    margin-left: 10px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
