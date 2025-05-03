@@ -44,16 +44,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"]);
     $password = trim($_POST["password"]);
 
-    $stmt = $conn->prepare("SELECT id, password, role FROM users WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, password, role, archived FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($user_id, $hashed_password, $role);
+        $stmt->bind_result($user_id, $hashed_password, $role, $archived);
         $stmt->fetch();
 
-        if (md5($password) === $hashed_password) {
+        // Check if account is archived
+        if ($archived) {
+            $error = "This account has been archived. Please contact your administrator.";
+        }
+        // Check password using password_verify for bcrypt
+        elseif (password_verify($password, $hashed_password)) {
             $_SESSION["user"] = $username;
             $_SESSION["user_id"] = $user_id;
             $_SESSION["role"] = $role;
@@ -71,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt->close();
 }
+
 
 function updateLastLogin($conn, $user_id, $role)
 {
@@ -114,7 +120,7 @@ function updateLastLogin($conn, $user_id, $role)
     }
     return false;
 }
-$conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -125,7 +131,6 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SteelSync - Login</title>
     <link rel="stylesheet" href="css/login.css">
-
 </head>
 
 <body>
@@ -144,7 +149,14 @@ $conn->close();
                 <input type="password" name="password" placeholder="Enter Your Password" required>
                 <img src="../images/key.png" alt="Key Icon" class="icon">
             </div>
-            <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+            <?php
+            if (!empty($error)) {
+                echo "<p class='error'>$error</p>";
+            }
+            if (isset($_GET['error']) && $_GET['error'] == 'account_archived') {
+                echo "<p class='error'>Your account has been archived. Please contact your administrator.</p>";
+            }
+            ?>
 
             <button type="submit">Login</button>
         </form>
@@ -153,3 +165,6 @@ $conn->close();
 </body>
 
 </html>
+<?php
+$conn->close();
+?>

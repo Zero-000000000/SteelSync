@@ -1,14 +1,27 @@
-
 -- Create the database
 CREATE DATABASE IF NOT EXISTS steelsync;
 USE steelsync;
--- Update the users table to include more fields
-ALTER TABLE users
-ADD COLUMN archived BOOLEAN DEFAULT FALSE,
-ADD COLUMN archived_at TIMESTAMP NULL,
-ADD COLUMN archived_by INT NULL,
-ADD COLUMN fingerprint_data TEXT NULL,
-ADD FOREIGN KEY (archived_by) REFERENCES users(id);
+
+-- Create users table with common fields
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    firstname VARCHAR(100) NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    photo VARCHAR(255) DEFAULT 'default.jpg',
+    gender ENUM('Male', 'Female', 'Other') NOT NULL,
+    role ENUM('super_admin', 'hr_admin', 'support_admin', 'employee') NOT NULL,
+    archived BOOLEAN DEFAULT FALSE,
+    archived_at TIMESTAMP NULL,
+    archived_by INT NULL,
+    fingerprint_data TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (archived_by) REFERENCES users(id)
+);
 
 -- Create a positions table
 CREATE TABLE IF NOT EXISTS positions (
@@ -19,7 +32,7 @@ CREATE TABLE IF NOT EXISTS positions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert positions data
+-- Insert positions data (including support_admin positions)
 INSERT INTO positions (name, role, description) VALUES 
 ('Training & Control Operations Manager', 'employee', 'Manages training and operations'),
 ('Sales Staff', 'employee', 'Handles sales activities'),
@@ -45,22 +58,10 @@ INSERT INTO positions (name, role, description) VALUES
 ('Skilled Painter', 'employee', 'Skilled painting professional'),
 ('Driver - Helper', 'employee', 'Driver helper role'),
 ('HR Manager/Admin', 'hr_admin', 'Human resources manager and administrator'),
-('Purchaser', 'hr_admin', 'Purchasing role');
--- Create users table with common fields
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    firstname VARCHAR(100) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20),
-    photo VARCHAR(255) DEFAULT 'default.jpg',
-    gender ENUM('Male', 'Female', 'Other') NOT NULL,
-    role ENUM('super_admin', 'hr_admin', 'support_admin', 'employee') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+('Purchaser', 'support_admin', 'Purchasing role'),
+('IT Support Administrator', 'support_admin', 'Technical support role'),
+('System Support Specialist', 'support_admin', 'Specialist in system support'),
+('Helpdesk Administrator', 'support_admin', 'Manages helpdesk operations');
 
 -- Create table for super admin specific details
 CREATE TABLE IF NOT EXISTS super_admin (
@@ -107,10 +108,11 @@ CREATE TABLE IF NOT EXISTS employee (
 -- Insert default users for testing
 -- Passwords are md5 hashed (not secure for production)
 INSERT INTO users (username, password, firstname, lastname, email, phone, gender, role) VALUES 
-('superadmin', MD5('superadmin123'), 'Super', 'Admin', 'superadmin@steelsync.com', '1234567890', 'Male', 'super_admin'),
-('hradmin', MD5('hradmin123'), 'HR', 'Admin', 'hradmin@steelsync.com', '1234567891', 'Female', 'hr_admin'),
-('supportadmin', MD5('supportadmin123'), 'Support', 'Admin', 'supportadmin@steelsync.com', '1234567892', 'Male', 'support_admin'),
-('employee1', MD5('employee123'), 'John', 'Doe', 'john.doe@steelsync.com', '1234567893', 'Male', 'employee');
+('superadmin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Super', 'Admin', 'superadmin@steelsync.com', '1234567890', 'Male', 'super_admin'),
+('hradmin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'HR', 'Admin', 'hradmin@steelsync.com', '1234567891', 'Female', 'hr_admin'),
+('supportadmin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Support', 'Admin', 'supportadmin@steelsync.com', '1234567892', 'Male', 'support_admin'),
+('employee1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'John', 'Doe', 'john.doe@steelsync.com', '1234567893', 'Male', 'employee');
+
 
 -- Insert role-specific details
 INSERT INTO super_admin (user_id) SELECT id FROM users WHERE role = 'super_admin';

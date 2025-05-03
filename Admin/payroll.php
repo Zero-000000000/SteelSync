@@ -17,6 +17,7 @@ require_once 'includes/auth.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/payroll.css" rel="stylesheet">
+
 </head>
 
 <body>

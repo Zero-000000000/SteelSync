@@ -21,4 +21,50 @@
             }
         });
     });
+
+    // Add styles for ripple effect
+    document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        .account-btn-primary .ripple {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .account-btn-secondary .ripple {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        .dropdown-item .ripple-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-effect {
+            to {
+                left: 100%;
+            }
+        }
+    </style>
+    `);
 </script>

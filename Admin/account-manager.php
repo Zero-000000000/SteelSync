@@ -1,5 +1,428 @@
 <?php
 require_once 'includes/auth.php';
+
+// Database connection
+$host = "localhost";
+$dbname = "steelsync";
+$dbuser = "root";
+$dbpass = "";
+
+$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Handle form submissions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        // Check permissions before processing
+        $allowed = true;
+
+        // HR admin can only add/edit employee accounts
+        if ($_SESSION['role'] === 'hr_admin') {
+            if ($_POST['action'] === 'add_account' && isset($_POST['role'])) {
+                if ($_POST['role'] !== 'employee') {
+                    $allowed = false;
+                    $_SESSION['error'] = "You don't have permission to add administrator accounts";
+                }
+            } elseif ($_POST['action'] === 'edit_account' && isset($_POST['id'])) {
+                // Get current role of the account being edited
+                $id = (int)$_POST['id'];
+                $query = "SELECT role FROM users WHERE id = $id";
+                $result = $conn->query($query);
+                if ($result && $result->num_rows > 0) {
+                    $account = $result->fetch_assoc();
+                    if ($account['role'] !== 'employee') {
+                        $allowed = false;
+                        $_SESSION['error'] = "You don't have permission to edit administrator accounts";
+                    }
+                }
+            }
+        }
+
+        if ($allowed) {
+            switch ($_POST['action']) {
+                case 'add_account':
+                    addAccount($conn);
+                    break;
+                case 'edit_account':
+                    editAccount($conn);
+                    break;
+                case 'archive_account':
+                    archiveAccount($conn, $_POST['id'], true);
+                    break;
+                case 'restore_account':
+                    archiveAccount($conn, $_POST['id'], false);
+                    break;
+            }
+        } else {
+            header("Location: account-manager.php");
+            exit();
+        }
+    }
+}
+
+// Function to add a new account
+function addAccount($conn)
+{
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['error'] = "Invalid CSRF token";
+        header("Location: account-manager.php");
+        exit();
+    }
+
+    $firstName = $conn->real_escape_string($_POST['firstName']);
+    $lastName = $conn->real_escape_string($_POST['lastName']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $username = $conn->real_escape_string($_POST['username']);
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $phone = $conn->real_escape_string($_POST['phoneNumber']);
+    $role = $conn->real_escape_string($_POST['role']);
+    $positionId = (int)$_POST['position'];
+    $gender = $conn->real_escape_string($_POST['gender']);
+
+    // Additional validation
+    if (
+        empty($firstName) || empty($lastName) || empty($email) || empty($username) ||
+        (empty($_POST['password']) && $_POST['action'] === 'add_account')
+    ) {
+        $_SESSION['error'] = "All required fields must be filled";
+        header("Location: account-manager.php");
+        exit();
+    }
+
+    // Check if username or email already exists
+    $checkQuery = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+    $checkQuery->bind_param("ss", $username, $email);
+    $checkQuery->execute();
+    $checkResult = $checkQuery->get_result();
+
+    if ($checkResult->num_rows > 0) {
+        $_SESSION['error'] = "Username or email already exists";
+        header("Location: account-manager.php");
+        exit();
+    }
+
+    // Get position name
+    $positionQuery = $conn->query("SELECT name FROM positions WHERE id = $positionId");
+    $position = $positionQuery->fetch_assoc()['name'];
+
+    // Insert into users table
+    $query = "INSERT INTO users (username, password, firstname, lastname, email, phone, gender, role) 
+              VALUES ('$username', '$password', '$firstName', '$lastName', '$email', '$phone', '$gender', '$role')";
+
+    if ($conn->query($query)) {
+        $userId = $conn->insert_id;
+
+        // Insert into role-specific table
+        switch ($role) {
+            case 'employee':
+                $hireDate = date('Y-m-d');
+                $conn->query("INSERT INTO employee (user_id, position, hire_date) VALUES ($userId, '$position', '$hireDate')");
+                break;
+            case 'hr_admin':
+                $conn->query("INSERT INTO hr_admin (user_id, position) VALUES ($userId, '$position')");
+                break;
+            case 'support_admin':
+                $conn->query("INSERT INTO support_admin (user_id, position) VALUES ($userId, '$position')");
+                break;
+            case 'super_admin':
+                $conn->query("INSERT INTO super_admin (user_id) VALUES ($userId)");
+                break;
+        }
+
+        $_SESSION['success'] = "Account added successfully!";
+    } else {
+        $_SESSION['error'] = "Error adding account: " . $conn->error;
+    }
+
+    header("Location: account-manager.php");
+    exit();
+}
+
+// Function to edit an account
+function editAccount($conn)
+{
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['error'] = "Invalid CSRF token";
+        header("Location: account-manager.php");
+        exit();
+    }
+
+    $id = (int)$_POST['id'];
+    $firstName = $conn->real_escape_string($_POST['firstName']);
+    $lastName = $conn->real_escape_string($_POST['lastName']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $username = $conn->real_escape_string($_POST['username']);
+    $phone = $conn->real_escape_string($_POST['phoneNumber']);
+    $role = $conn->real_escape_string($_POST['role']);
+    $positionId = (int)$_POST['position'];
+    $gender = $conn->real_escape_string($_POST['gender']);
+
+    // Get position name
+    $positionQuery = $conn->query("SELECT name FROM positions WHERE id = $positionId");
+    $position = $positionQuery->fetch_assoc()['name'];
+
+    // Update users table
+    $query = "UPDATE users SET 
+              username = '$username',
+              firstname = '$firstName',
+              lastname = '$lastName',
+              email = '$email',
+              phone = '$phone',
+              gender = '$gender',
+              role = '$role'
+              WHERE id = $id";
+
+    if ($conn->query($query)) {
+        // Update password if provided
+        if (!empty($_POST['password'])) {
+            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $conn->query("UPDATE users SET password = '$password' WHERE id = $id");
+        }
+
+        // First, delete any existing role-specific records to handle role changes
+        $conn->query("DELETE FROM employee WHERE user_id = $id");
+        $conn->query("DELETE FROM hr_admin WHERE user_id = $id");
+        $conn->query("DELETE FROM support_admin WHERE user_id = $id");
+        $conn->query("DELETE FROM super_admin WHERE user_id = $id");
+
+        // Insert into the appropriate role-specific table
+        switch ($role) {
+            case 'employee':
+                $hireDate = date('Y-m-d');
+                $conn->query("INSERT INTO employee (user_id, position, hire_date) VALUES ($id, '$position', '$hireDate')");
+                break;
+            case 'hr_admin':
+                $conn->query("INSERT INTO hr_admin (user_id, position) VALUES ($id, '$position')");
+                break;
+            case 'support_admin':
+                $conn->query("INSERT INTO support_admin (user_id, position) VALUES ($id, '$position')");
+                break;
+            case 'super_admin':
+                $conn->query("INSERT INTO super_admin (user_id) VALUES ($id)");
+                break;
+        }
+
+        $_SESSION['success'] = "Account updated successfully!";
+    } else {
+        $_SESSION['error'] = "Error updating account: " . $conn->error;
+    }
+
+    header("Location: account-manager.php");
+    exit();
+}
+
+// Function to archive/restore an account
+function archiveAccount($conn, $id, $archive)
+{
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['error'] = "Invalid CSRF token";
+        header("Location: account-manager.php");
+        exit();
+    }
+
+    $id = (int)$id;
+    $currentTime = date('Y-m-d H:i:s');
+    $archivedBy = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
+    try {
+        // Start transaction
+        $conn->begin_transaction();
+
+        if ($archive) {
+            // Archive the account
+            $query = "UPDATE users SET 
+                      archived = TRUE, 
+                      archived_at = ?, 
+                      archived_by = ?
+                      WHERE id = ?";
+            $message = "Account archived successfully!";
+        } else {
+            // Restore the account
+            $query = "UPDATE users SET 
+                      archived = FALSE, 
+                      archived_at = NULL, 
+                      archived_by = NULL
+                      WHERE id = ?";
+            $message = "Account restored successfully!";
+        }
+
+        // Prepare the statement
+        $stmt = $conn->prepare($query);
+
+        if ($archive) {
+            $stmt->bind_param("sii", $currentTime, $archivedBy, $id);
+        } else {
+            $stmt->bind_param("i", $id);
+        }
+
+        // Execute the query
+        if ($stmt->execute()) {
+            $conn->commit();
+            $_SESSION['success'] = $message;
+        } else {
+            throw new Exception("Database error: " . $stmt->error);
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['error'] = "Error updating account status: " . $e->getMessage();
+    } finally {
+        if (isset($stmt)) {
+            $stmt->close();
+        }
+    }
+
+    header("Location: account-manager.php");
+    exit();
+}
+
+// Get all accounts for display
+function getAccounts($conn, $role, $filter = 'all', $search = '')
+{
+    $accounts = [];
+
+    // Base where clause
+    if ($role === 'admin') {
+        $where = "WHERE (u.role = 'hr_admin' OR u.role = 'support_admin' OR u.role = 'super_admin')";
+    } else {
+        $where = "WHERE u.role = '$role'";
+    }
+
+    // Apply filters
+    if ($filter === 'archived') {
+        $where .= " AND u.archived = TRUE";
+    } elseif ($filter === 'active') {
+        $where .= " AND u.archived = FALSE";
+    } elseif ($filter !== 'all') {
+        // Check if filter is a position
+        $positionQuery = $conn->query("SELECT id FROM positions WHERE name = '$filter'");
+        if ($positionQuery->num_rows > 0) {
+            $positionId = $positionQuery->fetch_assoc()['id'];
+            $where .= " AND p.id = $positionId";
+        }
+    }
+
+    // Apply search
+    if (!empty($search)) {
+        $search = $conn->real_escape_string($search);
+        $where .= " AND (u.firstname LIKE '%$search%' OR u.lastname LIKE '%$search%' OR CONCAT(u.firstname, ' ', u.lastname) LIKE '%$search%')";
+    }
+
+    $query = "SELECT u.id, u.firstname, u.lastname, u.email, u.phone, u.role, u.archived, 
+                     CASE
+                         WHEN u.role = 'employee' THEN (SELECT position FROM employee WHERE user_id = u.id)
+                         WHEN u.role = 'hr_admin' THEN (SELECT position FROM hr_admin WHERE user_id = u.id)
+                         WHEN u.role = 'support_admin' THEN (SELECT position FROM support_admin WHERE user_id = u.id)
+                         WHEN u.role = 'super_admin' THEN 'Super Admin'
+                     END AS position,
+                     p.id AS position_id
+              FROM users u
+              LEFT JOIN positions p ON 
+                  (u.role = 'employee' AND EXISTS (SELECT 1 FROM employee e WHERE e.user_id = u.id AND e.position = p.name)) OR
+                  (u.role = 'hr_admin' AND EXISTS (SELECT 1 FROM hr_admin h WHERE h.user_id = u.id AND h.position = p.name)) OR
+                  (u.role = 'support_admin' AND EXISTS (SELECT 1 FROM support_admin s WHERE s.user_id = u.id AND s.position = p.name))
+              $where
+              ORDER BY u.archived, u.lastname, u.firstname";
+
+    $result = $conn->query($query);
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $accounts[] = $row;
+        }
+    } else {
+        error_log("Database query error: " . $conn->error);
+    }
+
+    return $accounts;
+}
+
+// Get all positions for a role
+function getPositions($conn, $role)
+{
+    $positions = [];
+
+    // For admin tab, get positions for both admin types
+    if ($role === 'admin') {
+        $query = "SELECT id, name FROM positions WHERE role = 'hr_admin' OR role = 'support_admin' ORDER BY name";
+    } else {
+        $query = "SELECT id, name FROM positions WHERE role = '$role' ORDER BY name";
+    }
+
+    $result = $conn->query($query);
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $positions[] = $row;
+        }
+    }
+
+    return $positions;
+}
+
+// Get account details for editing
+function getAccountDetails($conn, $id)
+{
+    $id = (int)$id;
+    $query = "SELECT u.*, 
+                     CASE
+                         WHEN u.role = 'employee' THEN (SELECT position FROM employee WHERE user_id = u.id)
+                         WHEN u.role = 'hr_admin' THEN (SELECT position FROM hr_admin WHERE user_id = u.id)
+                         WHEN u.role = 'support_admin' THEN (SELECT position FROM support_admin WHERE user_id = u.id)
+                         WHEN u.role = 'super_admin' THEN 'Super Admin'
+                     END AS position_name,
+                     p.id AS position_id,
+                     u.role AS role_type
+              FROM users u
+              LEFT JOIN positions p ON 
+                  (u.role = 'employee' AND EXISTS (SELECT 1 FROM employee e WHERE e.user_id = u.id AND e.position = p.name)) OR
+                  (u.role = 'hr_admin' AND EXISTS (SELECT 1 FROM hr_admin h WHERE h.user_id = u.id AND h.position = p.name)) OR
+                  (u.role = 'support_admin' AND EXISTS (SELECT 1 FROM support_admin s WHERE s.user_id = u.id AND s.position = p.name))
+              WHERE u.id = $id";
+
+    $result = $conn->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        return $result->fetch_assoc();
+    } else {
+        error_log("Account details not found for ID: $id");
+    }
+
+    return null;
+}
+
+// Set default active role - HR Admin can only see employee tab
+$activeRole = 'employee';
+if ($_SESSION['role'] === 'super_admin') {
+    $activeRole = isset($_GET['role']) ? $_GET['role'] : 'employee';
+}
+
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Get filter and search values
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Get accounts for display
+$accounts = getAccounts($conn, $activeRole === 'admin' ? 'admin' : $activeRole, $filter, $search);
+$positions = getPositions($conn, $activeRole === 'admin' ? 'admin' : $activeRole);
+
+// Get all position names for filter dropdown
+$allPositions = [];
+$result = $conn->query("SELECT name, role FROM positions ORDER BY role, name");
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $allPositions[] = $row;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +440,6 @@ require_once 'includes/auth.php';
     <link href="css/style.css" rel="stylesheet">
     <link href="css/account-manager.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
 <body>
@@ -26,59 +448,54 @@ require_once 'includes/auth.php';
 
     <div class="main--content">
         <div class="account-manager-container">
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success"><?php echo $_SESSION['success'];
+                                                    unset($_SESSION['success']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-error"><?php echo $_SESSION['error'];
+                                                unset($_SESSION['error']); ?></div>
+            <?php endif; ?>
+
             <div class="account-manager-header">
                 <h2>ACCOUNT MANAGER</h2>
                 <div class="tabs">
-                    <a href="#" class="tab <?php echo ($_SESSION['role'] == 'employee') ? 'active' : ''; ?>">Employee</a>
-                    <a href="#" class="tab <?php echo ($_SESSION['role'] == 'administrator') ? 'active' : ''; ?>">Administrator</a>
+                    <a href="account-manager.php?role=employee" class="tab <?php echo ($activeRole == 'employee') ? 'active' : ''; ?>">Employee</a>
+                    <?php if ($_SESSION['role'] === 'super_admin'): ?>
+                        <a href="account-manager.php?role=admin" class="tab <?php echo ($activeRole == 'admin') ? 'active' : ''; ?>">Administrator</a>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <div class="account-manager-tools">
-                <div class="filter-search">
+                <form method="get" action="account-manager.php" class="filter-search">
+                    <input type="hidden" name="role" value="<?php echo $activeRole; ?>">
                     <div class="dropdown">
-                        <select id="filterDropdown">
+                        <select id="filterDropdown" name="filter" onchange="this.form.submit()">
                             <option value="all">All Roles</option>
-                            <option value="archived">Archived Accounts</option>
-                            <option value="administrator">Administrator</option>
-                            <option value="employee">Employee</option>
-                            <optgroup label="Employee Positions">
-                                <option value="Training & ControlOperations Manager">Training & Control Operations Manager</option>
-                                <option value="Sales Staff">Sales Staff</option>
-                                <option value="Office Staff/Sales Clerk">Office Staff/Sales Clerk</option>
-                                <option value="Accounting & Inventory">Accounting & Inventory</option>
-                                <option value="Senior Supervisor">Senior Supervisor</option>
-                                <option value="Fabrication Team Leader">Fabrication Team Leader</option>
-                                <option value="Site Team Leader">Site Team Leader</option>
-                                <option value="Skilled Welder/Driver">Skilled Welder/Driver</option>
-                                <option value="Site Supervisor">Site Supervisor</option>
-                                <option value="TL/Skilled Welder">TL/Skilled Welder</option>
-                                <option value="Skilled Welder">Skilled Welder</option>
-                                <option value="Fabrication Supervisor">Fabrication Supervisor</option>
-                                <option value="Fab Helper">Fab Helper</option>
-                                <option value="Welder">Welder</option>
-                                <option value="Welder/Driver">Welder/Driver</option>
-                                <option value="Helper - Welder">Helper - Welder</option>
-                                <option value="Helper - Mason">Helper - Mason</option>
-                                <option value="Electrician /Site Supervisor">Electrician/Site Supervisor</option>
-                                <option value="Electrician /Team Leader">Electrician/Team Leader</option>
-                                <option value="Skilled Electrician/team leader">Skilled Electrician/Team Leader</option>
-                                <option value="Paint Supervisor">Paint Supervisor</option>
-                                <option value="Skilled Painter">Skilled Painter</option>
-                                <option value="Driver - Helper">Driver - Helper</option>
-                            </optgroup>
-                            <optgroup label="Administrator Positions">
-                                <option value="Purchaser">Purchaser</option>
-                                <option value="HR Manager/Admin">HR Manager/Admin</option>
+                            <option value="archived" <?php echo ($filter == 'archived') ? 'selected' : ''; ?>>Archived Accounts</option>
+                            <option value="<?php echo $activeRole; ?>" <?php echo ($filter == $activeRole) ? 'selected' : ''; ?>>
+                                <?php echo ucfirst($activeRole); ?>
+                            </option>
+                            <optgroup label="<?php echo ($activeRole == 'employee') ? 'Employee' : 'Administrator'; ?> Positions">
+                                <?php foreach ($allPositions as $pos): ?>
+                                    <?php if (($activeRole == 'employee' && $pos['role'] == 'employee') ||
+                                        ($activeRole == 'admin' && ($pos['role'] == 'hr_admin' || $pos['role'] == 'support_admin'))
+                                    ): ?>
+                                        <option value="<?php echo htmlspecialchars($pos['name']); ?>" <?php echo ($filter == $pos['name']) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($pos['name']); ?>
+                                        </option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </optgroup>
                         </select>
                     </div>
                     <div class="search-container">
-                        <input type="text" id="searchInput" placeholder="Search by name">
-                        <button class="search-btn">Search</button>
+                        <input type="text" id="searchInput" name="search" placeholder="Search by name" value="<?php echo htmlspecialchars($search); ?>">
+                        <button type="submit" class="search-btn">Search</button>
                     </div>
-                </div>
-                <button class="add-account-btn">
+                </form>
+                <button class="add-account-btn" onclick="openAddModal()">
                     <i class="fas fa-plus"></i> Add Account
                 </button>
             </div>
@@ -86,47 +503,69 @@ require_once 'includes/auth.php';
             <div class="account-table">
                 <div class="table-header">
                     <div class="header-item employee-id">ID</div>
-                    <div class="header-item employee-name">Employee Name</div>
+                    <div class="header-item employee-name">Name</div>
                     <div class="header-item role">Role</div>
                     <div class="header-item position">Position</div>
                     <div class="header-item actions">Actions</div>
                 </div>
                 <div class="table-content" id="employeeTableContent">
-                    <!-- Data will be populated via JavaScript -->
-                </div>
-            </div>
-
-            <div class="pagination">
-                <button class="page-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i> Prev</button>
-                <div class="page-numbers" id="pageNumbers">
-                    <button class="page-number active">1</button>
-                    <!-- Page numbers will be generated dynamically -->
-                </div>
-                <button class="page-btn" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
-                <div class="page-info">
-                    Page:
-                    <input type="text" class="page-input" id="pageInput" value="1">
-                    of <span id="totalPages">1</span>
+                    <?php if (empty($accounts)): ?>
+                        <div class="empty-table">
+                            <p>No records found</p>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($accounts as $account): ?>
+                            <div class="table-row <?php echo $account['archived'] ? 'archived' : ''; ?>">
+                                <div class="row-item employee-id"><?php echo $account['id']; ?></div>
+                                <div class="row-item employee-name">
+                                    <?php echo htmlspecialchars($account['firstname'] . ' ' . $account['lastname']); ?>
+                                    <?php if ($account['archived']): ?>
+                                        <span class="archived-badge">Inactive</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="row-item role"><?php echo ucfirst(str_replace('_', ' ', $account['role'])); ?></div>
+                                <div class="row-item position"><?php echo htmlspecialchars($account['position'] ?? 'N/A'); ?></div>
+                                <div class="row-item actions">
+                                    <button class="action-btn edit-btn" onclick="openEditModal(<?php echo $account['id']; ?>)">
+                                        <i class="fas fa-user-edit"></i> Edit
+                                    </button>
+                                    <?php if ($account['archived']): ?>
+                                        <button class="action-btn restore-btn" onclick="confirmAction(<?php echo $account['id']; ?>, 'restore')">
+                                            <i class="fas fa-undo"></i> Restore
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="action-btn archive-btn" onclick="confirmAction(<?php echo $account['id']; ?>, 'archive')">
+                                            <i class="fas fa-archive"></i> Inactive
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <!-- Modal for adding/editing account -->
             <div id="accountModal" class="modal">
                 <div class="modal-content">
-                    <span class="close">&times;</span>
+                    <span class="close" onclick="closeModals()">&times;</span>
                     <h2 id="modalTitle">Add New Account</h2>
-                    <form id="accountForm">
-                        <input type="hidden" id="employeeId" value="">
+                    <form id="accountForm" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                        <input type="hidden" id="employeeId" name="id" value="">
+                        <input type="hidden" id="actionType" name="action" value="add_account">
 
                         <!-- Profile Photo Section -->
                         <div class="profile-photo-section">
                             <div class="photo-container">
                                 <i class="fas fa-user-circle profile-placeholder"></i>
+                                <img id="profileImagePreview" src="" alt="Profile Photo" style="display: none;">
                             </div>
                             <div class="photo-actions">
-                                <button type="button" class="upload-photo-btn">
+                                <button type="button" class="upload-photo-btn" onclick="document.getElementById('profilePhoto').click()">
                                     <i class="fas fa-upload"></i> Upload Photo
                                 </button>
+                                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;" onchange="previewImage(this)">
                                 <button type="button" class="scan-fingerprint-btn">
                                     <i class="fas fa-fingerprint"></i> Scan Fingerprint
                                 </button>
@@ -138,38 +577,57 @@ require_once 'includes/auth.php';
                             <h3>User Details</h3>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="firstName">First Name</label>
-                                    <input type="text" id="firstName" required>
+                                    <label for="firstName">First Name *</label>
+                                    <input type="text" id="firstName" name="firstName" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="lastName">Last Name</label>
-                                    <input type="text" id="lastName" required>
+                                    <label for="lastName">Last Name *</label>
+                                    <input type="text" id="lastName" name="lastName" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="gender">Gender *</label>
+                                    <select id="gender" name="gender" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <input type="tel" id="phoneNumber" name="phoneNumber">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="roleSelect">Role</label>
-                                <select id="roleSelect" required>
-                                    <option value="employee">Employee</option>
-                                    <option value="administrator">Administrator</option>
+                                <label for="roleSelect">Role *</label>
+                                <select id="roleSelect" name="role" required onchange="updatePositionOptions(this.value)" <?php echo ($_SESSION['role'] === 'hr_admin') ? 'disabled' : ''; ?>>
+                                    <option value="employee" <?php echo ($activeRole == 'employee') ? 'selected' : ''; ?>>Employee</option>
+                                    <?php if ($_SESSION['role'] === 'super_admin'): ?>
+                                        <option value="hr_admin" <?php echo ($activeRole == 'admin') ? 'selected' : ''; ?>>HR Administrator</option>
+                                        <option value="support_admin" <?php echo ($activeRole == 'admin') ? 'selected' : ''; ?>>Support Administrator</option>
+                                        <option value="super_admin" <?php echo ($activeRole == 'admin') ? 'selected' : ''; ?>>Super Administrator</option>
+                                    <?php endif; ?>
+                                </select>
+                                <?php if ($_SESSION['role'] === 'hr_admin'): ?>
+                                    <input type="hidden" name="role" value="employee">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="positionSelect">Position *</label>
+                                <select id="positionSelect" name="position" required>
+                                    <?php foreach ($positions as $position): ?>
+                                        <option value="<?php echo $position['id']; ?>"><?php echo htmlspecialchars($position['name']); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="positionSelect">Position</label>
-                                <select id="positionSelect" required>
-                                    <!-- Options will be populated based on selected role -->
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="phoneNumber">Phone Number</label>
-                                <input type="tel" id="phoneNumber">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" required>
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
                             </div>
                         </div>
 
@@ -177,22 +635,22 @@ require_once 'includes/auth.php';
                         <div class="form-section">
                             <h3>Account Credentials</h3>
                             <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" id="username" required>
+                                <label for="username">Username *</label>
+                                <input type="text" id="username" name="username" required>
                             </div>
                             <div class="form-group">
-                                <label for="password">New Password</label>
-                                <input type="password" id="password">
-                                <small id="passwordNote">Leave blank to keep current password</small>
+                                <label for="password">New Password <span id="passwordRequired">*</span></label>
+                                <input type="password" id="password" name="password">
+                                <small id="passwordNote">Leave blank to keep current password (when editing)</small>
                             </div>
                             <div class="form-group">
                                 <label for="confirmPassword">Confirm New Password</label>
-                                <input type="password" id="confirmPassword">
+                                <input type="password" id="confirmPassword" name="confirmPassword">
                             </div>
                         </div>
 
                         <div class="form-buttons">
-                            <button type="button" id="cancelBtn">Cancel</button>
+                            <button type="button" onclick="closeModals()">Cancel</button>
                             <button type="submit" id="saveBtn">Save</button>
                         </div>
                     </form>
@@ -204,781 +662,226 @@ require_once 'includes/auth.php';
                 <div class="modal-content confirmation-modal">
                     <h2 id="archiveModalTitle">Confirm Archive</h2>
                     <p id="archiveConfirmText">Are you sure you want to archive this account? Archived accounts can be restored later.</p>
-                    <div class="form-buttons">
-                        <button type="button" id="cancelArchiveBtn">Cancel</button>
-                        <button type="button" id="confirmArchiveBtn">Archive</button>
-                    </div>
+                    <form id="archiveForm" method="post">
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                        <input type="hidden" id="archiveAccountId" name="id" value="">
+                        <input type="hidden" id="archiveAction" name="action" value="archive_account">
+                        <div class="form-buttons">
+                            <button type="button" onclick="closeModals()">Cancel</button>
+                            <button type="submit" id="confirmArchiveBtn">Archive</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sample data of employees with archived status
-            const employeeData = [{
-                    id: 1,
-                    name: "Joel Ponce",
-                    role: "employee",
-                    position: "Training & ControlOperations Manager",
-                    archived: false
-                },
-                {
-                    id: 2,
-                    name: "Reinalyn Domdom",
-                    role: "employee",
-                    position: "Sales Staff",
-                    archived: false
-                },
-                {
-                    id: 3,
-                    name: "Kylie Emplamado",
-                    role: "employee",
-                    position: "Office Staff/Sales Clerk",
-                    archived: false
-                },
-                {
-                    id: 4,
-                    name: "Aerah Mae Valero",
-                    role: "employee",
-                    position: "Accounting & Inventory",
-                    archived: false
-                },
-                {
-                    id: 5,
-                    name: "King Sison Jerome",
-                    role: "employee",
-                    position: "Senior Supervisor",
-                    archived: false
-                },
-                {
-                    id: 6,
-                    name: "Royo Emmanuel",
-                    role: "employee",
-                    position: "Fabrication Team Leader",
-                    archived: false
-                },
-                {
-                    id: 7,
-                    name: "Benito Frankeddrey",
-                    role: "employee",
-                    position: "Site Team Leader",
-                    archived: false
-                },
-                {
-                    id: 8,
-                    name: "FerrerJemar Magtalas",
-                    role: "employee",
-                    position: "Skilled Welder/Driver",
-                    archived: false
-                },
-                {
-                    id: 9,
-                    name: "Rodel Rempillo",
-                    role: "employee",
-                    position: "Site Supervisor",
-                    archived: false
-                },
-                {
-                    id: 10,
-                    name: "Allan SapulGong",
-                    role: "employee",
-                    position: "TL/Skilled Welder",
-                    archived: false
-                },
-                {
-                    id: 11,
-                    name: "Serrano Rasty",
-                    role: "employee",
-                    position: "Skilled Welder",
-                    archived: false
-                },
-                {
-                    id: 12,
-                    name: "ParillaPhilip",
-                    role: "employee",
-                    position: "Fabrication Supervisor",
-                    archived: false
-                },
-                {
-                    id: 13,
-                    name: "Guliman Engelbert",
-                    role: "employee",
-                    position: "Fab Helper",
-                    archived: false
-                },
-                {
-                    id: 14,
-                    name: "CunananEriczon",
-                    role: "employee",
-                    position: "Welder",
-                    archived: false
-                },
-                {
-                    id: 15,
-                    name: "NapisaEdrian Espino",
-                    role: "employee",
-                    position: "Welder",
-                    archived: false
-                },
-                {
-                    id: 16,
-                    name: "Christian Espiritu",
-                    role: "employee",
-                    position: "Welder/Driver",
-                    archived: false
-                },
-                {
-                    id: 17,
-                    name: "Johnrey Castillo",
-                    role: "employee",
-                    position: "Skilled Welder/Driver",
-                    archived: false
-                },
-                {
-                    id: 18,
-                    name: "Ronnie Enriquez",
-                    role: "employee",
-                    position: "Helper - Welder",
-                    archived: false
-                },
-                {
-                    id: 19,
-                    name: "Billy Montero",
-                    role: "employee",
-                    position: "Helper - Mason",
-                    archived: false
-                },
-                {
-                    id: 20,
-                    name: "John Michael Libanan",
-                    role: "employee",
-                    position: "Helper - Welder",
-                    archived: false
-                },
-                {
-                    id: 21,
-                    name: "Piolo Sabater",
-                    role: "employee",
-                    position: "Electrician /Site Supervisor",
-                    archived: false
-                },
-                {
-                    id: 22,
-                    name: "Fernando Dulay Jr.",
-                    role: "employee",
-                    position: "Electrician /Team Leader",
-                    archived: false
-                },
-                {
-                    id: 23,
-                    name: "Rande Sorio",
-                    role: "employee",
-                    position: "Skilled Electrician/team leader",
-                    archived: false
-                },
-                {
-                    id: 24,
-                    name: "Rizaldo San Pedro",
-                    role: "employee",
-                    position: "Paint Supervisor",
-                    archived: false
-                },
-                {
-                    id: 25,
-                    name: "George Pica",
-                    role: "employee",
-                    position: "Skilled Painter",
-                    archived: false
-                },
-                {
-                    id: 26,
-                    name: "Joraydan Briones",
-                    role: "employee",
-                    position: "Skilled Painter",
-                    archived: false
-                },
-                {
-                    id: 27,
-                    name: "Jayson Auton",
-                    role: "employee",
-                    position: "Skilled Painter",
-                    archived: false
-                },
-                {
-                    id: 28,
-                    name: "Ronel Yesan",
-                    role: "employee",
-                    position: "Skilled Painter",
-                    archived: false
-                },
-                {
-                    id: 29,
-                    name: "Richard Cabiad",
-                    role: "employee",
-                    position: "Skilled Painter",
-                    archived: false
-                },
-                {
-                    id: 30,
-                    name: "Anabelle Austria",
-                    role: "administrator",
-                    position: "HR Manager/Admin",
-                    archived: false
-                },
-                {
-                    id: 31,
-                    name: "Milen San Jose",
-                    role: "administrator",
-                    position: "Purchaser",
-                    archived: false
-                }
-            ];
+        // Positions data for JavaScript
+        const positionsByRole = {
+            employee: <?php echo json_encode(getPositions($conn, 'employee')); ?>,
+            hr_admin: <?php echo json_encode(getPositions($conn, 'hr_admin')); ?>,
+            support_admin: <?php echo json_encode(getPositions($conn, 'support_admin')); ?>,
+            super_admin: []
+        };
 
-            // Variables for pagination
-            let currentPage = 1;
-            const recordsPerPage = 10;
-            let filteredData = [...employeeData];
-            let activeRole = 'employee'; // Default active role
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Account';
+            document.getElementById('actionType').value = 'add_account';
+            document.getElementById('employeeId').value = '';
+            document.getElementById('accountForm').reset();
 
-            // Elements
-            const filterDropdown = document.getElementById('filterDropdown');
-            const searchInput = document.getElementById('searchInput');
-            const tableContent = document.getElementById('employeeTableContent');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const pageInput = document.getElementById('pageInput');
-            const totalPagesSpan = document.getElementById('totalPages');
-            const pageNumbersDiv = document.getElementById('pageNumbers');
-            const addAccountBtn = document.querySelector('.add-account-btn');
-            const accountModal = document.getElementById('accountModal');
-            const confirmModal = document.getElementById('confirmModal');
-            const modalCloseBtn = document.querySelector('.close');
-            const accountForm = document.getElementById('accountForm');
-            const modalTitle = document.getElementById('modalTitle');
-            const employeeIdInput = document.getElementById('employeeId');
-            const roleSelect = document.getElementById('roleSelect');
+            // Set default role based on user role
+            if ('<?php echo $_SESSION['role']; ?>' === 'hr_admin') {
+                document.getElementById('roleSelect').value = 'employee';
+            } else if ('<?php echo $activeRole; ?>' === 'admin') {
+                document.getElementById('roleSelect').value = 'hr_admin';
+            } else {
+                document.getElementById('roleSelect').value = 'employee';
+            }
+
+            updatePositionOptions(document.getElementById('roleSelect').value);
+            document.getElementById('passwordRequired').style.display = 'inline';
+            document.getElementById('passwordNote').style.display = 'none';
+            document.getElementById('profileImagePreview').style.display = 'none';
+            document.getElementById('profileImagePreview').src = '';
+            document.querySelector('.profile-placeholder').style.display = 'block';
+            document.getElementById('accountModal').style.display = 'flex';
+        }
+
+        // Open edit modal
+        function openEditModal(employeeId) {
+            fetch('includes/get_account.php?id=' + employeeId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('modalTitle').textContent = 'Edit Account';
+                        document.getElementById('actionType').value = 'edit_account';
+                        document.getElementById('employeeId').value = data.id;
+                        document.getElementById('firstName').value = data.firstname;
+                        document.getElementById('lastName').value = data.lastname;
+                        document.getElementById('gender').value = data.gender;
+                        document.getElementById('phoneNumber').value = data.phone;
+
+                        // Set role - use role_type if available (for admin types)
+                        const role = data.role_type || data.role;
+                        document.getElementById('roleSelect').value = role;
+
+                        document.getElementById('email').value = data.email;
+                        document.getElementById('username').value = data.username;
+                        document.getElementById('passwordRequired').style.display = 'none';
+                        document.getElementById('passwordNote').style.display = 'block';
+
+                        // Update positions based on role
+                        updatePositionOptions(role);
+
+                        // Set position after options are updated
+                        setTimeout(() => {
+                            document.getElementById('positionSelect').value = data.position_id;
+                        }, 100);
+
+                        // Set profile image if exists
+                        if (data.photo && data.photo !== 'default.jpg') {
+                            document.getElementById('profileImagePreview').src = 'uploads/profiles/' + data.photo;
+                            document.getElementById('profileImagePreview').style.display = 'block';
+                            document.querySelector('.profile-placeholder').style.display = 'none';
+                        } else {
+                            document.getElementById('profileImagePreview').style.display = 'none';
+                            document.getElementById('profileImagePreview').src = '';
+                            document.querySelector('.profile-placeholder').style.display = 'block';
+                        }
+
+                        document.getElementById('accountModal').style.display = 'flex';
+                    }
+                });
+        }
+
+        // Update position options based on selected role
+        function updatePositionOptions(role) {
             const positionSelect = document.getElementById('positionSelect');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const passwordNote = document.getElementById('passwordNote');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const saveBtn = document.getElementById('saveBtn');
-            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn');
-            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');
-            const tabLinks = document.querySelectorAll('.tab');
-            const firstNameInput = document.getElementById('firstName');
-            const lastNameInput = document.getElementById('lastName');
-            const usernameInput = document.getElementById('username');
-            const phoneNumberInput = document.getElementById('phoneNumber');
-            const archiveModalTitle = document.getElementById('archiveModalTitle');
-            const archiveConfirmText = document.getElementById('archiveConfirmText');
+            positionSelect.innerHTML = '';
 
-            // Positions for each role
-            const positions = {
-                employee: [
-                    "Training & CP Manager",
-                    "Sales Staff",
-                    "Office Staff/Sales Clerk",
-                    "Accounting & Inventory",
-                    "Senior Supervisor",
-                    "Fabrication Team Leader",
-                    "Site Team Leader",
-                    "Skilled Welder/Driver",
-                    "Site Supervisor",
-                    "TL/Skilled Welder",
-                    "Skilled Welder",
-                    "Fabrication Supervisor",
-                    "Fab Helper",
-                    "Welder",
-                    "Welder/Driver",
-                    "Helper - Welder",
-                    "Helper - Mason",
-                    "Electrician /Site Supervisor",
-                    "Electrician /Team Leader",
-                    "Skilled Electrician/team leader",
-                    "Paint Supervisor",
-                    "Skilled Painter",
-                    "Driver - Helper"
-                ],
-                administrator: [
-                    "HR Manager/Admin",
-                    "Purchaser"
-                ]
-            };
-
-            // Initialize the page
-            function init() {
-                setupFilterDropdown('employee'); // Initialize dropdown for the default tab
-                displayData();
-                setupEventListeners();
-                updatePositionOptions('employee');
-
-                // Set the initial active tab
-                tabLinks.forEach(tab => {
-                    if (tab.textContent.toLowerCase() === activeRole) {
-                        tab.classList.add('active');
-                    } else {
-                        tab.classList.remove('active');
-                    }
-                });
+            // For super admin, we don't need positions
+            if (role === 'super_admin') {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Super Admin (No Position)';
+                positionSelect.appendChild(option);
+                positionSelect.disabled = true;
+                return;
+            } else {
+                positionSelect.disabled = false;
             }
 
-            // Update filter dropdown options based on selected role
-            function setupFilterDropdown(role) {
-                filterDropdown.innerHTML = '';
+            // For admin roles, combine both position types
+            const positions = role === 'hr_admin' || role === 'support_admin' ? [...positionsByRole['hr_admin'], ...positionsByRole['support_admin']] :
+                positionsByRole[role] || [];
 
-                // Always add "All" option at the top
-                const allOption = document.createElement('option');
-                allOption.value = 'all';
-                allOption.textContent = 'All Positions';
-                filterDropdown.appendChild(allOption);
+            positions.forEach(position => {
+                const option = document.createElement('option');
+                option.value = position.id;
+                option.textContent = position.name;
+                positionSelect.appendChild(option);
+            });
+        }
 
-                // Add archived option
-                const archivedOption = document.createElement('option');
-                archivedOption.value = 'archived';
-                archivedOption.textContent = 'Archived Accounts';
-                filterDropdown.appendChild(archivedOption);
+        // Open confirmation modal for archive/restore
+        function confirmAction(employeeId, action) {
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('archiveModalTitle');
+            const text = document.getElementById('archiveConfirmText');
+            const btn = document.getElementById('confirmArchiveBtn');
+            const form = document.getElementById('archiveForm');
+            const actionField = document.getElementById('archiveAction');
+            const idField = document.getElementById('archiveAccountId');
 
-                // Add the role itself as an option
-                if (role === 'employee') {
-                    const employeeOption = document.createElement('option');
-                    employeeOption.value = 'employee';
-                    employeeOption.textContent = 'Employee';
-                    filterDropdown.appendChild(employeeOption);
-                } else if (role === 'administrator') {
-                    const adminOption = document.createElement('option');
-                    adminOption.value = 'administrator';
-                    adminOption.textContent = 'Administrator';
-                    filterDropdown.appendChild(adminOption);
+            idField.value = employeeId;
+
+            if (action === 'archive') {
+                title.textContent = 'Confirm Inactive';
+                text.textContent = 'Are you sure you want to change this account to inactive? Inactive accounts can be restored later.';
+                btn.textContent = 'Inactive';
+                actionField.value = 'archive_account';
+            } else {
+                title.textContent = 'Confirm Restore';
+                text.textContent = 'Are you sure you want to restore this account?';
+                btn.textContent = 'Restore';
+                actionField.value = 'restore_account';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // Close all modals
+        function closeModals() {
+            document.getElementById('accountModal').style.display = 'none';
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Preview uploaded image
+        function previewImage(input) {
+            const preview = document.getElementById('profileImagePreview');
+            const placeholder = document.querySelector('.profile-placeholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
                 }
 
-                // Add optgroup for positions
-                const positionGroup = document.createElement('optgroup');
-                positionGroup.label = role === 'employee' ? 'Employee Positions' : 'Administrator Positions';
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-                // Add position options
-                positions[role].forEach(position => {
-                    const option = document.createElement('option');
-                    option.value = position;
-                    option.textContent = position;
-                    positionGroup.appendChild(option);
-                });
+        // Auto-generate username and email from first and last name
+        document.getElementById('firstName').addEventListener('input', updateUsername);
+        document.getElementById('lastName').addEventListener('input', updateUsername);
 
-                filterDropdown.appendChild(positionGroup);
+        function updateUsername() {
+            const firstName = document.getElementById('firstName').value.trim().toLowerCase();
+            const lastName = document.getElementById('lastName').value.trim().toLowerCase();
+
+            if (firstName && lastName) {
+                const username = `${firstName}.${lastName}`.replace(/\s+/g, '');
+                document.getElementById('username').value = username;
+                document.getElementById('email').value = `${username}@company.com`;
+            }
+        }
+
+        // Validate form before submission
+        document.getElementById('accountForm').addEventListener('submit', function(e) {
+            const actionType = document.getElementById('actionType').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // For new accounts, password is required
+            if (actionType === 'add_account' && !password) {
+                alert('Password is required for new accounts');
+                e.preventDefault();
+                return;
             }
 
-            // Filter and display data
-            function displayData() {
-                // Filter data based on dropdown and search input
-                const filterValue = filterDropdown.value;
-                const searchValue = searchInput.value.trim().toLowerCase();
+            // Check if passwords match when provided
+            //  if (password && password !== confirmPassword) {
+            //  alert('Passwords do not match');
+            //      e.preventDefault();
+            //     return;
+            // }
+        });
 
-                filteredData = employeeData.filter(employee => {
-                    // First filter by active role
-                    const matchesRole = employee.role === activeRole;
-
-                    // Then filter by dropdown selection
-                    const matchesFilter = filterValue === 'all' ||
-                        (filterValue === 'archived' && employee.archived) ||
-                        employee.role === filterValue ||
-                        employee.position === filterValue;
-
-                    // Then filter by search text
-                    const matchesSearch = employee.name.toLowerCase().includes(searchValue);
-
-                    return matchesRole && matchesFilter && matchesSearch;
-                });
-
-                // Update pagination
-                const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-                totalPagesSpan.textContent = totalPages;
-                if (currentPage > totalPages && totalPages > 0) {
-                    currentPage = totalPages;
-                }
-
-                updatePageNumbers(totalPages);
-                updatePaginationButtons(totalPages);
-
-                // Display current page
-                const startIndex = (currentPage - 1) * recordsPerPage;
-                const endIndex = startIndex + recordsPerPage;
-                const currentPageData = filteredData.slice(startIndex, endIndex);
-
-                // Clear table
-                tableContent.innerHTML = '';
-
-                if (currentPageData.length === 0) {
-                    const emptyRow = document.createElement('div');
-                    emptyRow.className = 'empty-table';
-                    emptyRow.innerHTML = '<p>No records found</p>';
-                    tableContent.appendChild(emptyRow);
-                } else {
-                    // Create rows for current page data
-                    currentPageData.forEach(employee => {
-                        const row = document.createElement('div');
-                        row.className = `table-row ${employee.archived ? 'archived' : ''}`;
-                        row.innerHTML = `
-                            <div class="row-item employee-id">${employee.id}</div>
-                            <div class="row-item employee-name">${employee.name} ${employee.archived ? '<span class="archived-badge">Inactive</span>' : ''}</div>
-                            <div class="row-item role">${employee.role === 'administrator' ? 'Admin' : 'Employee'}</div>
-                            <div class="row-item position">${employee.position}</div>
-                            <div class="row-item actions">
-                                <button class="action-btn edit-btn" data-id="${employee.id}">
-                                    <i class="fas fa-user-edit"></i> Edit
-                                </button>
-                                <button class="action-btn ${employee.archived ? 'restore-btn' : 'archive-btn'}" data-id="${employee.id}">
-                                    <i class="fas fa-${employee.archived ? 'undo' : 'archive'}"></i> ${employee.archived ? 'Restore' : 'Inactive'}
-                                </button>
-                            </div>
-                        `;
-                        tableContent.appendChild(row);
-                    });
-
-                    // Add event listeners for edit and archive buttons
-                    addActionButtonEventListeners();
-                }
-            }
-
-            // Update position options based on selected role
-            function updatePositionOptions(role) {
-                positionSelect.innerHTML = '';
-                positions[role].forEach(position => {
-                    const option = document.createElement('option');
-                    option.value = position;
-                    option.textContent = position;
-                    positionSelect.appendChild(option);
-                });
-            }
-
-            // Update page number buttons
-            function updatePageNumbers(totalPages) {
-                pageNumbersDiv.innerHTML = '';
-
-                // Determine range of page numbers to show
-                let startPage = Math.max(1, currentPage - 2);
-                let endPage = Math.min(totalPages, startPage + 4);
-
-                if (endPage - startPage < 4) {
-                    startPage = Math.max(1, endPage - 4);
-                }
-
-                // Create page number buttons
-                for (let i = startPage; i <= endPage; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = 'page-number' + (i === currentPage ? ' active' : '');
-                    pageBtn.textContent = i;
-                    pageBtn.addEventListener('click', () => {
-                        currentPage = i;
-                        displayData();
-                    });
-                    pageNumbersDiv.appendChild(pageBtn);
-                }
-            }
-
-            // Update pagination buttons state
-            function updatePaginationButtons(totalPages) {
-                prevBtn.disabled = currentPage === 1;
-                nextBtn.disabled = currentPage === totalPages || totalPages === 0;
-                pageInput.value = currentPage;
-            }
-
-            // Add event listeners to action buttons
-            function addActionButtonEventListeners() {
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const employeeId = btn.getAttribute('data-id');
-                        openEditModal(parseInt(employeeId));
-                    });
-                });
-
-                document.querySelectorAll('.archive-btn, .restore-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const employeeId = btn.getAttribute('data-id');
-                        openArchiveConfirmation(parseInt(employeeId));
-                    });
-                });
-            }
-
-            // Generate a mock phone number for example purposes
-            function generateMockPhoneNumber() {
-                return `+63 9${Math.floor(Math.random() * 90000000) + 10000000}`;
-            }
-
-            // Open edit modal with employee data
-            function openEditModal(employeeId) {
-                const employee = employeeData.find(emp => emp.id === employeeId);
-                if (employee) {
-                    modalTitle.textContent = 'Edit Account';
-                    employeeIdInput.value = employee.id;
-
-                    // Split the name into first and last name (assuming space separation)
-                    const nameParts = employee.name.split(' ');
-                    firstNameInput.value = nameParts[0] || '';
-                    lastNameInput.value = nameParts.slice(1).join(' ') || '';
-
-                    roleSelect.value = employee.role;
-                    updatePositionOptions(employee.role);
-                    positionSelect.value = employee.position;
-
-                    // Set email with proper format
-                    const emailAddr = `${employee.name.toLowerCase().replace(/\s+/g, '.')}@company.com`;
-                    emailInput.value = emailAddr;
-                    usernameInput.value = employee.name.toLowerCase().replace(/\s+/g, '.');
-
-                    // Clear password fields and show password note
-                    passwordInput.value = '';
-                    confirmPasswordInput.value = '';
-                    passwordNote.style.display = 'block';
-
-                    // Set phone number (mock data for example)
-                    phoneNumberInput.value = employee.phoneNumber || generateMockPhoneNumber();
-
-                    accountModal.style.display = 'flex';
-                    setTimeout(addPhotoActionListeners, 100);
-                }
-            }
-
-            // Open archive confirmation modal
-            function openArchiveConfirmation(employeeId) {
-                const employee = employeeData.find(emp => emp.id === employeeId);
-                if (employee) {
-                    if (employee.archived) {
-                        archiveModalTitle.textContent = 'Confirm Restore';
-                        archiveConfirmText.textContent = 'Are you sure you want to restore this account?';
-                        confirmArchiveBtn.textContent = 'Restore';
-                    } else {
-                        archiveModalTitle.textContent = 'Confirm Inactive';
-                        archiveConfirmText.textContent = 'Are you sure you want to change this account to inactive? Inactive accounts can be restored later.';
-                        confirmArchiveBtn.textContent = 'Inactive';
-                    }
-
-                    confirmArchiveBtn.setAttribute('data-id', employeeId);
-                    confirmModal.style.display = 'flex';
-                }
-            }
-
-            // Open add account modal
-            function openAddModal() {
-                modalTitle.textContent = 'Add New Account';
-                accountForm.reset();
-                employeeIdInput.value = '';
-                roleSelect.value = activeRole; // Set the role to the active tab
-                updatePositionOptions(activeRole);
-                passwordNote.style.display = 'none';
-
-                accountModal.style.display = 'flex';
-                setTimeout(addPhotoActionListeners, 100);
-            }
-
-            // Close modals
-            function closeModals() {
-                accountModal.style.display = 'none';
-                confirmModal.style.display = 'none';
-            }
-
-            // Save account data
-            function saveAccount(event) {
-                event.preventDefault();
-
-                // Get form values
-                const employeeId = employeeIdInput.value;
-                const isEditMode = employeeId !== '';
-                const firstName = firstNameInput.value;
-                const lastName = lastNameInput.value;
-                const fullName = `${firstName} ${lastName}`.trim();
-                const role = roleSelect.value;
-                const position = positionSelect.value;
-                const email = emailInput.value;
-                const username = usernameInput.value;
-                const phoneNumber = phoneNumberInput.value;
-
-                // Validate passwords match if either is filled
-                const password = passwordInput.value;
-                const confirmPassword = confirmPasswordInput.value;
-
-                if (password !== confirmPassword) {
-                    alert("Passwords don't match. Please try again.");
-                    return;
-                }
-
-                const newEmployee = {
-                    id: isEditMode ? parseInt(employeeId) : employeeData.length + 1,
-                    name: fullName,
-                    role: role,
-                    position: position,
-                    email: email,
-                    username: username,
-                    phoneNumber: phoneNumber,
-                    archived: false // New accounts are never archived by default
-                };
-
-                if (isEditMode) {
-                    // Update existing employee
-                    const index = employeeData.findIndex(emp => emp.id === parseInt(employeeId));
-                    if (index !== -1) {
-                        // Preserve the archived status when editing
-                        newEmployee.archived = employeeData[index].archived;
-                        employeeData[index] = newEmployee;
-                    }
-                } else {
-                    // Add new employee
-                    employeeData.push(newEmployee);
-                }
-
-                closeModals();
-                displayData();
-            }
-
-            // Toggle archive status
-            function toggleArchiveStatus() {
-                const employeeId = parseInt(confirmArchiveBtn.getAttribute('data-id'));
-                const index = employeeData.findIndex(emp => emp.id === employeeId);
-
-                if (index !== -1) {
-                    employeeData[index].archived = !employeeData[index].archived;
-                    displayData();
-                }
-
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
                 closeModals();
             }
-
-            // Switch between tabs
-            function switchTab(role) {
-                // Update the active role
-                activeRole = role;
-
-                // Update the active tab display
-                tabLinks.forEach(tab => {
-                    if (tab.textContent.toLowerCase() === role) {
-                        tab.classList.add('active');
-                    } else {
-                        tab.classList.remove('active');
-                    }
-                });
-
-                // Rebuild the filter dropdown for the new role
-                setupFilterDropdown(role);
-
-                // Reset to first page and update display
-                currentPage = 1;
-                displayData();
-            }
-
-            // Add event listeners for photo actions
-            function addPhotoActionListeners() {
-                const uploadBtn = document.querySelector('.upload-photo-btn');
-                const scanBtn = document.querySelector('.scan-fingerprint-btn');
-
-                if (uploadBtn) {
-                    uploadBtn.addEventListener('click', function() {
-                        alert('Photo upload functionality would be implemented here.');
-                    });
-                }
-
-                if (scanBtn) {
-                    scanBtn.addEventListener('click', function() {
-                        alert('Fingerprint scanning functionality would be implemented here.');
-                    });
-                }
-            }
-
-            // Set up all event listeners
-            function setupEventListeners() {
-                // Filter and search
-                filterDropdown.addEventListener('change', () => {
-                    currentPage = 1;
-                    displayData();
-                });
-
-                searchInput.addEventListener('input', () => {
-                    currentPage = 1;
-                    displayData();
-                });
-
-                // Pagination buttons
-                prevBtn.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        displayData();
-                    }
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        displayData();
-                    }
-                });
-
-                pageInput.addEventListener('change', () => {
-                    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-                    const pageNum = parseInt(pageInput.value);
-
-                    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
-                        currentPage = pageNum;
-                        displayData();
-                    } else {
-                        pageInput.value = currentPage;
-                    }
-                });
-
-                // Tab switching
-                tabLinks.forEach(tab => {
-                    tab.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const role = this.textContent.toLowerCase();
-                        switchTab(role);
-                    });
-                });
-
-                // Modal controls
-                addAccountBtn.addEventListener('click', openAddModal);
-                modalCloseBtn.addEventListener('click', closeModals);
-                cancelBtn.addEventListener('click', closeModals);
-                cancelArchiveBtn.addEventListener('click', closeModals);
-                confirmArchiveBtn.addEventListener('click', toggleArchiveStatus);
-                accountForm.addEventListener('submit', saveAccount);
-
-                // Role select change
-                roleSelect.addEventListener('change', function() {
-                    updatePositionOptions(this.value);
-                });
-
-                // Username generation from first and last name
-                firstNameInput.addEventListener('input', updateUsername);
-                lastNameInput.addEventListener('input', updateUsername);
-
-                // Close modal when clicking outside
-                window.addEventListener('click', function(event) {
-                    if (event.target === accountModal) {
-                        closeModals();
-                    }
-                    if (event.target === confirmModal) {
-                        closeModals();
-                    }
-                });
-            }
-
-            // Auto-generate username and email from first and last name
-            function updateUsername() {
-                const firstName = firstNameInput.value.trim();
-                const lastName = lastNameInput.value.trim();
-
-                if (firstName && lastName) {
-                    const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/\s+/g, '');
-                    usernameInput.value = username;
-                    emailInput.value = `${username}@company.com`;
-                }
-            }
-
-            // Initialize the application
-            init();
         });
     </script>
     <?php include "includes/script.php"; ?>
 </body>
 
 </html>
+<?php $conn->close(); ?>
