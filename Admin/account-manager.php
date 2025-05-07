@@ -1,17 +1,6 @@
 <?php
 require_once 'includes/auth.php';
-
-// Database connection
-$host = "localhost";
-$dbname = "steelsync";
-$dbuser = "root";
-$dbpass = "";
-
-$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'includes/db.php';
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

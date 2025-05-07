@@ -11,7 +11,7 @@ if (!isset($_SESSION["user"])) {
 $permissions = [
     'support_admin' => ['index.php', 'Apointment.php', 'raw-material.php', 'fix-assets.php', 'pointofsale.php'],
     'hr_admin' => ['payroll.php', 'attendance.php', 'account-manager.php'],
-    'super_admin' => ['index.php', 'Apointment.php', 'raw-material.php', 'payroll.php', 'attendance.php', 'account-manager.php']
+    'super_admin' => ['index.php', 'Apointment.php', 'raw-material.php', 'fix-assets.php', 'pointofsale.php', 'payroll.php', 'attendance.php', 'account-manager.php']
 ];
 
 // Get current page and user role

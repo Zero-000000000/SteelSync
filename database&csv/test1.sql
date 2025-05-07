@@ -59,7 +59,7 @@ INSERT INTO positions (name, role, description) VALUES
 ('Driver - Helper', 'employee', 'Driver helper role'),
 ('HR Manager/Admin', 'hr_admin', 'Human resources manager and administrator'),
 ('Purchaser', 'support_admin', 'Purchasing role'),
-('Administrator', 'super_admin', 'owner'),
+('Super Admin', 'super_admin', 'owner'),
 
 -- Create table for super admin specific details
 CREATE TABLE IF NOT EXISTS super_admin (
